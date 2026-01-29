@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "MiLegado",
+    "slug": "mi-legado",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "milegado",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0A"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.milegado.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "MiLegado necesita acceso a la cámara para grabar videos y tomar fotos para tus cartas.",
+        "NSMicrophoneUsageDescription": "MiLegado necesita acceso al micrófono para grabar mensajes de audio.",
+        "NSPhotoLibraryUsageDescription": "MiLegado necesita acceso a tu galería para adjuntar fotos a tus cartas."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0A"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.milegado.app",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "MiLegado necesita acceso a la cámara para grabar videos y tomar fotos para tus cartas.",
+          "microphonePermission": "MiLegado necesita acceso al micrófono para grabar mensajes de audio.",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "MiLegado necesita acceso a tu galería para adjuntar fotos a tus cartas."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "MiLegado necesita acceso al micrófono para grabar mensajes de audio."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

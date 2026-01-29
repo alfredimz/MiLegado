@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx expo-doctor)",
+      "Bash(timeout 30 npx expo start:*)",
+      "Bash(npx expo install:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout 20 npx expo start:*)",
+      "Bash(taskkill:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)"
+    ]
+  }
+}
