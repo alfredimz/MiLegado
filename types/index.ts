@@ -38,7 +38,18 @@ export type CrearStackParamList = {
   index: undefined;
   texto: undefined;
   media: { tipo: 'foto' | 'video' | 'audio' };
-  preview: undefined;
+  preview: {
+    titulo: string;
+    tipo: 'texto' | 'audio' | 'video' | 'foto';
+    contenido: string; // JSON stringfied
+    mediaItems?: string; // JSON stringified
+  };
+  asignar: {
+    titulo: string;
+    tipo: 'texto' | 'audio' | 'video' | 'foto';
+    contenido: string; // JSON stringfied
+    mediaItems?: string; // JSON stringified
+  };
 };
 
 // Tipos de estado de la app

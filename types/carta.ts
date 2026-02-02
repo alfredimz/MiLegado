@@ -47,6 +47,7 @@ export interface CreateCartaData {
   contenido: ContenidoCarta;
   guardianes?: string[];
   tags?: string[];
+  estado?: EstadoCarta;
 }
 
 // Datos para actualizar carta

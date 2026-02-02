@@ -136,14 +136,14 @@ export default function PerfilScreen() {
           <SettingItem
             icon={<User size={20} color={Colors.primary} />}
             title="Editar perfil"
-            onPress={() => {}}
+            onPress={() => router.push('/perfil/editar')}
           />
           <View style={styles.divider} />
           <SettingItem
             icon={<Shield size={20} color={Colors.primary} />}
             title="Seguridad"
             subtitle="Contraseña y autenticación"
-            onPress={() => {}}
+            onPress={() => { }}
           />
         </Card>
 
@@ -181,7 +181,7 @@ export default function PerfilScreen() {
             icon={<Settings size={20} color={Colors.primary} />}
             title="Intervalo de latido"
             subtitle="Cada 30 días"
-            onPress={() => {}}
+            onPress={() => { }}
           />
         </Card>
 
@@ -191,7 +191,7 @@ export default function PerfilScreen() {
           <SettingItem
             icon={<HelpCircle size={20} color={Colors.primary} />}
             title="Centro de ayuda"
-            onPress={() => {}}
+            onPress={() => { }}
           />
         </Card>
 

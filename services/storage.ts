@@ -1,19 +1,12 @@
-// Servicios de Firebase Storage para MiLegado
-import {
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-  listAll,
-  UploadTaskSnapshot,
-} from 'firebase/storage';
-import { storage, STORAGE_PATHS } from './firebase';
+// Servicios de Almacenamiento (Migrado a Base64)
+// En esta versión, no subimos a Firebase Storage debido a limitaciones de facturación.
+// En su lugar, retornamos cadenas Base64 que se guardarán directamente en Firestore.
+import * as FileSystem from 'expo-file-system/legacy';
 
 export interface UploadProgress {
   bytesTransferred: number;
   totalBytes: number;
-  progress: number; // 0-100
+  progress: number;
 }
 
 export interface UploadResult {
@@ -21,64 +14,63 @@ export interface UploadResult {
   path: string;
 }
 
-// Subir archivo con progreso
+// Helper para formatear Base64
+const formatBase64 = (data: string, type: 'image' | 'video' | 'audio'): string => {
+  if (data.startsWith('data:')) return data;
+
+  // Mime types simples
+  let mimeString = 'image/jpeg';
+  if (type === 'video') mimeString = 'video/mp4';
+  if (type === 'audio') mimeString = 'audio/m4a';
+
+  return `data:${mimeString};base64,${data}`;
+};
+
+// "Subir" archivo (ahora solo formatea Base64)
+// Si recibe una URI, intenta leer el archivo y convertir a Base64.
 export async function uploadFile(
   path: string,
-  uri: string,
-  onProgress?: (progress: UploadProgress) => void
+  data: string, // Esperamos Base64 string o URI
+  onProgress?: (progress: UploadProgress) => void,
+  mediaType: 'image' | 'video' | 'audio' = 'image'
 ): Promise<UploadResult> {
-  try {
-    // Convertir URI a Blob
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    const storageRef = ref(storage, path);
-
-    if (onProgress) {
-      // Upload con seguimiento de progreso
-      const uploadTask = uploadBytesResumable(storageRef, blob);
-
-      return new Promise((resolve, reject) => {
-        uploadTask.on(
-          'state_changed',
-          (snapshot: UploadTaskSnapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            onProgress({
-              bytesTransferred: snapshot.bytesTransferred,
-              totalBytes: snapshot.totalBytes,
-              progress: Math.round(progress),
-            });
-          },
-          (error) => {
-            reject(handleStorageError(error));
-          },
-          async () => {
-            const url = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve({ url, path });
-          }
-        );
-      });
-    } else {
-      // Upload simple sin progreso
-      await uploadBytes(storageRef, blob);
-      const url = await getDownloadURL(storageRef);
-      return { url, path };
-    }
-  } catch (error: any) {
-    throw handleStorageError(error);
+  // Simular progreso
+  if (onProgress) {
+    onProgress({ bytesTransferred: 50, totalBytes: 100, progress: 50 });
+    setTimeout(() => onProgress({ bytesTransferred: 100, totalBytes: 100, progress: 100 }), 100);
   }
+
+  let finalBase64 = data;
+
+  // Si es una URI local, leer el archivo.
+  // IMPORTANTE: Evitar confundir un Base64 que empieza con "/" (ej. JPG /9j/...) con un path absoluto.
+  // Un path legítimo raramente excederá los 2000 caracteres, mientras que una imagen Base64 siempre lo hará.
+  const isFileUri = data.startsWith('file://');
+  const isAbsolutePath = data.startsWith('/') && data.length < 2000;
+
+  if (isFileUri || isAbsolutePath) {
+    try {
+      console.log("Detectada URI local en storage.ts, convirtiendo a Base64...", data.substring(0, 50));
+      finalBase64 = await FileSystem.readAsStringAsync(data, {
+        encoding: 'base64',
+      });
+    } catch (error) {
+      console.error("Error leyendo archivo para Base64:", error);
+      throw new Error("No se pudo leer el archivo local para convertirlo a Base64.");
+    }
+  }
+
+  const url = formatBase64(finalBase64, mediaType);
+  return { url, path };
 }
 
-// Subir avatar de usuario
+// Subir avatar
 export async function uploadUserAvatar(
   userId: string,
-  uri: string,
+  data: string, // Base64
   onProgress?: (progress: UploadProgress) => void
 ): Promise<string> {
-  const fileName = `avatar_${Date.now()}.jpg`;
-  const path = `${STORAGE_PATHS.USER_AVATARS(userId)}/${fileName}`;
-
-  const result = await uploadFile(path, uri, onProgress);
+  const result = await uploadFile(`dummy/path/avatar`, data, onProgress, 'image');
   return result.url;
 }
 
@@ -86,91 +78,30 @@ export async function uploadUserAvatar(
 export async function uploadCartaMedia(
   userId: string,
   cartaId: string,
-  uri: string,
+  data: string, // Base64
   mediaType: 'image' | 'video' | 'audio',
   onProgress?: (progress: UploadProgress) => void
 ): Promise<string> {
-  const extension = getExtensionForType(mediaType);
-  const fileName = `${mediaType}_${Date.now()}.${extension}`;
-  const path = `${STORAGE_PATHS.CARTA_MEDIA(userId, cartaId)}/${fileName}`;
-
-  const result = await uploadFile(path, uri, onProgress);
+  const result = await uploadFile(`dummy/path/media`, data, onProgress, mediaType);
   return result.url;
 }
 
-// Obtener URL de descarga
+// Mock getFileUrl
 export async function getFileUrl(path: string): Promise<string> {
-  try {
-    const storageRef = ref(storage, path);
-    return await getDownloadURL(storageRef);
-  } catch (error: any) {
-    throw handleStorageError(error);
-  }
+  // En este esquema, la URL ya es el contenido Base64 guardado en Firestore
+  // No hay "path" real resoluble.
+  return path;
 }
 
-// Eliminar archivo
+// Mock delete
 export async function deleteFile(path: string): Promise<void> {
-  try {
-    const storageRef = ref(storage, path);
-    await deleteObject(storageRef);
-  } catch (error: any) {
-    // Ignorar error si el archivo no existe
-    if (error.code !== 'storage/object-not-found') {
-      throw handleStorageError(error);
-    }
-  }
+  // No-op
+  return;
 }
 
-// Eliminar todos los archivos de una carta
-export async function deleteCartaFiles(
-  userId: string,
-  cartaId: string
-): Promise<void> {
-  try {
-    const folderRef = ref(storage, STORAGE_PATHS.CARTA_MEDIA(userId, cartaId));
-    const listResult = await listAll(folderRef);
-
-    const deletePromises = listResult.items.map((item) => deleteObject(item));
-    await Promise.all(deletePromises);
-  } catch (error: any) {
-    throw handleStorageError(error);
-  }
-}
-
-// Obtener extensión según tipo de media
-function getExtensionForType(type: 'image' | 'video' | 'audio'): string {
-  switch (type) {
-    case 'image':
-      return 'jpg';
-    case 'video':
-      return 'mp4';
-    case 'audio':
-      return 'm4a';
-    default:
-      return 'bin';
-  }
-}
-
-// Manejar errores de Storage
-function handleStorageError(error: any): Error {
-  const errorMessages: Record<string, string> = {
-    'storage/unknown': 'Error desconocido de almacenamiento',
-    'storage/object-not-found': 'El archivo no existe',
-    'storage/bucket-not-found': 'Bucket de almacenamiento no encontrado',
-    'storage/project-not-found': 'Proyecto no encontrado',
-    'storage/quota-exceeded': 'Cuota de almacenamiento excedida',
-    'storage/unauthenticated': 'Usuario no autenticado',
-    'storage/unauthorized': 'No tienes permiso para esta acción',
-    'storage/retry-limit-exceeded': 'Tiempo de espera excedido',
-    'storage/invalid-checksum': 'El archivo está corrupto',
-    'storage/canceled': 'Subida cancelada',
-    'storage/invalid-url': 'URL inválida',
-    'storage/cannot-slice-blob': 'Error al procesar el archivo',
-    'storage/server-file-wrong-size': 'Error de tamaño de archivo',
-  };
-
-  const message = errorMessages[error.code] || error.message || 'Error de almacenamiento';
-  return new Error(message);
+export async function deleteCartaFiles(userId: string, cartaId: string): Promise<void> {
+  // No-op
+  return;
 }
 
 export default {

@@ -104,59 +104,34 @@ export default function CrearMediaScreen() {
 
     if (!user) return;
 
-    setIsSaving(true);
-    try {
-      // Crear carta primero para obtener el ID
-      const cartaTipo = tipo === 'foto' ? 'mixta' : tipo;
-      const carta = await createCarta(user.uid, {
-        titulo: titulo.trim(),
-        tipo: cartaTipo,
-        contenido: {
-          texto: descripcion.trim() || undefined,
-        },
-      });
+    // Preparar contenido según el tipo
+    const contenidoObj: any = {
+      texto: descripcion.trim() || undefined,
+    };
 
-      // Subir archivos multimedia
-      const uploadPromises: Promise<string>[] = [];
+    // Preparar items de media
+    let itemsToSend: any[] = [];
 
-      if (tipo === 'audio' && audioUri) {
-        uploadPromises.push(
-          uploadCartaMedia(user.uid, carta.id, audioUri, 'audio')
-        );
-      }
-
-      if (tipo === 'video' && mediaItems[0]) {
-        uploadPromises.push(
-          uploadCartaMedia(user.uid, carta.id, mediaItems[0].uri, 'video')
-        );
-      }
-
-      if (tipo === 'foto') {
-        for (const item of mediaItems) {
-          uploadPromises.push(
-            uploadCartaMedia(user.uid, carta.id, item.uri, 'image')
-          );
-        }
-      }
-
-      // Aquí se subirían los archivos y se actualizaría la carta
-      // Por ahora solo mostramos éxito
-
-      Alert.alert(
-        'Carta creada',
-        'Tu carta ha sido creada. Los archivos se están subiendo en segundo plano.',
-        [
-          {
-            text: 'Ver carta',
-            onPress: () => router.replace(`/(tabs)/cartas/${carta.id}`),
-          },
-        ]
-      );
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo crear la carta');
-    } finally {
-      setIsSaving(false);
+    if (tipo === 'audio' && audioUri) {
+      // Para audio, el "item" es el audioUri
+      // En una implementación real más robusta, usaríamos una estructura unificada
+      // pero por ahora pasamos lo que espera preview
+      itemsToSend = [{ uri: audioUri, type: 'audio' }];
+    } else if (tipo === 'video' && mediaItems[0]) {
+      itemsToSend = mediaItems;
+    } else if (tipo === 'foto') {
+      itemsToSend = mediaItems;
     }
+
+    router.push({
+      pathname: '/crear/preview',
+      params: {
+        titulo: titulo.trim(),
+        tipo: tipo,
+        contenido: JSON.stringify(contenidoObj),
+        mediaItems: JSON.stringify(itemsToSend),
+      },
+    });
   };
 
   const renderPhotoContent = () => (

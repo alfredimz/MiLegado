@@ -109,7 +109,7 @@ export async function createCarta(
     tipo: data.tipo,
     contenido: data.contenido,
     guardianes: data.guardianes || [],
-    estado: 'borrador',
+    estado: data.estado || 'borrador',
     createdAt: now,
     updatedAt: now,
     tags: data.tags || [],

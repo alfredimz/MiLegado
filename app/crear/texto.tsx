@@ -68,29 +68,18 @@ export default function CrearTextoScreen() {
 
     if (!user) return;
 
-    setIsSaving(true);
-    try {
-      const carta = await createCarta(user.uid, {
+    // Navegar a preview en lugar de crear directamente
+    router.push({
+      pathname: '/crear/preview',
+      params: {
         titulo: titulo.trim(),
         tipo: 'texto',
-        contenido: { texto: contenido.trim() },
-      });
-
-      Alert.alert(
-        'Carta creada',
-        'Tu carta ha sido creada como borrador. Puedes editarla y asignar guardianes más tarde.',
-        [
-          {
-            text: 'Ver carta',
-            onPress: () => router.replace(`/(tabs)/cartas/${carta.id}`),
-          },
-        ]
-      );
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo crear la carta');
-    } finally {
-      setIsSaving(false);
-    }
+        contenido: JSON.stringify({
+          texto: contenido.trim(),
+        }),
+        mediaItems: JSON.stringify([]),
+      },
+    });
   };
 
   return (

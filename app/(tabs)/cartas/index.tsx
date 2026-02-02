@@ -6,8 +6,9 @@ import {
   FlatList,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Plus, Filter, FileText } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, spacing, typography, borderRadius } from '../../../constants';
@@ -15,8 +16,9 @@ import { Button, Badge } from '../../../components/ui';
 import { Header, EmptyState } from '../../../components/layout';
 import { CartaCard } from '../../../components/cards';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getUserCartas } from '../../../services/firestore';
-import type { Carta, TipoCarta, EstadoCarta } from '../../../types';
+import { getUserCartas, deleteCarta } from '../../../services/firestore';
+import { useStorage } from '../../../hooks';
+import type { Carta, TipoCarta, EstadoCarta, CartaDraft } from '../../../types';
 
 type FilterType = 'todos' | TipoCarta | EstadoCarta;
 
@@ -31,8 +33,10 @@ const FILTERS: { key: FilterType; label: string }[] = [
 
 export default function CartasScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ filter?: FilterType }>();
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const { drafts, loadDrafts, deleteDraft } = useStorage();
 
   const [cartas, setCartas] = useState<Carta[]>([]);
   const [filteredCartas, setFilteredCartas] = useState<Carta[]>([]);
@@ -41,13 +45,42 @@ export default function CartasScreen() {
   const [activeFilter, setActiveFilter] = useState<FilterType>('todos');
 
   // Cargar cartas
-  const loadCartas = async () => {
+  const loadCartas = async (targetFilter?: FilterType) => {
     if (!user) return;
 
     try {
-      const data = await getUserCartas(user.uid);
-      setCartas(data);
-      applyFilter(activeFilter, data);
+      // Cargar borradores locales y obtenerlos directamente
+      const loadedDrafts = await loadDrafts();
+
+      const remoteCartas = await getUserCartas(user.uid);
+
+      // Convertir drafts a formato Carta para la UI
+      const localCartas: Carta[] = (loadedDrafts || []).map((draft: CartaDraft) => ({
+        id: draft.id,
+        userId: user.uid,
+        titulo: draft.titulo,
+        tipo: draft.tipo,
+        contenido: draft.contenido,
+        guardianes: draft.guardianes,
+        estado: 'borrador',
+        createdAt: new Date(draft.lastModified),
+        updatedAt: new Date(draft.lastModified),
+      }));
+
+      // Unir listas
+      const allCartas = [...localCartas, ...remoteCartas].sort((a, b) =>
+        b.updatedAt.getTime() - a.updatedAt.getTime()
+      );
+
+      setCartas(allCartas);
+
+      // Aplicar filtro: prioridad a targetFilter (param), luego estado actual
+      const filterToApply = targetFilter || activeFilter;
+      applyFilter(filterToApply, allCartas);
+
+      // Si cambiamos por parametro, actualizar estado visual del filtro
+      if (targetFilter) setActiveFilter(targetFilter);
+
     } catch (error) {
       console.error('Error loading cartas:', error);
     } finally {
@@ -59,8 +92,17 @@ export default function CartasScreen() {
   // Cargar al enfocar la pantalla
   useFocusEffect(
     useCallback(() => {
-      loadCartas();
-    }, [user])
+      // Checar si hay param nuevo para forzar filtro
+      const initFilter = params.filter as FilterType;
+      if (initFilter && ['todos', 'texto', 'audio', 'video', 'mixta', 'activa', 'borrador'].includes(initFilter)) {
+        loadCartas(initFilter);
+        // Limpiar param para que futuras navegaciones back no reseteen? 
+        // setParams no disponible directamente aqui facil sin rerender loops.
+        // Asumimos que si navega de nuevo desde home, se pasará param.
+      } else {
+        loadCartas();
+      }
+    }, [user, params.filter]) // Re-run when filter param changes
   );
 
   // Aplicar filtro
@@ -76,13 +118,122 @@ export default function CartasScreen() {
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    loadCartas();
+    await loadCartas();
+  };
+
+  const handleDelete = async (carta: Carta) => {
+    Alert.alert(
+      "Eliminar Carta",
+      "¿Estás seguro de que deseas eliminar esta carta? Esta acción no se puede deshacer.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              if (carta.id.startsWith('draft_')) {
+                await deleteDraft(carta.id);
+              } else {
+                await deleteCarta(carta.id);
+              }
+              loadCartas(); // Reload list
+            } catch (error) {
+              console.error("Error deleting carta:", error);
+              Alert.alert("Error", "No se pudo eliminar la carta.");
+            }
+          }
+        }
+      ]
+    );
+  };
+
+  const handleEdit = (carta: Carta) => {
+    // Para drafts, buscar en state local si es posible para tener data fresca
+    // Para firestore, usamos la carta que viene por props que ya tiene info completa (excepto quizas contenido muy largo si fuera paginado)
+    const isDraft = carta.id.startsWith('draft_');
+    const draft = isDraft ? drafts.find(d => d.id === carta.id) : null;
+
+    // Preparar contenido
+    // Si es draft, usamos draft.contenido. Si es Carta, carta.contenido.
+    const contenidoSource = draft ? draft.contenido : carta.contenido;
+
+    // Preparar mediaItems
+    // Carta tiene urls en image/video/audioUrl. Preview espera { uri, type }.
+    let mediaItems: any[] = [];
+
+    if (contenidoSource.imageUrls) {
+      mediaItems.push(...contenidoSource.imageUrls.map(url => ({ uri: url, type: 'image' })));
+    }
+    // Nota: audioUrl y videoUrl en el modelo actual son campos separados en contenido,
+    // pero Preview espera que si es video, venga en mediaItems?
+    // Revisando Preview:
+    // case 'video': usa mediaItems[0]
+    // case 'foto': usa mediaItems.map
+    // case 'audio': NO usa mediaItems, usa style hardcoded. (Wait, Preview audio renderContent doesnt use mediaItems params?)
+    // Verificando preview.tsx: "case 'audio': returns Card..." static text.
+    // Bueno, pasaremos los datos de todos modos.
+
+    if (contenidoSource.videoUrl) {
+      mediaItems.push({ uri: contenidoSource.videoUrl, type: 'video' });
+    }
+    if (contenidoSource.audioUrl) {
+      mediaItems.push({ uri: contenidoSource.audioUrl, type: 'audio' });
+    }
+
+    router.push({
+      pathname: '/crear/preview',
+      params: {
+        id: carta.id, // Pasamos ID para que al finalizar se sepa que es update
+        titulo: carta.titulo,
+        tipo: carta.tipo,
+        contenido: JSON.stringify(contenidoSource),
+        mediaItems: JSON.stringify(mediaItems),
+      }
+    });
   };
 
   const handleCartaPress = (carta: Carta) => {
-    router.push(`/(tabs)/cartas/${carta.id}`);
+    // Si es un borrador local, ir a editar
+    if (carta.id.startsWith('draft_')) {
+      handleEdit(carta);
+    } else {
+      // Si es de firestore, ir a detalle
+      router.push(`/(tabs)/cartas/${carta.id}`);
+    }
+  };
+
+  const handleOptionsPress = (carta: Carta) => {
+    // Permitir editar a todos (Borradores y Activas)
+    // Restricción: 'entregada' quizás no debería editarse?
+    // Por ahora habilitamos para 'activa' y 'borrador'.
+    const canEdit = carta.estado !== 'entregada';
+
+    const options: { text: string, style?: 'default' | 'cancel' | 'destructive', onPress?: () => void }[] = [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Eliminar",
+        style: "destructive",
+        onPress: () => handleDelete(carta)
+      }
+    ];
+
+    if (canEdit) {
+      options.push({
+        text: "Editar",
+        style: "default",
+        onPress: () => handleEdit(carta)
+      });
+    }
+
+    Alert.alert(
+      "Opciones",
+      `¿Qué deseas hacer con "${carta.titulo}"?`,
+      // @ts-ignore
+      options
+    );
   };
 
   const renderFilter = ({ item }: { item: (typeof FILTERS)[0] }) => (
@@ -108,6 +259,7 @@ export default function CartasScreen() {
     <CartaCard
       carta={item}
       onPress={() => handleCartaPress(item)}
+      onOptionsPress={() => handleOptionsPress(item)}
     />
   );
 

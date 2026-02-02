@@ -10,6 +10,7 @@ export interface UseStorageReturn {
   getDraft: (id: string) => Promise<CartaDraft | null>;
   deleteDraft: (id: string) => Promise<void>;
   clearAllDrafts: () => Promise<void>;
+  loadDrafts: () => Promise<CartaDraft[]>;
 
   // Utilidades genéricas
   getItem: <T>(key: string) => Promise<T | null>;
@@ -32,16 +33,20 @@ export function useStorage(): UseStorageReturn {
   }, []);
 
   // Cargar todos los borradores
-  const loadDrafts = useCallback(async () => {
+  const loadDrafts = useCallback(async (): Promise<CartaDraft[]> => {
     setIsLoading(true);
     try {
       const draftsJson = await AsyncStorage.getItem(STORAGE_KEYS.DRAFT_CARTA);
       if (draftsJson) {
         const parsedDrafts = JSON.parse(draftsJson) as CartaDraft[];
         setDrafts(parsedDrafts);
+        return parsedDrafts;
       }
+      setDrafts([]);
+      return [];
     } catch (err: any) {
       setError(err.message || 'Error al cargar borradores');
+      return [];
     } finally {
       setIsLoading(false);
     }
@@ -160,6 +165,7 @@ export function useStorage(): UseStorageReturn {
     getDraft,
     deleteDraft,
     clearAllDrafts,
+    loadDrafts,
     getItem,
     setItem,
     removeItem,

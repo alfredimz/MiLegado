@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import {
   Plus,
   FileText,
@@ -22,6 +22,7 @@ import { Colors, spacing, typography, borderRadius } from '../../constants';
 import { Button, Card, Avatar, Badge } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBattery } from '../../hooks';
+import { useStorage } from '../../hooks';
 import { getUserCartas, getUserGuardianes } from '../../services/firestore';
 import type { Carta, Guardian } from '../../types';
 
@@ -30,9 +31,11 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const { percentage, isCharging, isLowBattery } = useBattery();
+  const { loadDrafts } = useStorage();
 
   const [cartas, setCartas] = useState<Carta[]>([]);
   const [guardianes, setGuardianes] = useState<Guardian[]>([]);
+  const [localDraftCount, setLocalDraftCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -41,12 +44,14 @@ export default function HomeScreen() {
     if (!user) return;
 
     try {
-      const [cartasData, guardianesData] = await Promise.all([
+      const [cartasData, guardianesData, draftsData] = await Promise.all([
         getUserCartas(user.uid),
         getUserGuardianes(user.uid),
+        loadDrafts(),
       ]);
       setCartas(cartasData);
       setGuardianes(guardianesData);
+      setLocalDraftCount(draftsData ? draftsData.length : 0);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -55,9 +60,11 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, [user]);
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [user])
+  );
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -66,9 +73,9 @@ export default function HomeScreen() {
 
   // Estadísticas
   const stats = {
-    totalCartas: cartas.length,
+    totalCartas: cartas.length + localDraftCount,
     cartasActivas: cartas.filter((c) => c.estado === 'activa').length,
-    borradores: cartas.filter((c) => c.estado === 'borrador').length,
+    borradores: cartas.filter((c) => c.estado === 'borrador').length + localDraftCount,
     totalGuardianes: guardianes.length,
   };
 
@@ -76,8 +83,8 @@ export default function HomeScreen() {
   const BatteryIcon = isCharging
     ? BatteryCharging
     : isLowBattery
-    ? BatteryLow
-    : Battery;
+      ? BatteryLow
+      : Battery;
 
   return (
     <ScrollView
@@ -153,7 +160,7 @@ export default function HomeScreen() {
           <Text style={styles.statLabel}>Cartas</Text>
         </Card>
 
-        <Card style={styles.statCard} onPress={() => router.push('/(tabs)/cartas')}>
+        <Card style={styles.statCard} onPress={() => router.push({ pathname: '/(tabs)/cartas', params: { filter: 'activa' } })}>
           <View style={styles.statBadge}>
             <Badge label="Activas" variant="success" size="sm" />
           </View>
@@ -167,7 +174,7 @@ export default function HomeScreen() {
           <Text style={styles.statLabel}>Guardianes</Text>
         </Card>
 
-        <Card style={styles.statCard} onPress={() => router.push('/(tabs)/cartas')}>
+        <Card style={styles.statCard} onPress={() => router.push({ pathname: '/(tabs)/cartas', params: { filter: 'borrador' } })}>
           <View style={styles.statBadge}>
             <Badge label="Borradores" variant="warning" size="sm" />
           </View>
@@ -176,29 +183,6 @@ export default function HomeScreen() {
         </Card>
       </View>
 
-      {/* Acciones rápidas */}
-      <Text style={styles.sectionTitle}>Acciones rápidas</Text>
-      <View style={styles.quickActions}>
-        <TouchableOpacity
-          style={styles.quickAction}
-          onPress={() => router.push('/crear')}
-        >
-          <View style={[styles.quickActionIcon, { backgroundColor: `${Colors.primary}20` }]}>
-            <FileText size={24} color={Colors.primary} />
-          </View>
-          <Text style={styles.quickActionText}>Nueva carta</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.quickAction}
-          onPress={() => router.push('/(tabs)/guardianes')}
-        >
-          <View style={[styles.quickActionIcon, { backgroundColor: `${Colors.secondary}20` }]}>
-            <Users size={24} color={Colors.secondary} />
-          </View>
-          <Text style={styles.quickActionText}>Guardianes</Text>
-        </TouchableOpacity>
-      </View>
     </ScrollView>
   );
 }
