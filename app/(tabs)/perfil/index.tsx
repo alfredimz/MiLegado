@@ -9,26 +9,15 @@ import {
   Switch,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import {
-  User,
-  Settings,
-  Bell,
-  Moon,
-  Shield,
-  HelpCircle,
-  LogOut,
-  ChevronRight,
-  Battery,
-} from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../../constants';
+import { Colors, spacing } from '../../../constants';
 import { Card, Avatar, Badge } from '../../../components/ui';
 import { Header } from '../../../components/layout';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useBattery } from '../../../hooks';
 
 interface SettingItemProps {
-  icon: React.ReactNode;
+  icon: string;
   title: string;
   subtitle?: string;
   onPress?: () => void;
@@ -43,12 +32,14 @@ function SettingItem({ icon, title, subtitle, onPress, rightContent }: SettingIt
       disabled={!onPress}
       activeOpacity={onPress ? 0.7 : 1}
     >
-      <View style={styles.settingIcon}>{icon}</View>
+      <View style={styles.settingIcon}>
+        <Text style={styles.settingEmoji}>{icon}</Text>
+      </View>
       <View style={styles.settingContent}>
         <Text style={styles.settingTitle}>{title}</Text>
         {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
       </View>
-      {rightContent || (onPress && <ChevronRight size={20} color={Colors.textMuted} />)}
+      {rightContent || (onPress && <Text style={styles.chevron}>→</Text>)}
     </TouchableOpacity>
   );
 }
@@ -86,7 +77,13 @@ export default function PerfilScreen() {
 
   const toggleNotifications = async (value: boolean) => {
     setNotificationsEnabled(value);
-    // Aquí se guardaría en Firebase
+  };
+
+  const getBatteryEmoji = () => {
+    if (isCharging) return '🔌';
+    if (percentage > 80) return '🔋';
+    if (percentage > 20) return '🔋';
+    return '🪫';
   };
 
   return (
@@ -112,7 +109,7 @@ export default function PerfilScreen() {
               <Text style={styles.profileName}>{user?.displayName}</Text>
               <Text style={styles.profileEmail}>{user?.email}</Text>
               <Badge
-                label={user?.plan === 'premium' ? 'Premium' : 'Gratis'}
+                label={user?.plan === 'premium' ? '✨ Premium' : 'Gratis'}
                 variant={user?.plan === 'premium' ? 'primary' : 'secondary'}
                 size="sm"
               />
@@ -124,7 +121,7 @@ export default function PerfilScreen() {
         <Text style={styles.sectionTitle}>Dispositivo</Text>
         <Card style={styles.settingsCard}>
           <SettingItem
-            icon={<Battery size={20} color={Colors.primary} />}
+            icon={getBatteryEmoji()}
             title="Batería"
             subtitle={`${percentage}%${isCharging ? ' - Cargando' : ''}`}
           />
@@ -134,13 +131,13 @@ export default function PerfilScreen() {
         <Text style={styles.sectionTitle}>Cuenta</Text>
         <Card style={styles.settingsCard}>
           <SettingItem
-            icon={<User size={20} color={Colors.primary} />}
+            icon="👤"
             title="Editar perfil"
             onPress={() => router.push('/perfil/editar')}
           />
           <View style={styles.divider} />
           <SettingItem
-            icon={<Shield size={20} color={Colors.primary} />}
+            icon="🔒"
             title="Seguridad"
             subtitle="Contraseña y autenticación"
             onPress={() => { }}
@@ -151,34 +148,20 @@ export default function PerfilScreen() {
         <Text style={styles.sectionTitle}>Preferencias</Text>
         <Card style={styles.settingsCard}>
           <SettingItem
-            icon={<Bell size={20} color={Colors.primary} />}
+            icon="🔔"
             title="Notificaciones"
             rightContent={
               <Switch
                 value={notificationsEnabled}
                 onValueChange={toggleNotifications}
                 trackColor={{ false: Colors.border, true: Colors.primary }}
-                thumbColor={Colors.text}
+                thumbColor={Colors.surface}
               />
             }
           />
           <View style={styles.divider} />
           <SettingItem
-            icon={<Moon size={20} color={Colors.primary} />}
-            title="Tema oscuro"
-            subtitle="Activo"
-            rightContent={
-              <Switch
-                value={true}
-                disabled
-                trackColor={{ false: Colors.border, true: Colors.primary }}
-                thumbColor={Colors.text}
-              />
-            }
-          />
-          <View style={styles.divider} />
-          <SettingItem
-            icon={<Settings size={20} color={Colors.primary} />}
+            icon="⚙️"
             title="Intervalo de latido"
             subtitle="Cada 30 días"
             onPress={() => { }}
@@ -189,7 +172,7 @@ export default function PerfilScreen() {
         <Text style={styles.sectionTitle}>Soporte</Text>
         <Card style={styles.settingsCard}>
           <SettingItem
-            icon={<HelpCircle size={20} color={Colors.primary} />}
+            icon="❓"
             title="Centro de ayuda"
             onPress={() => { }}
           />
@@ -198,7 +181,7 @@ export default function PerfilScreen() {
         {/* Cerrar sesión */}
         <Card style={styles.logoutCard}>
           <TouchableOpacity style={styles.logoutButton} onPress={handleSignOut}>
-            <LogOut size={20} color={Colors.error} />
+            <Text style={styles.logoutEmoji}>🚪</Text>
             <Text style={styles.logoutText}>Cerrar sesión</Text>
           </TouchableOpacity>
         </Card>
@@ -234,16 +217,20 @@ const styles = StyleSheet.create({
     marginLeft: spacing.lg,
   },
   profileName: {
-    ...typography.h2,
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
   },
   profileEmail: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
     marginBottom: spacing.xs,
   },
   sectionTitle: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     textTransform: 'uppercase',
     marginBottom: spacing.sm,
@@ -262,23 +249,34 @@ const styles = StyleSheet.create({
   settingIcon: {
     width: 40,
     height: 40,
-    borderRadius: borderRadius.lg,
-    backgroundColor: Colors.surfaceVariant,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    backgroundColor: Colors.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  settingEmoji: {
+    fontSize: 18,
   },
   settingContent: {
     flex: 1,
     marginLeft: spacing.md,
   },
   settingTitle: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.text,
   },
   settingSubtitle: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textMuted,
     marginTop: 2,
+  },
+  chevron: {
+    fontSize: 16,
+    color: Colors.textMuted,
   },
   divider: {
     height: 1,
@@ -296,18 +294,23 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     gap: spacing.sm,
   },
+  logoutEmoji: {
+    fontSize: 18,
+  },
   logoutText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.error,
-    fontWeight: '600',
   },
   versionText: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textMuted,
     textAlign: 'center',
   },
   copyrightText: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.xs,

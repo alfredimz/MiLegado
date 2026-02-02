@@ -10,9 +10,8 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter, Link } from 'expo-router';
-import { Mail, Lock } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Button, Input } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -51,7 +50,6 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       await signIn(email, password);
-      // La navegación se maneja automáticamente por el AuthContext
     } catch (error: any) {
       Alert.alert('Error', error.message || 'No se pudo iniciar sesión');
     } finally {
@@ -95,9 +93,10 @@ export default function LoginScreen() {
         {/* Logo y título */}
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoText}>ML</Text>
+            <Text style={styles.logoEmoji}>💓</Text>
           </View>
           <Text style={styles.title}>Bienvenido</Text>
+          <Text style={styles.tagline}>Tu legado, tu historia</Text>
           <Text style={styles.subtitle}>Inicia sesión para continuar</Text>
         </View>
 
@@ -112,7 +111,7 @@ export default function LoginScreen() {
             autoCapitalize="none"
             autoComplete="email"
             error={errors.email}
-            leftIcon={<Mail size={20} color={Colors.textMuted} />}
+            leftIcon={<Text style={styles.inputIcon}>✉️</Text>}
           />
 
           <Input
@@ -123,7 +122,7 @@ export default function LoginScreen() {
             secureTextEntry
             autoComplete="password"
             error={errors.password}
-            leftIcon={<Lock size={20} color={Colors.textMuted} />}
+            leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
           />
 
           <TouchableOpacity
@@ -174,27 +173,40 @@ const styles = StyleSheet.create({
   logoContainer: {
     width: 80,
     height: 80,
-    borderRadius: borderRadius.xl,
-    backgroundColor: Colors.primary,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
-  logoText: {
-    ...typography.h1,
-    color: Colors.textInverse,
+  logoEmoji: {
+    fontSize: 40,
   },
   title: {
-    ...typography.h1,
+    fontSize: 32,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
     marginBottom: spacing.xs,
   },
+  tagline: {
+    fontSize: 18,
+    fontFamily: 'DancingScript_400Regular',
+    color: Colors.primary,
+    marginBottom: spacing.sm,
+  },
   subtitle: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
   },
   form: {
     marginBottom: spacing.xl,
+  },
+  inputIcon: {
+    fontSize: 18,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
@@ -202,7 +214,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   forgotPasswordText: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.primary,
   },
   loginButton: {
@@ -215,12 +228,13 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   footerText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
   },
   registerLink: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.primary,
-    fontWeight: '600',
   },
 });

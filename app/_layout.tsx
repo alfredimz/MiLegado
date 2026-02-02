@@ -1,24 +1,44 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { PaperProvider, MD3DarkTheme } from 'react-native-paper';
+import { PaperProvider, MD3LightTheme } from 'react-native-paper';
+import { useFonts } from 'expo-font';
+import {
+  CormorantGaramond_300Light,
+  CormorantGaramond_400Regular,
+} from '@expo-google-fonts/cormorant-garamond';
+import {
+  DancingScript_400Regular,
+} from '@expo-google-fonts/dancing-script';
+import {
+  Nunito_300Light,
+  Nunito_400Regular,
+} from '@expo-google-fonts/nunito';
+import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { Colors } from '../constants';
 
-// Tema personalizado para React Native Paper
+// Prevenir que el splash screen se oculte automáticamente
+SplashScreen.preventAutoHideAsync();
+
+// Tema personalizado Paradise Garden para React Native Paper
 const customTheme = {
-  ...MD3DarkTheme,
+  ...MD3LightTheme,
   colors: {
-    ...MD3DarkTheme.colors,
+    ...MD3LightTheme.colors,
     primary: Colors.primary,
+    secondary: Colors.secondary,
     background: Colors.background,
     surface: Colors.surface,
     text: Colors.text,
     onSurface: Colors.text,
     onBackground: Colors.text,
+    outline: Colors.border,
+    error: Colors.error,
   },
+  roundness: 0, // Sin border radius
 };
 
 function RootLayoutNav() {
@@ -27,14 +47,14 @@ function RootLayoutNav() {
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.loadingEmoji}>💓</Text>
       </View>
     );
   }
 
   return (
     <>
-      <StatusBar style="light" backgroundColor={Colors.background} />
+      <StatusBar style="dark" backgroundColor={Colors.background} />
       <Stack screenOptions={{ headerShown: false }}>
         {!isAuthenticated ? (
           <Stack.Screen name="(auth)" />
@@ -56,8 +76,30 @@ function RootLayoutNav() {
 }
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({
+    CormorantGaramond_300Light,
+    CormorantGaramond_400Regular,
+    DancingScript_400Regular,
+    Nunito_300Light,
+    Nunito_400Regular,
+  });
+
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingEmoji}>💓</Text>
+      </View>
+    );
+  }
+
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
       <PaperProvider theme={customTheme}>
         <AuthProvider>
           <RootLayoutNav />
@@ -77,5 +119,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.background,
+  },
+  loadingEmoji: {
+    fontSize: 48,
   },
 });

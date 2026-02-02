@@ -9,9 +9,8 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Plus, Users, UserPlus } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../../constants';
+import { Colors, spacing } from '../../../constants';
 import { Button, Input } from '../../../components/ui';
 import { Header, EmptyState } from '../../../components/layout';
 import { GuardianCard } from '../../../components/cards';
@@ -38,7 +37,6 @@ export default function GuardianesScreen() {
   const [relacion, setRelacion] = useState<RelacionGuardian>('otro');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Cargar guardianes
   const loadGuardianes = async () => {
     if (!user) return;
 
@@ -68,7 +66,6 @@ export default function GuardianesScreen() {
     loadGuardianes();
   };
 
-  // Contar cartas asignadas a un guardián
   const getCartasAsignadas = (guardianId: string): number => {
     return cartas.filter((c) => c.guardianes.includes(guardianId)).length;
   };
@@ -77,7 +74,6 @@ export default function GuardianesScreen() {
     router.push(`/(tabs)/guardianes/${guardian.id}`);
   };
 
-  // Guardar nuevo guardián
   const handleSaveGuardian = async () => {
     if (!user) return;
 
@@ -102,14 +98,12 @@ export default function GuardianesScreen() {
 
       await createGuardian(user.uid, data);
 
-      // Limpiar form
       setNombre('');
       setEmail('');
       setTelefono('');
       setRelacion('otro');
       setShowAddForm(false);
 
-      // Recargar lista
       loadGuardianes();
 
       Alert.alert('Guardián agregado', `${nombre} ha sido agregado como guardián`);
@@ -130,7 +124,7 @@ export default function GuardianesScreen() {
 
   const renderEmpty = () => (
     <EmptyState
-      icon={<Users size={48} color={Colors.textMuted} />}
+      icon="👥"
       title="No tienes guardianes"
       description="Agrega a las personas que recibirán tus cartas cuando llegue el momento"
       actionLabel="Agregar guardián"
@@ -200,7 +194,7 @@ export default function GuardianesScreen() {
             setTelefono('');
             setRelacion('otro');
           }}
-          variant="outline"
+          variant="ghost"
           style={styles.formButton}
         />
         <Button
@@ -223,7 +217,7 @@ export default function GuardianesScreen() {
               style={styles.addButton}
               onPress={() => setShowAddForm(true)}
             >
-              <UserPlus size={24} color={Colors.text} />
+              <Text style={styles.addIcon}>➕</Text>
             </TouchableOpacity>
           )
         }
@@ -263,10 +257,15 @@ const styles = StyleSheet.create({
   addButton: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
     backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addIcon: {
+    fontSize: 20,
   },
   listContent: {
     paddingHorizontal: spacing.lg,
@@ -279,14 +278,17 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   formTitle: {
-    ...typography.h2,
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
     marginBottom: spacing.lg,
   },
   labelRelacion: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
     color: Colors.text,
-    fontWeight: '500',
     marginBottom: spacing.sm,
   },
   relacionGrid: {
@@ -298,22 +300,22 @@ const styles = StyleSheet.create({
   relacionOption: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full,
+    borderRadius: 0, // Paradise Garden: sin border radius
     backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.border,
   },
   relacionOptionActive: {
-    backgroundColor: Colors.primary,
     borderColor: Colors.primary,
+    backgroundColor: 'transparent',
   },
   relacionText: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textSecondary,
   },
   relacionTextActive: {
-    color: Colors.textInverse,
-    fontWeight: '600',
+    color: Colors.primary,
   },
   formButtons: {
     flexDirection: 'row',

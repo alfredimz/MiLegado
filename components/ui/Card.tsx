@@ -5,11 +5,11 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
-import { Colors, spacing, borderRadius, shadows } from '../../constants';
+import { Colors, spacing } from '../../constants';
 
 export interface CardProps {
   children: React.ReactNode;
-  variant?: 'default' | 'elevated' | 'outlined';
+  variant?: 'default' | 'outlined' | 'elevated';
   onPress?: () => void;
   style?: ViewStyle;
   padding?: 'none' | 'sm' | 'md' | 'lg';
@@ -46,17 +46,21 @@ export function Card({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: borderRadius.xl,
+    borderRadius: 0, // Paradise Garden: sin border radius
     overflow: 'hidden',
   },
 
-  // Variantes
+  // Variantes - Sin sombras en Paradise Garden
   default: {
     backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   elevated: {
     backgroundColor: Colors.surface,
-    ...shadows.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    // Sin sombras
   },
   outlined: {
     backgroundColor: 'transparent',

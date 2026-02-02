@@ -3,16 +3,15 @@ import {
   TouchableOpacity,
   Text,
   StyleSheet,
-  ActivityIndicator,
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { Colors, spacing, borderRadius, typography } from '../../constants';
+import { Colors, spacing } from '../../constants';
 
 export interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'blush' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
@@ -63,10 +62,7 @@ export function Button({
       activeOpacity={0.7}
     >
       {loading ? (
-        <ActivityIndicator
-          color={variant === 'primary' ? Colors.textInverse : Colors.primary}
-          size="small"
-        />
+        <Text style={textStyles}>💓</Text>
       ) : (
         <>
           {icon && iconPosition === 'left' && (
@@ -87,24 +83,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: borderRadius.lg,
+    borderRadius: 0, // Paradise Garden: sin border radius
     gap: spacing.sm,
+    borderWidth: 1,
+    backgroundColor: 'transparent', // Outline por defecto
   },
 
-  // Variantes
+  // Variantes - Todos son outline
   primary: {
-    backgroundColor: Colors.primary,
-  },
-  secondary: {
-    backgroundColor: Colors.surfaceVariant,
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
     borderColor: Colors.primary,
   },
+  secondary: {
+    borderColor: Colors.secondary,
+  },
+  blush: {
+    borderColor: Colors.blush,
+  },
   ghost: {
-    backgroundColor: 'transparent',
+    borderColor: Colors.border,
+  },
+  danger: {
+    borderColor: Colors.error,
   },
 
   // Tamaños
@@ -131,19 +130,23 @@ const styles = StyleSheet.create({
 
   // Texto
   text: {
-    fontWeight: '600',
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
   },
   text_primary: {
-    color: Colors.textInverse,
+    color: Colors.primary,
   },
   text_secondary: {
-    color: Colors.text,
+    color: Colors.secondary,
   },
-  text_outline: {
-    color: Colors.primary,
+  text_blush: {
+    color: Colors.blushDark,
   },
   text_ghost: {
-    color: Colors.primary,
+    color: Colors.textSecondary,
+  },
+  text_danger: {
+    color: Colors.error,
   },
   textSize_sm: {
     fontSize: 14,

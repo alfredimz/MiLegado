@@ -5,41 +5,36 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Button, Card } from '../../components/ui';
 import { Header } from '../../components/layout';
 import { VideoPlayer } from '../../components/media';
-import { Mic } from 'lucide-react-native';
 
 export default function CrearPreviewScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
-  // Recibir parámetros de navegación
   const params = useLocalSearchParams<{
     id?: string;
     titulo: string;
     tipo: 'texto' | 'audio' | 'video' | 'foto';
-    contenido: string; // JSON stringfied
-    mediaItems?: string; // JSON stringified
+    contenido: string;
+    mediaItems?: string;
   }>();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Parsear datos
   const contenido = params.contenido ? JSON.parse(params.contenido) : {};
   const mediaItems = params.mediaItems ? JSON.parse(params.mediaItems) : [];
 
   const handleContinue = () => {
-    // Navegar a la pantalla de asignación pasando todos los datos
     router.push({
       pathname: '/crear/asignar',
       params: {
-        id: params.id, // Forward ID to handle update vs create
+        id: params.id,
         titulo: params.titulo,
         tipo: params.tipo,
         contenido: params.contenido,
@@ -102,7 +97,7 @@ export default function CrearPreviewScreen() {
               </Card>
             )}
             <Card style={styles.audioCard}>
-              <Mic size={32} color={Colors.secondary} />
+              <Text style={styles.audioEmoji}>🎤</Text>
               <View style={styles.audioInfo}>
                 <Text style={styles.audioTitle}>Mensaje de voz</Text>
                 <Text style={styles.audioSubtitle}>Listo para enviar</Text>
@@ -156,12 +151,15 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
   },
   sectionTitle: {
-    ...typography.h2,
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
     marginBottom: spacing.xs,
   },
   subtitle: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
     marginBottom: spacing.xl,
   },
@@ -169,7 +167,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   textContent: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.text,
     lineHeight: 24,
   },
@@ -184,23 +183,27 @@ const styles = StyleSheet.create({
   image: {
     width: '48%',
     aspectRatio: 1,
-    borderRadius: borderRadius.md,
+    borderRadius: 0, // Paradise Garden: sin border radius
   },
   audioCard: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: spacing.md,
   },
+  audioEmoji: {
+    fontSize: 32,
+  },
   audioInfo: {
     marginLeft: spacing.md,
   },
   audioTitle: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.text,
-    fontWeight: '600',
   },
   audioSubtitle: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
   },
   footer: {

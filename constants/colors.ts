@@ -1,42 +1,53 @@
-// Colores principales de MiLegado
-// Re-exportación para acceso directo
+// Paradise Garden v3.0 - Sistema de colores
+// Tema sereno y delicado con sage green y tonos cálidos
 
 export const Colors = {
-  // Primary — Naranja Cempasúchil (Flor de Muertos)
-  primary: '#F97316',
-  primaryLight: '#FB923C',
-  primaryDark: '#EA580C',
+  // Primary — Sage Green
+  primary: '#5BA4A4',
+  primaryLight: '#7BBDBD',
+  primaryDark: '#4A8F8F',
 
-  // Secondary — Ámbar dorado
-  secondary: '#EAB308',
-  secondaryLight: '#FBBF24',
-  secondaryDark: '#CA8A04',
+  // Secondary — Warm Taupe
+  secondary: '#C4A484',
+  secondaryLight: '#D4B494',
+  secondaryDark: '#B49474',
+
+  // Accent — Blush Pink
+  blush: '#E8B4B8',
+  blushDark: '#D49EA2',
 
   // Semantic
-  success: '#22C55E',
-  error: '#EF4444',
-  warning: '#F59E0B',
-  info: '#3B82F6',
+  success: '#7BAA9E',
+  successLight: '#E8F2F0',
+  error: '#C47070',
+  errorLight: '#F5EBEB',
+  warning: '#D4C4A5',
+  warningLight: '#F5F2EB',
+  info: '#5BA4A4',
+  infoLight: '#E8F2F2',
 
-  // Backgrounds (Dark theme)
-  background: '#0A0A0A',
-  surface: '#18181B',
-  surfaceVariant: '#27272A',
-  surfaceElevated: '#3F3F46',
+  // Backgrounds (Light theme)
+  background: '#FAFBF9',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F5F6F4',
+  surfaceElevated: '#FFFFFF',
 
   // Text
-  text: '#FFFFFF',
-  textSecondary: '#A1A1AA',
-  textMuted: '#71717A',
-  textInverse: '#0A0A0A',
+  text: '#3D3D3D',
+  textSecondary: '#6A6A6A',
+  textMuted: '#9A9A9A',
+  textInverse: '#FFFFFF',
 
   // Borders
-  border: '#3F3F46',
-  borderLight: '#27272A',
+  border: '#E5E5E5',
+  borderLight: '#F0F0F0',
 
   // Overlays
-  overlay: 'rgba(0, 0, 0, 0.5)',
-  overlayLight: 'rgba(0, 0, 0, 0.3)',
+  overlay: 'rgba(0, 0, 0, 0.4)',
+  overlayLight: 'rgba(0, 0, 0, 0.2)',
+
+  // Transparent
+  transparent: 'transparent',
 };
 
 export default Colors;

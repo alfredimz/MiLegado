@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { Colors, spacing, borderRadius } from '../../constants';
+import { Colors, spacing } from '../../constants';
 
 export interface BadgeProps {
   label: string;
-  variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
+  variant?: 'primary' | 'secondary' | 'blush' | 'success' | 'warning' | 'error' | 'info';
   size?: 'sm' | 'md';
   style?: ViewStyle;
 }
@@ -27,27 +27,32 @@ export function Badge({
 const styles = StyleSheet.create({
   base: {
     alignSelf: 'flex-start',
-    borderRadius: borderRadius.full,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    backgroundColor: 'transparent', // Outline por defecto
   },
 
-  // Variantes
+  // Variantes - Outline style
   primary: {
-    backgroundColor: `${Colors.primary}20`,
+    borderColor: Colors.primary,
   },
   secondary: {
-    backgroundColor: `${Colors.secondary}20`,
+    borderColor: Colors.secondary,
+  },
+  blush: {
+    borderColor: Colors.blush,
   },
   success: {
-    backgroundColor: `${Colors.success}20`,
+    borderColor: Colors.success,
   },
   warning: {
-    backgroundColor: `${Colors.warning}20`,
+    borderColor: Colors.warning,
   },
   error: {
-    backgroundColor: `${Colors.error}20`,
+    borderColor: Colors.error,
   },
   info: {
-    backgroundColor: `${Colors.info}20`,
+    borderColor: Colors.info,
   },
 
   // Tamaños
@@ -62,13 +67,17 @@ const styles = StyleSheet.create({
 
   // Texto
   text: {
-    fontWeight: '500',
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
   },
   text_primary: {
     color: Colors.primary,
   },
   text_secondary: {
     color: Colors.secondary,
+  },
+  text_blush: {
+    color: Colors.blushDark,
   },
   text_success: {
     color: Colors.success,

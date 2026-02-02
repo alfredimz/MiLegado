@@ -11,11 +11,10 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Button, Input } from '../../components/ui';
 import { Header } from '../../components/layout';
 import { useAuth } from '../../contexts/AuthContext';
-import { createCarta } from '../../services/firestore';
 import { useStorage } from '../../hooks';
 
 const MAX_CHARACTERS = 5000;
@@ -68,7 +67,6 @@ export default function CrearTextoScreen() {
 
     if (!user) return;
 
-    // Navegar a preview en lugar de crear directamente
     router.push({
       pathname: '/crear/preview',
       params: {
@@ -134,7 +132,7 @@ export default function CrearTextoScreen() {
         </View>
 
         <View style={styles.tips}>
-          <Text style={styles.tipsTitle}>Consejos para tu carta:</Text>
+          <Text style={styles.tipsTitle}>💡 Consejos para tu carta:</Text>
           <Text style={styles.tipItem}>• Sé auténtico y habla desde el corazón</Text>
           <Text style={styles.tipItem}>• Incluye recuerdos especiales</Text>
           <Text style={styles.tipItem}>• Comparte tus deseos y consejos</Text>
@@ -169,7 +167,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     marginBottom: spacing.xs,
   },
@@ -177,35 +176,40 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   textArea: {
-    backgroundColor: Colors.surfaceVariant,
-    borderRadius: borderRadius.lg,
+    backgroundColor: Colors.surface,
+    borderRadius: 0, // Paradise Garden: sin border radius
     borderWidth: 1,
     borderColor: Colors.border,
     color: Colors.text,
     fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     padding: spacing.md,
     minHeight: 200,
     maxHeight: 400,
   },
   characterCount: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     textAlign: 'right',
     marginTop: spacing.xs,
   },
   tips: {
     backgroundColor: Colors.surface,
-    borderRadius: borderRadius.lg,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
     padding: spacing.md,
   },
   tipsTitle: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.text,
-    fontWeight: '600',
     marginBottom: spacing.sm,
   },
   tipItem: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
     marginBottom: spacing.xs,
   },

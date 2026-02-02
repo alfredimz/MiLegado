@@ -1,11 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { FileText } from 'lucide-react-native';
-import { Colors, spacing, typography } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Button } from '../ui/Button';
 
 export interface EmptyStateProps {
-  icon?: React.ReactNode;
+  icon?: string;
   title: string;
   description?: string;
   actionLabel?: string;
@@ -14,7 +13,7 @@ export interface EmptyStateProps {
 }
 
 export function EmptyState({
-  icon,
+  icon = '📭',
   title,
   description,
   actionLabel,
@@ -24,7 +23,7 @@ export function EmptyState({
   return (
     <View style={[styles.container, style]}>
       <View style={styles.iconContainer}>
-        {icon || <FileText size={48} color={Colors.textMuted} />}
+        <Text style={styles.icon}>{icon}</Text>
       </View>
 
       <Text style={styles.title}>{title}</Text>
@@ -53,20 +52,29 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 80,
     height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.surfaceVariant,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
+    backgroundColor: Colors.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: spacing.lg,
   },
+  icon: {
+    fontSize: 36,
+  },
   title: {
-    ...typography.h3,
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
   description: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
+    fontWeight: '300',
     color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: spacing.lg,

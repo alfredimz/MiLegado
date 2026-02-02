@@ -4,13 +4,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  StatusBar,
-  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography } from '../../constants';
+import { Colors, spacing } from '../../constants';
 
 export interface HeaderProps {
   title?: string;
@@ -57,7 +54,7 @@ export function Header({
               onPress={handleBack}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              <ChevronLeft size={28} color={Colors.text} />
+              <Text style={styles.backIcon}>←</Text>
             </TouchableOpacity>
           )}
           {leftContent}
@@ -84,9 +81,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     paddingHorizontal: spacing.md,
     paddingBottom: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
   },
   transparent: {
     backgroundColor: 'transparent',
+    borderBottomWidth: 0,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -111,13 +111,19 @@ const styles = StyleSheet.create({
     marginLeft: -spacing.xs,
     padding: spacing.xs,
   },
+  backIcon: {
+    fontSize: 24,
+    color: Colors.text,
+  },
   titleContainer: {
     flex: 1,
     alignItems: 'center',
     paddingHorizontal: spacing.sm,
   },
   title: {
-    ...typography.h3,
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     textAlign: 'center',
   },

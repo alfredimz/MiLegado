@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Image, Text, StyleSheet, ViewStyle } from 'react-native';
-import { User } from 'lucide-react-native';
-import { Colors, borderRadius } from '../../constants';
+import { Colors } from '../../constants';
 
 export interface AvatarProps {
   source?: string | null;
@@ -42,7 +41,7 @@ export function Avatar({ source, name, size = 'md', style }: AvatarProps) {
     {
       width: dimensions,
       height: dimensions,
-      borderRadius: dimensions / 2,
+      borderRadius: dimensions / 2, // ÚNICO elemento con border radius (circular)
     },
     style,
   ];
@@ -75,10 +74,10 @@ export function Avatar({ source, name, size = 'md', style }: AvatarProps) {
     );
   }
 
-  // Fallback: icono de usuario
+  // Fallback: emoji de usuario
   return (
     <View style={[containerStyle, styles.placeholder]}>
-      <User size={dimensions * 0.5} color={Colors.textMuted} />
+      <Text style={{ fontSize: dimensions * 0.5 }}>👤</Text>
     </View>
   );
 }
@@ -86,18 +85,21 @@ export function Avatar({ source, name, size = 'md', style }: AvatarProps) {
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   image: {
     resizeMode: 'cover',
   },
   placeholder: {
-    backgroundColor: Colors.surfaceVariant,
+    backgroundColor: Colors.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
   },
   initials: {
     color: Colors.text,
-    fontWeight: '600',
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
   },
 });
 

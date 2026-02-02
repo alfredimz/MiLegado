@@ -1,51 +1,66 @@
-// Design Tokens para MiLegado
-// Inspirado en el Cempasúchil y la tradición mexicana
+// Paradise Garden v3.0 - Design Tokens
+// Sistema de diseño sereno, flat y delicado
 
 export const colors = {
-  // Primary — Naranja Cempasúchil
+  // Primary — Sage Green
   primary: {
-    50: '#FFF7ED',
-    100: '#FFEDD5',
-    200: '#FED7AA',
-    300: '#FDBA74',
-    400: '#FB923C',
-    500: '#F97316', // Principal
-    600: '#EA580C',
-    700: '#C2410C',
+    50: '#E8F2F2',
+    100: '#D1E5E5',
+    200: '#A3CBCB',
+    300: '#7BBDBD',
+    400: '#5BA4A4',
+    500: '#5BA4A4', // Principal
+    600: '#4A8F8F',
+    700: '#3A7A7A',
   },
 
-  // Secondary — Ámbar
+  // Secondary — Warm Taupe
   secondary: {
-    50: '#FFFBEB',
-    100: '#FEF3C7',
-    200: '#FDE68A',
-    300: '#FCD34D',
-    400: '#FBBF24',
-    500: '#EAB308',
-    600: '#CA8A04',
-    700: '#A16207',
+    50: '#F5F2EB',
+    100: '#EBE5DB',
+    200: '#D7CBB7',
+    300: '#C4A484',
+    400: '#C4A484',
+    500: '#C4A484', // Principal
+    600: '#B49474',
+    700: '#A48464',
+  },
+
+  // Blush — Accent Pink
+  blush: {
+    50: '#F9F0F1',
+    100: '#F5EBEB',
+    200: '#EBCFD1',
+    300: '#E8B4B8',
+    400: '#E8B4B8',
+    500: '#E8B4B8', // Principal
+    600: '#D49EA2',
+    700: '#C0888C',
   },
 
   // Semantic
-  success: '#22C55E',
-  error: '#EF4444',
-  warning: '#F59E0B',
-  info: '#3B82F6',
+  success: '#7BAA9E',
+  successLight: '#E8F2F0',
+  error: '#C47070',
+  errorLight: '#F5EBEB',
+  warning: '#D4C4A5',
+  warningLight: '#F5F2EB',
+  info: '#5BA4A4',
+  infoLight: '#E8F2F2',
 
-  // Neutral (Dark theme)
+  // Neutral (Light theme)
   neutral: {
     0: '#FFFFFF',
-    50: '#FAFAFA',
-    100: '#F4F4F5',
-    200: '#E4E4E7',
-    300: '#D4D4D8',
-    400: '#A1A1AA',
-    500: '#71717A',
-    600: '#52525B',
-    700: '#3F3F46',
-    800: '#27272A',
-    900: '#18181B',
-    950: '#0A0A0A',
+    50: '#FAFBF9',
+    100: '#F5F6F4',
+    200: '#F0F0F0',
+    300: '#E5E5E5',
+    400: '#9A9A9A',
+    500: '#6A6A6A',
+    600: '#3D3D3D',
+    700: '#2D2D2D',
+    800: '#1D1D1D',
+    900: '#0D0D0D',
   },
 };
 
@@ -59,115 +74,145 @@ export const spacing = {
   '3xl': 64,
 };
 
+// Paradise Garden: Sin border radius excepto avatares
 export const borderRadius = {
   none: 0,
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  '2xl': 24,
-  full: 9999,
+  sm: 0,
+  md: 0,
+  lg: 0,
+  xl: 0,
+  '2xl': 0,
+  full: 9999, // Solo para avatares circulares
 };
 
 export const typography = {
+  // Display — Cormorant Garamond (títulos)
   h1: {
     fontSize: 32,
-    fontWeight: '700' as const,
+    fontWeight: '300' as const,
     lineHeight: 40,
+    fontFamily: 'CormorantGaramond_300Light',
   },
   h2: {
     fontSize: 24,
-    fontWeight: '600' as const,
+    fontWeight: '300' as const,
     lineHeight: 32,
+    fontFamily: 'CormorantGaramond_300Light',
   },
   h3: {
     fontSize: 20,
-    fontWeight: '600' as const,
+    fontWeight: '400' as const,
     lineHeight: 28,
+    fontFamily: 'CormorantGaramond_400Regular',
   },
-  body: {
-    fontSize: 16,
+  // Script — Dancing Script (taglines)
+  tagline: {
+    fontSize: 18,
     fontWeight: '400' as const,
     lineHeight: 24,
+    fontFamily: 'DancingScript_400Regular',
+  },
+  // Body — Nunito (UI, párrafos)
+  body: {
+    fontSize: 16,
+    fontWeight: '300' as const,
+    lineHeight: 24,
+    fontFamily: 'Nunito_300Light',
   },
   bodyLarge: {
     fontSize: 18,
-    fontWeight: '400' as const,
+    fontWeight: '300' as const,
     lineHeight: 28,
+    fontFamily: 'Nunito_300Light',
   },
   bodySm: {
     fontSize: 14,
-    fontWeight: '400' as const,
+    fontWeight: '300' as const,
     lineHeight: 20,
+    fontFamily: 'Nunito_300Light',
   },
   caption: {
     fontSize: 12,
-    fontWeight: '500' as const,
+    fontWeight: '400' as const,
     lineHeight: 16,
+    fontFamily: 'Nunito_400Regular',
   },
+  // Buttons y labels — Nunito Regular
   button: {
     fontSize: 16,
-    fontWeight: '600' as const,
+    fontWeight: '400' as const,
     lineHeight: 24,
+    fontFamily: 'Nunito_400Regular',
   },
   buttonSm: {
     fontSize: 14,
-    fontWeight: '600' as const,
+    fontWeight: '400' as const,
     lineHeight: 20,
+    fontFamily: 'Nunito_400Regular',
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '400' as const,
+    lineHeight: 20,
+    fontFamily: 'Nunito_400Regular',
   },
 };
 
+// Paradise Garden: Sin sombras
 export const shadows = {
+  none: {
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
+  },
   sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
   md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
   lg: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15,
-    shadowRadius: 15,
-    elevation: 5,
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
 };
 
-// Tema oscuro (por defecto)
-export const darkTheme = {
-  background: colors.neutral[950],
-  surface: colors.neutral[900],
-  surfaceVariant: colors.neutral[800],
-  text: colors.neutral[0],
-  textSecondary: colors.neutral[400],
-  textMuted: colors.neutral[500],
-  border: colors.neutral[700],
-  primary: colors.primary[500],
-  primaryText: colors.neutral[950],
-};
-
-// Tema claro (opcional)
-export const lightTheme = {
+// Tema principal (Light - Paradise Garden solo tiene light theme)
+export const theme = {
   background: colors.neutral[50],
   surface: colors.neutral[0],
-  surfaceVariant: colors.neutral[100],
-  text: colors.neutral[900],
-  textSecondary: colors.neutral[600],
-  textMuted: colors.neutral[500],
-  border: colors.neutral[200],
+  surfaceAlt: colors.neutral[100],
+  text: colors.neutral[600],
+  textSecondary: colors.neutral[500],
+  textMuted: colors.neutral[400],
+  border: colors.neutral[300],
+  borderLight: colors.neutral[200],
   primary: colors.primary[500],
-  primaryText: colors.neutral[0],
+  primaryLight: colors.primary[300],
+  primaryDark: colors.primary[600],
+  secondary: colors.secondary[500],
+  blush: colors.blush[500],
+  blushDark: colors.blush[600],
 };
 
-export type Theme = typeof darkTheme;
+// Mantener compatibilidad con imports existentes
+export const lightTheme = theme;
+export const darkTheme = theme; // Ya no hay dark theme, pero mantener export
+
+export type Theme = typeof theme;
 
 export default {
   colors,
@@ -175,6 +220,7 @@ export default {
   borderRadius,
   typography,
   shadows,
-  darkTheme,
+  theme,
   lightTheme,
+  darkTheme,
 };

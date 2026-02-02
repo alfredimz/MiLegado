@@ -8,8 +8,7 @@ import {
   TextInputProps,
   ViewStyle,
 } from 'react-native';
-import { Eye, EyeOff } from 'lucide-react-native';
-import { Colors, spacing, borderRadius, typography } from '../../constants';
+import { Colors, spacing } from '../../constants';
 
 export interface InputProps extends TextInputProps {
   label?: string;
@@ -69,11 +68,7 @@ export function Input({
             style={styles.iconRight}
             onPress={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? (
-              <EyeOff size={20} color={Colors.textMuted} />
-            ) : (
-              <Eye size={20} color={Colors.textMuted} />
-            )}
+            <Text style={styles.toggleIcon}>{showPassword ? '👁️' : '🔒'}</Text>
           </TouchableOpacity>
         )}
 
@@ -84,7 +79,7 @@ export function Input({
 
       {(error || hint) && (
         <Text style={[styles.helperText, hasError && styles.errorText]}>
-          {error || hint}
+          {hasError && '⚠️ '}{error || hint}
         </Text>
       )}
     </View>
@@ -97,15 +92,16 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     marginBottom: spacing.xs,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surfaceVariant,
-    borderRadius: borderRadius.lg,
+    backgroundColor: Colors.surface,
+    borderRadius: 0, // Paradise Garden: sin border radius
     borderWidth: 1,
     borderColor: Colors.border,
     minHeight: 48,
@@ -120,6 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: Colors.text,
     fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
@@ -135,8 +132,12 @@ const styles = StyleSheet.create({
   iconRight: {
     paddingRight: spacing.md,
   },
+  toggleIcon: {
+    fontSize: 18,
+  },
   helperText: {
     fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     marginTop: spacing.xs,
   },

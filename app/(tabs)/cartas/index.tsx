@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,8 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { Plus, Filter, FileText } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../../constants';
-import { Button, Badge } from '../../../components/ui';
+import { Colors, spacing } from '../../../constants';
 import { Header, EmptyState } from '../../../components/layout';
 import { CartaCard } from '../../../components/cards';
 import { useAuth } from '../../../contexts/AuthContext';
@@ -22,13 +20,13 @@ import type { Carta, TipoCarta, EstadoCarta, CartaDraft } from '../../../types';
 
 type FilterType = 'todos' | TipoCarta | EstadoCarta;
 
-const FILTERS: { key: FilterType; label: string }[] = [
-  { key: 'todos', label: 'Todos' },
-  { key: 'texto', label: 'Texto' },
-  { key: 'audio', label: 'Audio' },
-  { key: 'video', label: 'Video' },
-  { key: 'activa', label: 'Activas' },
-  { key: 'borrador', label: 'Borradores' },
+const FILTERS: { key: FilterType; label: string; emoji: string }[] = [
+  { key: 'todos', label: 'Todos', emoji: '📋' },
+  { key: 'texto', label: 'Texto', emoji: '📝' },
+  { key: 'audio', label: 'Audio', emoji: '🎤' },
+  { key: 'video', label: 'Video', emoji: '🎬' },
+  { key: 'activa', label: 'Activas', emoji: '✨' },
+  { key: 'borrador', label: 'Borradores', emoji: '📄' },
 ];
 
 export default function CartasScreen() {
@@ -49,12 +47,9 @@ export default function CartasScreen() {
     if (!user) return;
 
     try {
-      // Cargar borradores locales y obtenerlos directamente
       const loadedDrafts = await loadDrafts();
-
       const remoteCartas = await getUserCartas(user.uid);
 
-      // Convertir drafts a formato Carta para la UI
       const localCartas: Carta[] = (loadedDrafts || []).map((draft: CartaDraft) => ({
         id: draft.id,
         userId: user.uid,
@@ -67,18 +62,15 @@ export default function CartasScreen() {
         updatedAt: new Date(draft.lastModified),
       }));
 
-      // Unir listas
       const allCartas = [...localCartas, ...remoteCartas].sort((a, b) =>
         b.updatedAt.getTime() - a.updatedAt.getTime()
       );
 
       setCartas(allCartas);
 
-      // Aplicar filtro: prioridad a targetFilter (param), luego estado actual
       const filterToApply = targetFilter || activeFilter;
       applyFilter(filterToApply, allCartas);
 
-      // Si cambiamos por parametro, actualizar estado visual del filtro
       if (targetFilter) setActiveFilter(targetFilter);
 
     } catch (error) {
@@ -89,23 +81,17 @@ export default function CartasScreen() {
     }
   };
 
-  // Cargar al enfocar la pantalla
   useFocusEffect(
     useCallback(() => {
-      // Checar si hay param nuevo para forzar filtro
       const initFilter = params.filter as FilterType;
       if (initFilter && ['todos', 'texto', 'audio', 'video', 'mixta', 'activa', 'borrador'].includes(initFilter)) {
         loadCartas(initFilter);
-        // Limpiar param para que futuras navegaciones back no reseteen? 
-        // setParams no disponible directamente aqui facil sin rerender loops.
-        // Asumimos que si navega de nuevo desde home, se pasará param.
       } else {
         loadCartas();
       }
-    }, [user, params.filter]) // Re-run when filter param changes
+    }, [user, params.filter])
   );
 
-  // Aplicar filtro
   const applyFilter = (filter: FilterType, data: Carta[] = cartas) => {
     setActiveFilter(filter);
 
@@ -139,7 +125,7 @@ export default function CartasScreen() {
               } else {
                 await deleteCarta(carta.id);
               }
-              loadCartas(); // Reload list
+              loadCartas();
             } catch (error) {
               console.error("Error deleting carta:", error);
               Alert.alert("Error", "No se pudo eliminar la carta.");
@@ -151,31 +137,15 @@ export default function CartasScreen() {
   };
 
   const handleEdit = (carta: Carta) => {
-    // Para drafts, buscar en state local si es posible para tener data fresca
-    // Para firestore, usamos la carta que viene por props que ya tiene info completa (excepto quizas contenido muy largo si fuera paginado)
     const isDraft = carta.id.startsWith('draft_');
     const draft = isDraft ? drafts.find(d => d.id === carta.id) : null;
-
-    // Preparar contenido
-    // Si es draft, usamos draft.contenido. Si es Carta, carta.contenido.
     const contenidoSource = draft ? draft.contenido : carta.contenido;
 
-    // Preparar mediaItems
-    // Carta tiene urls en image/video/audioUrl. Preview espera { uri, type }.
     let mediaItems: any[] = [];
 
     if (contenidoSource.imageUrls) {
       mediaItems.push(...contenidoSource.imageUrls.map(url => ({ uri: url, type: 'image' })));
     }
-    // Nota: audioUrl y videoUrl en el modelo actual son campos separados en contenido,
-    // pero Preview espera que si es video, venga en mediaItems?
-    // Revisando Preview:
-    // case 'video': usa mediaItems[0]
-    // case 'foto': usa mediaItems.map
-    // case 'audio': NO usa mediaItems, usa style hardcoded. (Wait, Preview audio renderContent doesnt use mediaItems params?)
-    // Verificando preview.tsx: "case 'audio': returns Card..." static text.
-    // Bueno, pasaremos los datos de todos modos.
-
     if (contenidoSource.videoUrl) {
       mediaItems.push({ uri: contenidoSource.videoUrl, type: 'video' });
     }
@@ -186,7 +156,7 @@ export default function CartasScreen() {
     router.push({
       pathname: '/crear/preview',
       params: {
-        id: carta.id, // Pasamos ID para que al finalizar se sepa que es update
+        id: carta.id,
         titulo: carta.titulo,
         tipo: carta.tipo,
         contenido: JSON.stringify(contenidoSource),
@@ -196,19 +166,14 @@ export default function CartasScreen() {
   };
 
   const handleCartaPress = (carta: Carta) => {
-    // Si es un borrador local, ir a editar
     if (carta.id.startsWith('draft_')) {
       handleEdit(carta);
     } else {
-      // Si es de firestore, ir a detalle
       router.push(`/(tabs)/cartas/${carta.id}`);
     }
   };
 
   const handleOptionsPress = (carta: Carta) => {
-    // Permitir editar a todos (Borradores y Activas)
-    // Restricción: 'entregada' quizás no debería editarse?
-    // Por ahora habilitamos para 'activa' y 'borrador'.
     const canEdit = carta.estado !== 'entregada';
 
     const options: { text: string, style?: 'default' | 'cancel' | 'destructive', onPress?: () => void }[] = [
@@ -244,6 +209,7 @@ export default function CartasScreen() {
       ]}
       onPress={() => applyFilter(item.key)}
     >
+      <Text style={styles.filterEmoji}>{item.emoji}</Text>
       <Text
         style={[
           styles.filterText,
@@ -265,7 +231,7 @@ export default function CartasScreen() {
 
   const renderEmpty = () => (
     <EmptyState
-      icon={<FileText size={48} color={Colors.textMuted} />}
+      icon="📚"
       title="No tienes cartas"
       description="Crea tu primera carta para empezar a construir tu legado digital"
       actionLabel="Crear carta"
@@ -282,7 +248,7 @@ export default function CartasScreen() {
             style={styles.addButton}
             onPress={() => router.push('/crear')}
           >
-            <Plus size={24} color={Colors.text} />
+            <Text style={styles.addIcon}>➕</Text>
           </TouchableOpacity>
         }
       />
@@ -330,10 +296,15 @@ const styles = StyleSheet.create({
   addButton: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
     backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  addIcon: {
+    fontSize: 20,
   },
   filtersContainer: {
     borderBottomWidth: 1,
@@ -345,22 +316,31 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   filterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    borderRadius: borderRadius.full,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
     backgroundColor: Colors.surface,
     marginRight: spacing.sm,
+    gap: spacing.xs,
   },
   filterButtonActive: {
-    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+    backgroundColor: 'transparent',
+  },
+  filterEmoji: {
+    fontSize: 14,
   },
   filterText: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textSecondary,
-    fontWeight: '500',
   },
   filterTextActive: {
-    color: Colors.textInverse,
+    color: Colors.primary,
   },
   listContent: {
     paddingHorizontal: spacing.lg,

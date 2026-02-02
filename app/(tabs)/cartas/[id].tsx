@@ -8,9 +8,8 @@ import {
   Image,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Edit2, Trash2, Users, Calendar, FileText, Mic, Video } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../../constants';
+import { Colors, spacing } from '../../../constants';
 import { Button, Card, Badge, Avatar } from '../../../components/ui';
 import { Header } from '../../../components/layout';
 import { VideoPlayer } from '../../../components/media';
@@ -18,11 +17,12 @@ import { useAuth } from '../../../contexts/AuthContext';
 import { getCarta, deleteCarta, getGuardian } from '../../../services/firestore';
 import type { Carta, Guardian, TipoCarta } from '../../../types';
 
-const TIPO_ICONS: Record<TipoCarta, React.ReactNode> = {
-  texto: <FileText size={20} color={Colors.primary} />,
-  audio: <Mic size={20} color={Colors.secondary} />,
-  video: <Video size={20} color={Colors.error} />,
-  mixta: <FileText size={20} color={Colors.info} />,
+// Emojis para cada tipo
+const TIPO_EMOJIS: Record<TipoCarta, string> = {
+  texto: '📝',
+  audio: '🎤',
+  video: '🎬',
+  mixta: '📷',
 };
 
 export default function CartaDetailScreen() {
@@ -46,7 +46,6 @@ export default function CartaDetailScreen() {
       const data = await getCarta(id);
       setCarta(data);
 
-      // Cargar guardianes asignados
       if (data?.guardianes.length) {
         const guardianesData = await Promise.all(
           data.guardianes.map((gId) => getGuardian(gId))
@@ -88,6 +87,7 @@ export default function CartaDetailScreen() {
       <View style={styles.container}>
         <Header title="Cargando..." showBack />
         <View style={styles.loading}>
+          <Text style={styles.loadingEmoji}>💓</Text>
           <Text style={styles.loadingText}>Cargando carta...</Text>
         </View>
       </View>
@@ -109,8 +109,8 @@ export default function CartaDetailScreen() {
           <Button
             title=""
             onPress={handleDelete}
-            variant="ghost"
-            icon={<Trash2 size={20} color={Colors.error} />}
+            variant="danger"
+            icon={<Text style={styles.deleteIcon}>🗑️</Text>}
           />
         }
       />
@@ -125,7 +125,9 @@ export default function CartaDetailScreen() {
         {/* Header de la carta */}
         <Card style={styles.headerCard}>
           <View style={styles.cardHeader}>
-            <View style={styles.iconContainer}>{TIPO_ICONS[carta.tipo]}</View>
+            <View style={styles.iconContainer}>
+              <Text style={styles.tipoEmoji}>{TIPO_EMOJIS[carta.tipo]}</Text>
+            </View>
             <View style={styles.headerInfo}>
               <Text style={styles.title}>{carta.titulo}</Text>
               <View style={styles.badges}>
@@ -150,7 +152,7 @@ export default function CartaDetailScreen() {
           </View>
 
           <View style={styles.dateRow}>
-            <Calendar size={16} color={Colors.textMuted} />
+            <Text style={styles.dateIcon}>📅</Text>
             <Text style={styles.dateText}>Creada el {formattedDate}</Text>
           </View>
         </Card>
@@ -176,7 +178,7 @@ export default function CartaDetailScreen() {
         {carta.contenido.audioUrl && (
           <Card style={styles.contentCard}>
             <View style={styles.audioContainer}>
-              <Mic size={24} color={Colors.primary} />
+              <Text style={styles.audioEmoji}>🎤</Text>
               <Text style={styles.audioText}>
                 Mensaje de audio adjunto
               </Text>
@@ -203,7 +205,7 @@ export default function CartaDetailScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Guardianes asignados</Text>
-            <Users size={20} color={Colors.textMuted} />
+            <Text style={styles.sectionEmoji}>👥</Text>
           </View>
 
           {guardianes.length > 0 ? (
@@ -236,7 +238,7 @@ export default function CartaDetailScreen() {
             onPress={() => {}}
             variant="primary"
             fullWidth
-            icon={<Edit2 size={20} color={Colors.textInverse} />}
+            icon={<Text style={styles.editIcon}>✏️</Text>}
           />
         </View>
       </ScrollView>
@@ -254,8 +256,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loadingEmoji: {
+    fontSize: 48,
+    marginBottom: spacing.md,
+  },
   loadingText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
   },
   scrollContent: {
@@ -273,17 +280,24 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 48,
     height: 48,
-    borderRadius: borderRadius.lg,
-    backgroundColor: Colors.surfaceVariant,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    backgroundColor: Colors.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  tipoEmoji: {
+    fontSize: 20,
   },
   headerInfo: {
     flex: 1,
     marginLeft: spacing.md,
   },
   title: {
-    ...typography.h3,
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     marginBottom: spacing.xs,
   },
@@ -296,8 +310,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.xs,
   },
+  dateIcon: {
+    fontSize: 14,
+  },
   dateText: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textMuted,
   },
   section: {
@@ -309,8 +327,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.md,
   },
+  sectionEmoji: {
+    fontSize: 20,
+  },
   sectionTitle: {
-    ...typography.h3,
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     marginBottom: spacing.md,
   },
@@ -318,7 +341,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   contentText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.text,
     lineHeight: 24,
   },
@@ -327,8 +351,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
   },
+  audioEmoji: {
+    fontSize: 24,
+  },
   audioText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.text,
   },
   imagesGrid: {
@@ -339,7 +367,7 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    borderRadius: borderRadius.md,
+    borderRadius: 0, // Paradise Garden: sin border radius
   },
   guardianCard: {
     flexDirection: 'row',
@@ -350,12 +378,14 @@ const styles = StyleSheet.create({
     marginLeft: spacing.md,
   },
   guardianName: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
     color: Colors.text,
-    fontWeight: '600',
   },
   guardianRelacion: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     textTransform: 'capitalize',
   },
@@ -363,11 +393,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textMuted,
     textAlign: 'center',
   },
   actions: {
     marginTop: spacing.lg,
+  },
+  deleteIcon: {
+    fontSize: 18,
+  },
+  editIcon: {
+    fontSize: 16,
   },
 });

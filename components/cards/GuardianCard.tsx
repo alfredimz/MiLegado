@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Mail, Phone, MoreVertical, CheckCircle } from 'lucide-react-native';
-import { Colors, spacing, borderRadius, typography } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Avatar } from '../ui/Avatar';
 import { Badge } from '../ui/Badge';
 import type { Guardian } from '../../types';
@@ -38,7 +37,7 @@ export function GuardianCard({
               {guardian.nombre}
             </Text>
             {guardian.isVerified && (
-              <CheckCircle size={16} color={Colors.success} />
+              <Text style={styles.verifiedIcon}>✓</Text>
             )}
           </View>
           <Text style={styles.relacion}>{guardian.relacion}</Text>
@@ -50,14 +49,14 @@ export function GuardianCard({
             onPress={onOptionsPress}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <MoreVertical size={20} color={Colors.textMuted} />
+            <Text style={styles.moreIcon}>⋮</Text>
           </TouchableOpacity>
         )}
       </View>
 
       <View style={styles.contactInfo}>
         <View style={styles.contactItem}>
-          <Mail size={14} color={Colors.textMuted} />
+          <Text style={styles.contactIcon}>✉️</Text>
           <Text style={styles.contactText} numberOfLines={1}>
             {guardian.email}
           </Text>
@@ -65,7 +64,7 @@ export function GuardianCard({
 
         {guardian.telefono && (
           <View style={styles.contactItem}>
-            <Phone size={14} color={Colors.textMuted} />
+            <Text style={styles.contactIcon}>📱</Text>
             <Text style={styles.contactText}>{guardian.telefono}</Text>
           </View>
         )}
@@ -74,7 +73,7 @@ export function GuardianCard({
       {cartasAsignadas > 0 && (
         <View style={styles.footer}>
           <Badge
-            label={`${cartasAsignadas} carta${cartasAsignadas > 1 ? 's' : ''} asignada${cartasAsignadas > 1 ? 's' : ''}`}
+            label={`📚 ${cartasAsignadas} carta${cartasAsignadas > 1 ? 's' : ''}`}
             variant="primary"
             size="sm"
           />
@@ -87,7 +86,9 @@ export function GuardianCard({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.surface,
-    borderRadius: borderRadius.xl,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
     padding: spacing.md,
     marginBottom: spacing.md,
   },
@@ -105,19 +106,29 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   name: {
-    ...typography.body,
-    fontWeight: '600',
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     flex: 1,
   },
+  verifiedIcon: {
+    fontSize: 14,
+    color: Colors.success,
+  },
   relacion: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     marginTop: 2,
     textTransform: 'capitalize',
   },
   optionsButton: {
     padding: spacing.xs,
+  },
+  moreIcon: {
+    fontSize: 20,
+    color: Colors.textMuted,
   },
   contactInfo: {
     marginTop: spacing.md,
@@ -128,8 +139,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
   },
+  contactIcon: {
+    fontSize: 14,
+  },
   contactText: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
     flex: 1,
   },

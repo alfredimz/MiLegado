@@ -10,9 +10,8 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter, Link } from 'expo-router';
-import { User, Mail, Lock, ChevronLeft } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Button, Input } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -70,7 +69,6 @@ export default function RegisterScreen() {
     setIsLoading(true);
     try {
       await signUp(email, password, displayName);
-      // La navegación se maneja automáticamente por el AuthContext
     } catch (error: any) {
       Alert.alert('Error', error.message || 'No se pudo crear la cuenta');
     } finally {
@@ -97,12 +95,13 @@ export default function RegisterScreen() {
           onPress={() => router.back()}
           hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <ChevronLeft size={28} color={Colors.text} />
+          <Text style={styles.backIcon}>←</Text>
         </TouchableOpacity>
 
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Crear cuenta</Text>
+          <Text style={styles.tagline}>Tu legado comienza aquí</Text>
           <Text style={styles.subtitle}>
             Comienza a construir tu legado digital
           </Text>
@@ -118,7 +117,7 @@ export default function RegisterScreen() {
             autoCapitalize="words"
             autoComplete="name"
             error={errors.displayName}
-            leftIcon={<User size={20} color={Colors.textMuted} />}
+            leftIcon={<Text style={styles.inputIcon}>👤</Text>}
           />
 
           <Input
@@ -130,7 +129,7 @@ export default function RegisterScreen() {
             autoCapitalize="none"
             autoComplete="email"
             error={errors.email}
-            leftIcon={<Mail size={20} color={Colors.textMuted} />}
+            leftIcon={<Text style={styles.inputIcon}>✉️</Text>}
           />
 
           <Input
@@ -141,7 +140,7 @@ export default function RegisterScreen() {
             secureTextEntry
             autoComplete="new-password"
             error={errors.password}
-            leftIcon={<Lock size={20} color={Colors.textMuted} />}
+            leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
           />
 
           <Input
@@ -152,7 +151,7 @@ export default function RegisterScreen() {
             secureTextEntry
             autoComplete="new-password"
             error={errors.confirmPassword}
-            leftIcon={<Lock size={20} color={Colors.textMuted} />}
+            leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
           />
 
           <Button
@@ -197,27 +196,47 @@ const styles = StyleSheet.create({
   backButton: {
     marginBottom: spacing.md,
     marginLeft: -spacing.xs,
+    width: 44,
+    height: 44,
+    justifyContent: 'center',
+  },
+  backIcon: {
+    fontSize: 24,
+    color: Colors.text,
   },
   header: {
     marginBottom: spacing.xl,
   },
   title: {
-    ...typography.h1,
+    fontSize: 32,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
     marginBottom: spacing.xs,
   },
+  tagline: {
+    fontSize: 18,
+    fontFamily: 'DancingScript_400Regular',
+    color: Colors.primary,
+    marginBottom: spacing.sm,
+  },
   subtitle: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
   },
   form: {
     marginBottom: spacing.lg,
   },
+  inputIcon: {
+    fontSize: 18,
+  },
   registerButton: {
     marginTop: spacing.md,
   },
   terms: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textMuted,
     textAlign: 'center',
     marginBottom: spacing.xl,
@@ -232,12 +251,13 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   footerText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
   },
   loginLink: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.primary,
-    fontWeight: '600',
   },
 });

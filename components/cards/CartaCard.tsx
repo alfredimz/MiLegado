@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { FileText, Mic, Video, Image as ImageIcon, MoreVertical } from 'lucide-react-native';
-import { Colors, spacing, borderRadius, typography } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Badge } from '../ui/Badge';
 import type { Carta, TipoCarta, EstadoCarta } from '../../types';
 
@@ -11,11 +10,12 @@ export interface CartaCardProps {
   onOptionsPress?: () => void;
 }
 
-const TIPO_ICONS: Record<TipoCarta, React.ReactNode> = {
-  texto: <FileText size={20} color={Colors.primary} />,
-  audio: <Mic size={20} color={Colors.secondary} />,
-  video: <Video size={20} color={Colors.error} />,
-  mixta: <ImageIcon size={20} color={Colors.info} />,
+// Emojis para cada tipo
+const TIPO_EMOJIS: Record<TipoCarta, string> = {
+  texto: '📝',
+  audio: '🎤',
+  video: '🎬',
+  mixta: '📷',
 };
 
 const TIPO_LABELS: Record<TipoCarta, string> = {
@@ -37,6 +37,13 @@ const ESTADO_LABELS: Record<EstadoCarta, string> = {
   entregada: 'Entregada',
 };
 
+// Emojis para estados
+const ESTADO_EMOJIS: Record<EstadoCarta, string> = {
+  borrador: '📋',
+  activa: '✨',
+  entregada: '✓',
+};
+
 export function CartaCard({ carta, onPress, onOptionsPress }: CartaCardProps) {
   const formattedDate = new Date(carta.updatedAt).toLocaleDateString('es-MX', {
     day: 'numeric',
@@ -51,7 +58,9 @@ export function CartaCard({ carta, onPress, onOptionsPress }: CartaCardProps) {
       activeOpacity={0.7}
     >
       <View style={styles.header}>
-        <View style={styles.iconContainer}>{TIPO_ICONS[carta.tipo]}</View>
+        <View style={styles.iconContainer}>
+          <Text style={styles.emoji}>{TIPO_EMOJIS[carta.tipo]}</Text>
+        </View>
 
         <View style={styles.headerContent}>
           <Text style={styles.title} numberOfLines={1}>
@@ -66,7 +75,7 @@ export function CartaCard({ carta, onPress, onOptionsPress }: CartaCardProps) {
             onPress={onOptionsPress}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
-            <MoreVertical size={20} color={Colors.textMuted} />
+            <Text style={styles.moreIcon}>⋮</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -79,7 +88,7 @@ export function CartaCard({ carta, onPress, onOptionsPress }: CartaCardProps) {
             size="sm"
           />
           <Badge
-            label={ESTADO_LABELS[carta.estado]}
+            label={`${ESTADO_EMOJIS[carta.estado]} ${ESTADO_LABELS[carta.estado]}`}
             variant={ESTADO_VARIANTS[carta.estado]}
             size="sm"
           />
@@ -87,7 +96,7 @@ export function CartaCard({ carta, onPress, onOptionsPress }: CartaCardProps) {
 
         {carta.guardianes.length > 0 && (
           <Text style={styles.guardianes}>
-            {carta.guardianes.length} guardián{carta.guardianes.length > 1 ? 'es' : ''}
+            👥 {carta.guardianes.length}
           </Text>
         )}
       </View>
@@ -98,7 +107,9 @@ export function CartaCard({ carta, onPress, onOptionsPress }: CartaCardProps) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.surface,
-    borderRadius: borderRadius.xl,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.border,
     padding: spacing.md,
     marginBottom: spacing.md,
   },
@@ -109,27 +120,38 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 44,
     height: 44,
-    borderRadius: borderRadius.lg,
-    backgroundColor: Colors.surfaceVariant,
+    borderRadius: 0, // Paradise Garden: sin border radius
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    backgroundColor: Colors.surfaceAlt,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  emoji: {
+    fontSize: 20,
   },
   headerContent: {
     flex: 1,
     marginLeft: spacing.md,
   },
   title: {
-    ...typography.body,
-    fontWeight: '600',
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
+    fontWeight: '400',
     color: Colors.text,
   },
   date: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
     marginTop: 2,
   },
   optionsButton: {
     padding: spacing.xs,
+  },
+  moreIcon: {
+    fontSize: 20,
+    color: Colors.textMuted,
   },
   footer: {
     flexDirection: 'row',
@@ -142,7 +164,8 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   guardianes: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textSecondary,
   },
 });

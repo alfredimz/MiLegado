@@ -8,17 +8,8 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import {
-  Plus,
-  FileText,
-  Heart,
-  Battery,
-  BatteryCharging,
-  BatteryLow,
-  Users,
-} from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Colors, spacing, typography, borderRadius } from '../../constants';
+import { Colors, spacing } from '../../constants';
 import { Button, Card, Avatar, Badge } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBattery } from '../../hooks';
@@ -79,12 +70,14 @@ export default function HomeScreen() {
     totalGuardianes: guardianes.length,
   };
 
-  // Obtener icono de batería
-  const BatteryIcon = isCharging
-    ? BatteryCharging
-    : isLowBattery
-      ? BatteryLow
-      : Battery;
+  // Emoji de batería
+  const getBatteryEmoji = () => {
+    if (isCharging) return '🔌';
+    if (isLowBattery) return '🪫';
+    if (percentage > 80) return '🔋';
+    if (percentage > 50) return '🔋';
+    return '🪫';
+  };
 
   return (
     <ScrollView
@@ -110,14 +103,11 @@ export default function HomeScreen() {
         <Avatar source={user?.photoURL} name={user?.displayName} size="lg" />
       </View>
 
-      {/* Indicador de batería (Requisito de rúbrica) */}
+      {/* Indicador de batería */}
       <Card style={styles.batteryCard}>
         <View style={styles.batteryContent}>
           <View style={styles.batteryInfo}>
-            <BatteryIcon
-              size={24}
-              color={isLowBattery ? Colors.error : isCharging ? Colors.success : Colors.text}
-            />
+            <Text style={styles.batteryEmoji}>{getBatteryEmoji()}</Text>
             <Text style={styles.batteryText}>
               {percentage}%
               {isCharging && ' - Cargando'}
@@ -125,16 +115,16 @@ export default function HomeScreen() {
           </View>
           {isLowBattery && (
             <Text style={styles.batteryWarning}>
-              Batería baja. Guarda tu trabajo.
+              ⚠️ Batería baja. Guarda tu trabajo.
             </Text>
           )}
         </View>
       </Card>
 
       {/* CTA crear carta */}
-      <Card style={styles.ctaCard} variant="elevated">
+      <Card style={styles.ctaCard}>
         <View style={styles.ctaContent}>
-          <Heart size={32} color={Colors.primary} />
+          <Text style={styles.ctaEmoji}>💓</Text>
           <View style={styles.ctaText}>
             <Text style={styles.ctaTitle}>Crea tu primer legado</Text>
             <Text style={styles.ctaDescription}>
@@ -145,7 +135,7 @@ export default function HomeScreen() {
         <Button
           title="Crear carta"
           onPress={() => router.push('/crear')}
-          icon={<Plus size={20} color={Colors.textInverse} />}
+          icon={<Text style={styles.buttonIcon}>➕</Text>}
           fullWidth
           style={styles.ctaButton}
         />
@@ -155,28 +145,28 @@ export default function HomeScreen() {
       <Text style={styles.sectionTitle}>Tu legado</Text>
       <View style={styles.statsGrid}>
         <Card style={styles.statCard} onPress={() => router.push('/(tabs)/cartas')}>
-          <FileText size={24} color={Colors.primary} />
+          <Text style={styles.statEmoji}>📚</Text>
           <Text style={styles.statNumber}>{stats.totalCartas}</Text>
           <Text style={styles.statLabel}>Cartas</Text>
         </Card>
 
         <Card style={styles.statCard} onPress={() => router.push({ pathname: '/(tabs)/cartas', params: { filter: 'activa' } })}>
           <View style={styles.statBadge}>
-            <Badge label="Activas" variant="success" size="sm" />
+            <Badge label="✨ Activas" variant="success" size="sm" />
           </View>
           <Text style={styles.statNumber}>{stats.cartasActivas}</Text>
           <Text style={styles.statLabel}>Cartas activas</Text>
         </Card>
 
         <Card style={styles.statCard} onPress={() => router.push('/(tabs)/guardianes')}>
-          <Users size={24} color={Colors.secondary} />
+          <Text style={styles.statEmoji}>👥</Text>
           <Text style={styles.statNumber}>{stats.totalGuardianes}</Text>
           <Text style={styles.statLabel}>Guardianes</Text>
         </Card>
 
         <Card style={styles.statCard} onPress={() => router.push({ pathname: '/(tabs)/cartas', params: { filter: 'borrador' } })}>
           <View style={styles.statBadge}>
-            <Badge label="Borradores" variant="warning" size="sm" />
+            <Badge label="📋 Borradores" variant="warning" size="sm" />
           </View>
           <Text style={styles.statNumber}>{stats.borradores}</Text>
           <Text style={styles.statLabel}>Borradores</Text>
@@ -205,11 +195,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   greeting: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
   },
   userName: {
-    ...typography.h2,
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
   },
   batteryCard: {
@@ -224,12 +217,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
   },
+  batteryEmoji: {
+    fontSize: 20,
+  },
   batteryText: {
-    ...typography.body,
+    fontSize: 16,
+    fontFamily: 'Nunito_300Light',
     color: Colors.text,
   },
   batteryWarning: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.error,
     marginTop: spacing.xs,
   },
@@ -242,24 +240,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.md,
   },
+  ctaEmoji: {
+    fontSize: 32,
+  },
   ctaText: {
     flex: 1,
     marginLeft: spacing.md,
   },
   ctaTitle: {
-    ...typography.h3,
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    fontWeight: '400',
     color: Colors.text,
   },
   ctaDescription: {
-    ...typography.bodySm,
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
     color: Colors.textSecondary,
     marginTop: 2,
   },
   ctaButton: {
     marginTop: spacing.sm,
   },
+  buttonIcon: {
+    fontSize: 16,
+  },
   sectionTitle: {
-    ...typography.h3,
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    fontWeight: '400',
     color: Colors.text,
     marginBottom: spacing.md,
   },
@@ -274,40 +283,22 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     alignItems: 'center',
   },
+  statEmoji: {
+    fontSize: 24,
+  },
   statBadge: {
     marginBottom: spacing.xs,
   },
   statNumber: {
-    ...typography.h1,
+    fontSize: 32,
+    fontFamily: 'CormorantGaramond_300Light',
+    fontWeight: '300',
     color: Colors.text,
     marginVertical: spacing.xs,
   },
   statLabel: {
-    ...typography.caption,
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
     color: Colors.textMuted,
-  },
-  quickActions: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  quickAction: {
-    flex: 1,
-    alignItems: 'center',
-    padding: spacing.md,
-    backgroundColor: Colors.surface,
-    borderRadius: borderRadius.xl,
-  },
-  quickActionIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  quickActionText: {
-    ...typography.bodySm,
-    color: Colors.text,
-    fontWeight: '500',
   },
 });

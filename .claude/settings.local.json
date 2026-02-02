@@ -10,7 +10,13 @@
       "Bash(timeout 20 npx expo start:*)",
       "Bash(taskkill:*)",
       "Bash(netstat:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(ls:*)",
+      "Bash(npx expo start)",
+      "Bash(npx expo start:*)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\alfre\\\\Desktop\\\\MiLegado\" -Recurse -Force -Filter \"._*\")",
+      "Bash(Remove-Item -Force)",
+      "Bash(find:*)"
     ]
   }
 }
