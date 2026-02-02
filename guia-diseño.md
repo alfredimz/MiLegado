@@ -1,6 +1,6 @@
 # 🎨 Guía de Diseño — Referencia Rápida para Figma
 
-## App de Legado Digital | Sistema de Diseño v1.0
+## MiLegado | Paradise Garden v3.0
 
 ---
 
@@ -8,110 +8,121 @@
 
 | Principio | Descripción | Aplicación |
 |-----------|-------------|------------|
-| **Calidez** | Colores del cempasúchil | Naranjas y dorados, no azules corporativos |
-| **Trascendencia** | Celebramos la vida | Tono esperanzador, no fúnebre |
-| **Confianza** | Seguridad visible | Badges de encriptación, confirmaciones claras |
-| **Accesibilidad** | Para todas las edades | Texto grande opción, contraste alto |
+| 🌊 **Sereno** | Formas limpias y rectas | Border radius 0px en todo |
+| ✍️ **Ligero** | Tipografía delicada | Solo weights 300-400 |
+| 🌸 **Cálido** | Paleta paraíso terrenal | Sage, dorado, blush |
+| 〰️ **Delicado** | Líneas finas | 1px borders, sin sombras |
 
 ---
 
 ## 🎨 Paleta de Colores
 
-### Colores Principales
+### Principales
 
 ```
-PRIMARY (Cempasúchil)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-50       100      200      300      400      500★     600      700      800      900
-#FFF7ED  #FFEDD5  #FED7AA  #FDBA74  #FB923C  #F97316  #EA580C  #C2410C  #9A3412  #7C2D12
+BACKGROUND
+#FAFBF9 — Fondo principal
 
-SECONDARY (Oro/Ámbar)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-50       100      200      300      400      500★     600      700      800      900
-#FFFBEB  #FEF3C7  #FDE68A  #FCD34D  #FBBF24  #F59E0B  #D97706  #B45309  #92400E  #78350F
+PRIMARY (Sage Green)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Light        DEFAULT★      Dark
+#7BBDBD      #5BA4A4       #4A8F8F
+
+SECONDARY (Golden Warm)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Light        DEFAULT★      Dark
+#D4B494      #C4A484       #A68B6A
+
+BLUSH (Rosa Cálido)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Light        DEFAULT★      Dark
+#F2D0D3      #E8B4B8       #D49EA2
 ```
 
-### Neutrales (Dark Mode)
+### Superficies y Texto
 
-```
-NEUTRAL
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-0        50       100      200      300      400      500      600      700      800      900      950
-#FFFFFF  #FAFAFA  #F4F4F5  #E4E4E7  #D4D4D8  #A1A1AA  #71717A  #52525B  #3F3F46  #27272A  #18181B  #09090B
-         ▲ Light BG                          ▲ Muted Text              ▲ Card    ▲ Surface ▲ BG Dark
-```
+| Nombre | Hex | Uso |
+|--------|-----|-----|
+| Surface | `#FFFFFF` | Cards, modales |
+| Surface Alt | `#F5F6F4` | Hover, alternativo |
+| Text | `#3D3D3D` | Texto principal |
+| Text Secondary | `#6A6A6A` | Texto secundario |
+| Text Muted | `#9A9A9A` | Placeholders |
+| Border | `#E5E5E5` | Bordes default |
 
 ### Semánticos
 
-| Color | Hex | Uso |
-|-------|-----|-----|
-| ✅ Success | `#22C55E` | Confirmaciones, éxito, latido OK |
-| ⚠️ Warning | `#F59E0B` | Alertas, latido próximo a vencer |
-| ❌ Error | `#EF4444` | Errores, validaciones fallidas |
-| ℹ️ Info | `#3B82F6` | Información neutral, tips |
-
-### Especiales — Legado
-
-| Color | Hex | Uso |
-|-------|-----|-----|
-| 💜 Purple | `#8B5CF6` | Guardianes, conexiones |
-| 💗 Pink | `#EC4899` | Emocional, cartas de amor |
-| 💚 Teal | `#14B8A6` | Latido, vida, salud |
+| Color | DEFAULT | Light | Uso |
+|-------|---------|-------|-----|
+| Success | `#7BAA9E` | `#E8F2F0` | Éxito |
+| Error | `#C47070` | `#F5EBEB` | Error |
+| Warning | `#D4C4A5` | `#F5F2EB` | Alerta |
 
 ---
 
 ## 📝 Tipografía
 
-### Font Family
-**Inter** — Descarga: [Google Fonts](https://fonts.google.com/specimen/Inter)
+### Sistema de 3 Fuentes
 
-### Escala Tipográfica
+| Nivel | Font | Google Fonts |
+|-------|------|--------------|
+| **Display** | Cormorant Garamond | `wght@300;400` |
+| **Script** | Dancing Script | `wght@400` |
+| **Body** | Nunito | `wght@300;400` |
 
-| Nombre | Tamaño | Peso | Line Height | Uso |
-|--------|--------|------|-------------|-----|
-| Display | 48px | 800 ExtraBold | 1.1 | Splash, onboarding |
-| H1 | 32px | 700 Bold | 1.2 | Títulos de pantalla |
-| H2 | 24px | 600 SemiBold | 1.3 | Secciones |
-| H3 | 20px | 600 SemiBold | 1.4 | Subtítulos |
-| Body Large | 18px | 400 Regular | 1.6 | **Seniors (Roberto)** |
-| Body | 16px | 400 Regular | 1.6 | Texto default |
-| Body Small | 14px | 400 Regular | 1.5 | Texto secundario |
-| Caption | 12px | 500 Medium | 1.4 | Labels, metadata |
-| Button | 16px | 600 SemiBold | 1.0 | Botones |
+### Escala
 
-### Regla de Accesibilidad
-> Para usuarios senior (Persona 2: Roberto), usar **Body Large (18px)** como tamaño base.
-> Nunca usar texto menor a 14px en contenido importante.
+| Style | Font | Size | Weight | Uso |
+|-------|------|------|--------|-----|
+| Display | Cormorant | 40px | 300 | Splash |
+| H1 | Cormorant | 32px | 300 | Títulos |
+| H2 | Cormorant | 24px | 400 | Secciones |
+| Script | Dancing | 20px | 400 | Taglines |
+| Body Large | Nunito | 18px | 300 | Destacado |
+| Body | Nunito | 16px | 300 | Default |
+| Body Small | Nunito | 14px | 300 | Secundario |
+| Caption | Nunito | 12px | 400 | Labels |
+| Button | Nunito | 16px | 400 | Botones |
+
+### ⚠️ Regla Absoluta
+
+> **NUNCA usar bold (600+).** Máximo weight: 400
 
 ---
 
-## 📏 Espaciado
-
-### Sistema de 4px
-
-| Token | Valor | Uso común |
-|-------|-------|-----------|
-| space-1 | 4px | Micro espacios |
-| space-2 | 8px | Entre elementos inline |
-| space-3 | 12px | Padding interno compacto |
-| space-4 | 16px | Padding default, gaps |
-| space-5 | 20px | Padding medio |
-| space-6 | 24px | Secciones, cards |
-| space-8 | 32px | Entre secciones |
-| space-10 | 40px | Separación grande |
-| space-12 | 48px | Header/footer |
-| space-16 | 64px | Márgenes de pantalla |
-
-### Border Radius
+## 📏 Espaciado (Base 4px)
 
 | Token | Valor | Uso |
 |-------|-------|-----|
-| sm | 4px | Badges pequeños |
-| md | 8px | Inputs, chips |
-| lg | 12px | Buttons, small cards |
-| xl | 16px | Cards, modals |
-| 2xl | 24px | Bottom sheets |
-| full | 9999px | Avatares, FAB |
+| 4xs | 4px | Micro |
+| 3xs | 8px | Inline |
+| 2xs | 12px | Compacto |
+| xs | 16px | **Default** |
+| sm | 24px | Cards |
+| md | 32px | Secciones |
+| lg | 48px | Grande |
+| xl | 64px | Márgenes |
+
+---
+
+## 📐 Border Radius
+
+| Elemento | Valor |
+|----------|-------|
+| **Todo** | **0px** |
+| **Avatares** | 50% (círculo) |
+
+---
+
+## 🚫 Prohibido
+
+```
+❌ Sombras (box-shadow: none)
+❌ Gradientes (solo colores sólidos)
+❌ Bold (max weight 400)
+❌ Border radius (excepto avatares)
+❌ Iconos SVG (usar emojis)
+```
 
 ---
 
@@ -119,234 +130,150 @@ NEUTRAL
 
 ### Botones
 
-| Variante | Fondo | Borde | Texto |
-|----------|-------|-------|-------|
-| Primary | `#F97316` gradient | none | white |
-| Secondary | `#27272A` | `#3F3F46` | `#F4F4F5` |
-| Outline | transparent | `#F97316` | `#FB923C` |
-| Ghost | transparent | none | `#D4D4D8` |
+**Outline por defecto → Fill en hover**
 
-**Tamaños:**
-- Small: 36px height, 14px text
-- Medium: 48px height, 16px text (default)
-- Large: 56px height, 18px text
+| Size | Height | Font |
+|------|--------|------|
+| Small | 36px | 14px |
+| Medium | 44px | 16px |
+| Large | 52px | 16px |
+
+| Variante | Border | Text |
+|----------|--------|------|
+| Primary | `#5BA4A4` | `#5BA4A4` |
+| Secondary | `#C4A484` | `#C4A484` |
+| Blush | `#E8B4B8` | `#D49EA2` |
+| Ghost | `#E5E5E5` | `#6A6A6A` |
+| Danger | `#C47070` | `#C47070` |
 
 ### Inputs
 
 ```
 ┌─────────────────────────────────────┐
-│ Label (14px, #D4D4D8)               │
+│ Label (14px #6A6A6A)                │
 ├─────────────────────────────────────┤
-│                                     │
-│  Placeholder text (#71717A)         │  ← 52px height
-│                                     │     16px padding horizontal
-├─────────────────────────────────────┤     12px radius
-│ Helper text (12px, #71717A)         │     Border: #3F3F46
-└─────────────────────────────────────┘     Focus border: #F97316
+│  Placeholder (#9A9A9A)              │  44px height
+├─────────────────────────────────────┤  0px radius
+│ Helper (12px)                       │  1px border #E5E5E5
+└─────────────────────────────────────┘  Focus: #5BA4A4
 ```
 
 ### Cards
 
 ```
 ┌─────────────────────────────────────┐
-│  ┌────┐                             │
-│  │ 📝 │  Título Card                │  ← 16px padding
-│  └────┘  Subtítulo                  │     16px radius
-│                                     │     BG: #27272A
-│  Contenido de la card...            │     Border: #3F3F46
+│                                     │
+│  📝  Título (Cormorant)             │  20px padding
+│      Subtítulo (Nunito)             │  0px radius
+│                                     │  1px #E5E5E5
+│  Contenido...                       │  Hover: #5BA4A4
 │                                     │
 └─────────────────────────────────────┘
 ```
 
-### Bottom Navigation
+### Tab Bar
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                                                     │
-│   🏠        📚         👥         👤               │  ← 80px height
-│  Inicio   Mi Legado  Guardianes  Perfil            │     24px padding bottom
-│                                                     │     BG: #18181B
-│  [active]                                           │     Active: #F97316
-└─────────────────────────────────────────────────────┘     Inactive: #71717A
+│  🏠        📚         👥         👤                │  64px + safe
+│ Inicio   Legado   Guardianes   Perfil              │  1px top border
+│                                                     │  Active: #5BA4A4
+└─────────────────────────────────────────────────────┘  Inactive: #9A9A9A
 ```
 
-### FAB (Floating Action Button)
-
-```
-        ┌─────┐
-        │  +  │  ← 56px × 56px
-        └─────┘     Full radius
-                    BG: Gradient primary
-                    Shadow: glow effect
-```
-
----
-
-## 🎭 Iconografía
-
-### Librería: Lucide React Native
-
-```bash
-npm install lucide-react-native
-```
-
-### Iconos Principales
-
-| Concepto | Icono Lucide | Uso |
-|----------|--------------|-----|
-| Inicio | `Home` | Tab navigation |
-| Legado/Cartas | `FileText` | Tab, listas |
-| Guardianes | `Users` | Tab, perfiles |
-| Perfil | `User` | Tab, settings |
-| Crear | `Plus` | FAB, add buttons |
-| Video | `Video` | Media type |
-| Audio | `Mic` | Media type |
-| Foto | `Camera` | Media type |
-| Galería | `Image` | Media picker |
-| Latido | `Heart` o `HeartPulse` | Dashboard, status |
-| Seguridad | `Shield` o `Lock` | Auth, encryption |
-| Batería | `Battery` | Status indicator |
-| Configuración | `Settings` | Settings screen |
-| Notificación | `Bell` | Alerts |
-
-### Tamaños de Iconos
-
-| Tamaño | Valor | Uso |
-|--------|-------|-----|
-| sm | 16px | Inline con texto |
-| md | 20px | Botones, inputs |
-| lg | 24px | Navigation, cards (default) |
-| xl | 32px | Feature icons |
-
----
-
-## 📱 Layout de Pantallas
-
-### Estructura Base
+### Modales
 
 ```
 ┌─────────────────────────────────────┐
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ │ ← Status Bar (System)
-├─────────────────────────────────────┤
+│              ✨                     │  24px padding
+│                                     │  0px radius
+│      Título (Cormorant)             │  1px #E5E5E5
+│      Mensaje (Nunito)               │  Overlay: rgba(0,0,0,0.4)
 │                                     │
-│         Header (56px)               │ ← Opcional por pantalla
-│                                     │
-├─────────────────────────────────────┤
-│                                     │
-│                                     │
-│                                     │
-│         Content Area                │ ← Scroll vertical
-│         (padding: 16px)             │
-│                                     │
-│                                     │
-│                                     │
-├─────────────────────────────────────┤
-│                                     │
-│       Tab Bar (80px)                │ ← Fixed bottom
-│                                     │
+│   [ Cancelar ]    [ Confirmar ]     │
 └─────────────────────────────────────┘
 ```
 
-### Dimensiones Clave
+---
+
+## 😊 Emojis (Iconografía)
+
+| Concepto | Emoji |
+|----------|-------|
+| Inicio | 🏠 |
+| Legado | 📚 |
+| Guardianes | 👥 |
+| Perfil | 👤 |
+| Texto | 📝 |
+| Video | 🎬 |
+| Audio | 🎤 |
+| Foto | 📷 |
+| Latido | 💓 |
+| Activa | ✨ |
+| Check | ✓ |
+| Config | ⚙️ |
+| Seguridad | 🔒 |
+| Agregar | ➕ |
+| Atrás | ← |
+| Warning | ⚠️ |
+
+---
+
+## 📐 Layout
 
 | Elemento | Valor |
 |----------|-------|
 | Screen padding | 16px |
 | Header height | 56px |
-| Tab bar height | 80px |
-| Tab bar padding bottom | 24px (safe area) |
-| Card spacing | 16px |
-| Section spacing | 32px |
-| Max content width | 480px |
+| Tab bar | 64px + safe |
+| Touch target | 44×44px |
+| Max width | 480px |
 
 ---
 
-## 🌓 Temas
+## ✅ Checklist
 
-### Dark Mode (Default)
-
-| Elemento | Color | Hex |
-|----------|-------|-----|
-| Background | neutral-950 | `#09090B` |
-| Surface | neutral-900 | `#18181B` |
-| Card | neutral-800 | `#27272A` |
-| Border | neutral-700 | `#3F3F46` |
-| Text primary | neutral-0 | `#FFFFFF` |
-| Text secondary | neutral-300 | `#D4D4D8` |
-| Text muted | neutral-500 | `#71717A` |
-
-### Light Mode (Opcional)
-
-| Elemento | Color | Hex |
-|----------|-------|-----|
-| Background | neutral-50 | `#FAFAFA` |
-| Surface | neutral-0 | `#FFFFFF` |
-| Card | neutral-0 | `#FFFFFF` |
-| Border | neutral-200 | `#E4E4E7` |
-| Text primary | neutral-900 | `#18181B` |
-| Text secondary | neutral-700 | `#3F3F46` |
-| Text muted | neutral-500 | `#71717A` |
+- [ ] Border radius 0px?
+- [ ] Sin sombras?
+- [ ] Sin gradientes?
+- [ ] Max weight 400?
+- [ ] Botones outline?
+- [ ] Emojis no iconos?
+- [ ] Touch 44px+?
+- [ ] Texto 16px+?
+- [ ] Bordes 1px?
 
 ---
 
-## ✅ Checklist de Diseño
+## 📱 Frames Figma
 
-### Antes de diseñar cada pantalla:
-
-- [ ] ¿Cuál persona es el usuario principal de esta pantalla?
-- [ ] ¿El texto más pequeño es >= 14px?
-- [ ] ¿Los botones tienen al menos 48px de altura?
-- [ ] ¿El contraste es >= 4.5:1?
-- [ ] ¿Los CTAs usan el color primario?
-- [ ] ¿La navegación es clara (máx 3 taps al objetivo)?
-
-### Para seniors (Roberto):
-
-- [ ] Texto base 18px (no 16px)
-- [ ] Botones extra grandes (56px)
-- [ ] Labels explícitos (no solo iconos)
-- [ ] Confirmaciones en cada acción
-- [ ] Opción de Light Mode
+- iPhone 14 Pro: 393 × 852
+- iPhone SE: 375 × 667
+- Android: 360 × 800
 
 ---
 
-## 📁 Estructura en Figma
+## 🎯 Copiar/Pegar
 
 ```
-📂 Legado Digital
-├── 📄 Cover
-├── 📂 🎨 Design System
-│   ├── Colors
-│   ├── Typography
-│   ├── Spacing & Grid
-│   ├── Icons
-│   └── Components
-│       ├── Buttons
-│       ├── Inputs
-│       ├── Cards
-│       ├── Navigation
-│       ├── Modals
-│       └── Feedback
-├── 📂 👥 Research
-│   ├── Proto-Personas
-│   ├── User Journeys
-│   └── Competitive Analysis
-├── 📂 📐 Wireframes
-│   ├── Auth Flow
-│   ├── Main Flow
-│   └── Guardian Flow
-├── 📂 🎨 Mockups
-│   ├── Onboarding
-│   ├── Dashboard
-│   ├── Cartas
-│   ├── Guardianes
-│   ├── Perfil
-│   └── Modals
-└── 📂 🔗 Prototype
-    └── Interactive Demo
+Background:   #FAFBF9
+Primary:      #5BA4A4
+Secondary:    #C4A484
+Blush:        #E8B4B8
+Text:         #3D3D3D
+Border:       #E5E5E5
+Success:      #7BAA9E
+Error:        #C47070
+
+Display: Cormorant Garamond 300
+Script: Dancing Script 400
+Body: Nunito 300
+
+Border Radius: 0px
+Shadows: none
 ```
 
 ---
 
-*Sistema de Diseño v1.0 — App de Legado Digital*
-*UNIR 2025 | Generado para Figma + React Native*
+*MiLegado — Paradise Garden v3.0*
+*UNIR 2025*

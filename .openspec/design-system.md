@@ -1,134 +1,88 @@
-# Sistema de Diseño - MiLegado
+# Sistema de Diseño - MiLegado v3.0
 
-## Esencia de Marca
+## Filosofía: Paradise Garden
+
+Un jardín sereno donde los recuerdos florecen eternamente. Diseño flat, delicado y cálido.
+
+---
+
+## Principios de Diseño
 
 | Principio | Aplicación |
 |-----------|------------|
-| **Cálido** | Colores cempasúchil, no corporativos fríos |
-| **Empático** | Celebra vida, nunca alarmista |
-| **Seguro** | Confianza visible, badges de encriptación |
-| **Accesible** | Funciona para usuarios de 31 a 68 años |
+| 🌊 **Sereno** | Sin bordes redondeados, formas rectas y limpias |
+| ✍️ **Ligero** | Tipografías light (300-400), nunca bold |
+| 🌸 **Cálido** | Paleta suave inspirada en paraíso terrenal |
+| 〰️ **Delicado** | Líneas 1px, botones outline, sin sombras |
 
 ---
 
 ## Paleta de Colores
 
-### Primary - Naranja Cempasúchil
-
-```
-50:  #FFF7ED
-100: #FFEDD5
-200: #FED7AA
-300: #FDBA74
-400: #FB923C
-500: #F97316  ← Principal
-600: #EA580C
-700: #C2410C
-800: #9A3412
-900: #7C2D12
-```
-
-### Secondary - Ámbar Dorado
-
-```
-50:  #FFFBEB
-100: #FEF3C7
-200: #FDE68A
-300: #FCD34D
-400: #FBBF24
-500: #EAB308  ← Principal
-600: #CA8A04
-700: #A16207
-800: #854D0E
-900: #713F12
-```
-
-### Semánticos
+### Colores Principales
 
 | Color | Hex | Uso |
 |-------|-----|-----|
-| Success | `#22C55E` | Confirmaciones, latido OK |
-| Error | `#EF4444` | Errores, validaciones fallidas |
-| Warning | `#F59E0B` | Alertas, latido próximo a vencer |
-| Info | `#3B82F6` | Información neutral, tips |
+| **Background** | `#FAFBF9` | Fondo principal de la app |
+| **Primary** | `#5BA4A4` | CTAs, links, acentos, elementos activos |
+| **Secondary** | `#C4A484` | Dorado cálido, taglines, detalles |
+| **Blush** | `#E8B4B8` | Highlights, latido, emocional |
+| **Text** | `#3D3D3D` | Texto principal |
 
-### Accent - Especiales
+### Colores Secundarios
 
 | Color | Hex | Uso |
 |-------|-----|-----|
-| Purple | `#8B5CF6` | Guardianes, conexiones |
-| Pink | `#EC4899` | Emocional, cartas de amor |
-| Teal | `#14B8A6` | Latido, vida, salud |
+| **Surface** | `#FFFFFF` | Cards, modales, inputs |
+| **Surface Alt** | `#F5F6F4` | Fondos alternativos, hovers |
+| **Border** | `#E5E5E5` | Bordes de componentes |
+| **Border Light** | `#F0F0F0` | Separadores sutiles |
+| **Text Secondary** | `#6A6A6A` | Texto secundario |
+| **Text Muted** | `#9A9A9A` | Placeholders, hints |
+| **Text Disabled** | `#BEBEBE` | Estados deshabilitados |
 
-### Neutrales
+### Colores Semánticos
 
-```
-0:   #FFFFFF
-50:  #FAFAFA
-100: #F4F4F5
-200: #E4E4E7
-300: #D4D4D8
-400: #A1A1AA
-500: #71717A  ← Text Muted
-600: #52525B
-700: #3F3F46  ← Border
-800: #27272A  ← Card
-900: #18181B  ← Surface
-950: #0A0A0A  ← Background
-```
-
----
-
-## Temas
-
-### Dark Mode (Default)
-
-| Elemento | Token | Hex |
-|----------|-------|-----|
-| Background | `neutral.950` | `#0A0A0A` |
-| Surface | `neutral.900` | `#18181B` |
-| Card | `neutral.800` | `#27272A` |
-| Border | `neutral.700` | `#3F3F46` |
-| Text Primary | `neutral.0` | `#FFFFFF` |
-| Text Secondary | `neutral.300` | `#D4D4D8` |
-| Text Muted | `neutral.500` | `#71717A` |
-
-### Light Mode
-
-| Elemento | Token | Hex |
-|----------|-------|-----|
-| Background | `secondary.50` | `#FFFBEB` |
-| Surface | `neutral.0` | `#FFFFFF` |
-| Card | `neutral.0` | `#FFFFFF` |
-| Border | `neutral.200` | `#E4E4E7` |
-| Text Primary | `neutral.900` | `#18181B` |
-| Text Secondary | `neutral.700` | `#3F3F46` |
-| Text Muted | `neutral.500` | `#71717A` |
+| Color | Hex | Uso |
+|-------|-----|-----|
+| **Success** | `#7BAA9E` | Confirmaciones, éxito |
+| **Success Light** | `#E8F2F0` | Fondo de toast éxito |
+| **Error** | `#D4A5A5` | Errores suaves |
+| **Error Dark** | `#C47070` | Errores, danger buttons |
+| **Error Light** | `#F5EBEB` | Fondo de toast error |
+| **Warning** | `#D4C4A5` | Advertencias |
+| **Warning Light** | `#F5F2EB` | Fondo de toast warning |
 
 ---
 
 ## Tipografía
 
-**Font Family:** Inter (Google Fonts)
+### Sistema de 3 Fuentes
 
-### Escala
+| Nivel | Fuente | Pesos | Uso |
+|-------|--------|-------|-----|
+| **Display** | Cormorant Garamond | 300, 400 | Logo, H1, H2, títulos emocionales |
+| **Script** | Dancing Script | 400 | Taglines, frases emotivas |
+| **Body** | Nunito | 300, 400 | UI, botones, párrafos, labels |
 
-| Style | Size | Weight | Line Height | Uso |
-|-------|------|--------|-------------|-----|
-| Display | 40px | 800 ExtraBold | 1.1 | Splash, títulos hero |
-| H1 | 32px | 700 Bold | 1.2 | Títulos de pantalla |
-| H2 | 24px | 600 SemiBold | 1.3 | Secciones |
-| H3 | 20px | 600 SemiBold | 1.4 | Subtítulos |
-| Body Large | 18px | 400 Regular | 1.6 | **Default para seniors** |
-| Body | 16px | 400 Regular | 1.6 | Texto normal |
-| Body Small | 14px | 400 Regular | 1.5 | Texto secundario |
-| Caption | 12px | 500 Medium | 1.4 | Labels, metadata |
-| Button | 16px | 600 SemiBold | 1.0 | Botones |
+### Escala Tipográfica
 
-### Regla de Accesibilidad
+| Style | Fuente | Tamaño | Peso | Line Height | Uso |
+|-------|--------|--------|------|-------------|-----|
+| Display | Cormorant | 40px | 300 | 1.1 | Splash, hero |
+| H1 | Cormorant | 32px | 300 | 1.2 | Títulos de pantalla |
+| H2 | Cormorant | 24px | 400 | 1.3 | Secciones |
+| Script | Dancing | 20px | 400 | 1.4 | Taglines emocionales |
+| Body Large | Nunito | 18px | 300 | 1.6 | Texto destacado |
+| Body | Nunito | 16px | 300 | 1.6 | Texto default |
+| Body Small | Nunito | 14px | 300 | 1.5 | Texto secundario |
+| Caption | Nunito | 12px | 400 | 1.4 | Labels, metadata |
+| Button | Nunito | 16px | 400 | 1.0 | Botones |
 
-> Para usuarios senior (Roberto, 68 años), usar **Body Large (18px)** como base.
-> Nunca usar texto menor a 14px en contenido importante.
+### Regla Crítica
+
+> **Nunca usar bold (600+).** Solo pesos 300 (Light) y 400 (Regular).
+> Esto mantiene la estética delicada y serena del Paradise Garden.
 
 ---
 
@@ -138,67 +92,46 @@
 
 | Token | Valor | Uso |
 |-------|-------|-----|
-| 1 | 4px | Micro espacios |
-| 2 | 8px | Entre elementos inline |
-| 3 | 12px | Padding interno compacto |
-| 4 | 16px | **Padding default**, gaps |
-| 5 | 20px | Padding medio |
-| 6 | 24px | Secciones, cards |
-| 8 | 32px | Entre secciones |
-| 10 | 40px | Separación grande |
-| 12 | 48px | Header/footer |
-| 16 | 64px | Márgenes de pantalla |
+| 4xs | 4px | Micro espacios |
+| 3xs | 8px | Entre elementos inline |
+| 2xs | 12px | Padding interno compacto |
+| xs | 16px | Padding default, gaps |
+| sm | 24px | Secciones, cards |
+| md | 32px | Entre secciones |
+| lg | 48px | Separación grande |
+| xl | 64px | Márgenes de pantalla |
+| 2xl | 80px | Espacios hero |
 
 ---
 
 ## Border Radius
 
-| Token | Valor | Uso |
-|-------|-------|-----|
-| sm | 4px | Badges pequeños |
-| md | 8px | Inputs, chips |
-| lg | 12px | **Botones**, cards pequeñas |
-| xl | 16px | **Cards**, modales |
-| 2xl | 20px | Bottom sheets |
-| 3xl | 24px | Modales grandes |
-| full | 9999px | Avatares, pills, FAB |
+| Elemento | Valor | Nota |
+|----------|-------|------|
+| **Todo** | 0px | Sin bordes redondeados |
+| **Avatares** | 50% (círculo) | Única excepción |
+
+---
+
+## Bordes
+
+| Propiedad | Valor |
+|-----------|-------|
+| Width | 1px siempre |
+| Color default | `#E5E5E5` |
+| Color hover | `#5BA4A4` |
+| Color focus | `#5BA4A4` |
+| Color error | `#C47070` |
+| Color success | `#7BAA9E` |
 
 ---
 
 ## Sombras
 
-```typescript
-// Para React Native
-shadows: {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.18,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 3,
-  },
-  lg: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.30,
-    shadowRadius: 4.65,
-    elevation: 6,
-  },
-  glow: {
-    shadowColor: '#F97316', // primary.500
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-}
+**No hay sombras.** Diseño completamente flat.
+
+```css
+box-shadow: none;
 ```
 
 ---
@@ -207,64 +140,113 @@ shadows: {
 
 ### Botones
 
+**Estilo:** Outline por defecto, fill solo en hover/press
+
+| Variante | Border | Color | Hover |
+|----------|--------|-------|-------|
+| Primary | `#5BA4A4` | `#5BA4A4` | Fill `#5BA4A4`, text white |
+| Secondary | `#C4A484` | `#C4A484` | Fill `#C4A484`, text white |
+| Blush | `#E8B4B8` | `#D49EA2` | Fill `#E8B4B8`, text white |
+| Ghost | `#E5E5E5` | `#6A6A6A` | Border `#6A6A6A` |
+| Danger | `#C47070` | `#C47070` | Fill `#C47070`, text white |
+| Text | none | `#5BA4A4` | Background `#F5F6F4` |
+
 **Tamaños:**
-| Size | Height | Font |
-|------|--------|------|
-| Small | 40px | 14px |
-| Medium | 48px | 16px |
-| Large | 56px | 18px (accesibilidad) |
 
-**Variantes:**
-
-| Variante | Background | Border | Text |
-|----------|------------|--------|------|
-| Primary | `#F97316` gradient | none | white |
-| Secondary | `#27272A` | `#3F3F46` | `#F4F4F5` |
-| Outline | transparent | `#F97316` | `#FB923C` |
-| Ghost | transparent | none | `#D4D4D8` |
-| Danger | `#EF4444` gradient | none | white |
-
-**Border Radius:** 12px (lg)
+| Size | Height | Padding | Font |
+|------|--------|---------|------|
+| Small | 36px | 8px 16px | 14px |
+| Medium | 44px | 12px 24px | 16px |
+| Large | 52px | 16px 32px | 16px |
 
 ### Inputs
 
 | Propiedad | Valor |
 |-----------|-------|
-| Height | 52px |
-| Padding H | 16px |
-| Border Radius | 12px |
-| Background | `#18181B` |
-| Border | 1px `#3F3F46` |
-| Focus Border | `#F97316` |
-| Placeholder | `#71717A` |
+| Height | 44px mínimo |
+| Padding | 14px 16px |
+| Border | 1px solid `#E5E5E5` |
+| Border Radius | 0px |
+| Background | `#FFFFFF` |
+| Focus Border | `#5BA4A4` |
+| Error Border | `#C47070` |
+| Placeholder | `#9A9A9A` |
 
 ### Cards
 
 | Propiedad | Valor |
 |-----------|-------|
-| Padding | 16px |
-| Border Radius | 16px (xl) |
-| Background | `#18181B` |
-| Border | 1px `#27272A` |
+| Padding | 20px |
+| Border | 1px solid `#E5E5E5` |
+| Border Radius | 0px |
+| Background | `#FFFFFF` |
+| Hover Border | `#5BA4A4` |
 
-### Bottom Navigation
-
-| Propiedad | Valor |
-|-----------|-------|
-| Height | 80px |
-| Padding Bottom | 24px (safe area) |
-| Background | `#18181B` |
-| Active Color | `#F97316` |
-| Inactive Color | `#71717A` |
-
-### FAB (Floating Action Button)
+### Tab Bar
 
 | Propiedad | Valor |
 |-----------|-------|
-| Size | 56×56px |
-| Border Radius | full |
-| Background | Gradient primary |
-| Shadow | glow |
+| Height | 64px + safe area |
+| Background | `#FFFFFF` |
+| Border Top | 1px solid `#E5E5E5` |
+| Active Color | `#5BA4A4` |
+| Inactive Color | `#9A9A9A` |
+| Icon Size | 24px (emoji) |
+| Label Size | 11px |
+
+### Modales
+
+| Propiedad | Valor |
+|-----------|-------|
+| Overlay | rgba(0,0,0,0.4) |
+| Background | `#FFFFFF` |
+| Border | 1px solid `#E5E5E5` |
+| Padding | 24px |
+| Max Width | 400px |
+| Position | Centrado |
+
+### Toasts
+
+| Propiedad | Valor |
+|-----------|-------|
+| Position | Top |
+| Padding | 16px 24px |
+| Border | 1px solid (según tipo) |
+| Background | Light del tipo |
+
+---
+
+## Iconografía
+
+**Sistema:** Emojis nativos (no SVG icons)
+
+### Catálogo Principal
+
+| Concepto | Emoji | Uso |
+|----------|-------|-----|
+| Inicio | 🏠 | Tab navigation |
+| Mi Legado | 📚 | Tab, listas |
+| Guardianes | 👥 | Tab, perfiles |
+| Perfil | 👤 | Tab, settings |
+| Carta Texto | 📝 | Tipo de carta |
+| Video | 🎬 | Tipo de carta |
+| Audio | 🎤 | Tipo de carta |
+| Foto | 📷 | Tipo de carta |
+| Latido | 💓 | Dashboard, status |
+| Activa | ✨ | Estado de carta |
+| Check | ✓ | Confirmaciones |
+| Config | ⚙️ | Settings |
+| Seguridad | 🔒 | Auth, encryption |
+| Agregar | ➕ | Botones add |
+| Legado | 🌿 | Branding |
+| Paz | 🕊️ | Emocional |
+| Warning | ⚠️ | Alertas, errores |
+| Error | 😕 | Empty states |
+| Conexión | 📡 | Offline |
+| Atrás | ← | Navegación |
+| Dropdown | ▼ | Selects |
+| Play | ▶️ | Media |
+| Pause | ⏸️ | Media |
 
 ---
 
@@ -272,112 +254,83 @@ shadows: {
 
 | Elemento | Valor |
 |----------|-------|
-| Screen padding H | 16px |
-| Screen padding V | 24px |
-| Header height | 56px |
-| Tab bar height | 80px |
-| Tab bar padding bottom | 24px |
-| Card spacing | 16px |
-| Section spacing | 24-32px |
-| Min touch target | 48×48px |
-| Max content width | 480px |
-
----
-
-## Iconografía
-
-**Librería:** Lucide React Native
-
-**Tamaños:**
-| Token | Size | Uso |
-|-------|------|-----|
-| sm | 16px | Inline con texto |
-| md | 20px | Botones, inputs |
-| lg | 24px | Navigation, cards (default) |
-| xl | 32px | Feature icons |
-
-**Stroke width:** 2
-
-### Iconos Principales
-
-| Concepto | Icono | Uso |
-|----------|-------|-----|
-| Inicio | `Home` | Tab navigation |
-| Legado | `FileText` | Tab, listas cartas |
-| Guardianes | `Users` | Tab, perfiles |
-| Perfil | `User` | Tab, settings |
-| Crear | `Plus` | FAB, add buttons |
-| Video | `Video` | Media type |
-| Audio | `Mic` | Media type |
-| Foto | `Camera` | Media type |
-| Latido | `HeartPulse` | Dashboard, status |
-| Seguridad | `Shield` | Auth, encryption |
-| Batería | `Battery` | Status indicator |
-
----
-
-## Accesibilidad
-
-### Checklist
-
-- [ ] Texto mínimo 16px (18px preferido para seniors)
-- [ ] Touch targets 48×48px mínimo
-- [ ] Contraste 4.5:1 mínimo
-- [ ] No solo color para información
-- [ ] Botones grandes (56px) para CTAs principales
-- [ ] Modo claro disponible
-- [ ] Labels explícitos, no solo iconos
+| Screen Padding H | 16px |
+| Screen Padding V | 24px |
+| Header Height | 56px |
+| Tab Bar Height | 64px + safe area |
+| Card Spacing | 16px |
+| Section Spacing | 24-32px |
+| Min Touch Target | 44×44px |
+| Max Content Width | 480px |
 
 ---
 
 ## Animaciones
 
-```typescript
-animation: {
-  duration: {
-    instant: 0,
-    fast: 150,
-    normal: 200,
-    slow: 300,
-    slower: 500,
-  },
-  spring: {
-    damping: 15,
-    stiffness: 150,
-  },
+| Tipo | Duración | Easing |
+|------|----------|--------|
+| Fade | 0.2s | ease |
+| Slide | 0.3s | ease-out |
+| Pulse (loading) | 1.2s | ease-in-out infinite |
+| Recording dot | 1s | ease-in-out infinite |
+
+```css
+/* Loading */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
+}
+
+/* Recording */
+@keyframes recording-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 ```
 
 ---
 
-## Referencia Rápida Figma
+## Estados Especiales
 
-```
-Colores principales:
-- Primary: #F97316
-- Secondary: #EAB308
-- Background: #0A0A0A
-- Surface: #18181B
-- Card: #27272A
+### Empty State
+- Emoji grande (4rem)
+- Título en Cormorant
+- Mensaje en Nunito
+- CTA integrado
 
-Tipografía:
-- Font: Inter
-- Body: 16px / 400
-- Body Large: 18px / 400 (seniors)
-- H1: 32px / 700
+### Loading
+- Emoji 💓 con animación pulse
+- Texto "Cargando..." debajo
 
-Espaciado:
-- Base: 4px
-- Default padding: 16px
-- Section gap: 24px
-
-Componentes:
-- Button height: 48px (md), 56px (lg)
-- Input height: 52px
-- Card radius: 16px
-- Button radius: 12px
-```
+### Offline
+- Banner con emoji 📡
+- Solo visible al intentar acción
 
 ---
 
-*MiLegado Design System v1.0 - UNIR 2025*
+## Checklist de Accesibilidad
+
+- [ ] Texto mínimo 16px
+- [ ] Touch targets 44×44px mínimo
+- [ ] Contraste 4.5:1 mínimo
+- [ ] Labels explícitos con emojis
+- [ ] Estados de focus visibles
+- [ ] Light mode únicamente
+
+---
+
+## Reglas Absolutas
+
+1. **Border radius: 0px** (excepto avatares)
+2. **Border width: 1px** siempre
+3. **Font weights: 300-400** únicamente
+4. **Sombras: ninguna**
+5. **Gradientes: ninguno**
+6. **Botones: outline** (fill solo en hover)
+7. **Iconos: emojis** nativos
+8. **Tema: light mode** únicamente
+
+---
+
+*MiLegado Design System v3.0 — Paradise Garden*
+*UNIR 2025*

@@ -34,66 +34,71 @@ Lista de todos los guardianes del usuario con su estado de verificación y carta
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Guardianes                  +  │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 👩 María López            │  │
-│  │    Esposa                 │  │
-│  │    ✓ Verificada           │  │
-│  │    3 cartas asignadas     │  │
-│  │                       >   │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 👨 Carlos Rodríguez       │  │
-│  │    Hijo                   │  │
-│  │    ○ Pendiente            │  │
-│  │    1 carta asignada       │  │
-│  │                       >   │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 👩 Ana García             │  │
-│  │    Amiga                  │  │
-│  │    ✓ Verificada           │  │
-│  │    0 cartas asignadas     │  │
-│  │                       >   │  │
-│  └───────────────────────────┘  │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  👥  Guardianes                  ➕ │  Header 56px
+├─────────────────────────────────────┤  Cormorant 20px #3D3D3D
+│                                     │  BG: #FAFBF9
+│  ┌───────────────────────────────┐  │
+│  │  (○)  María López             │  │  Avatar circle 44px
+│  │       Esposa                  │  │  Nunito 16px #3D3D3D
+│  │       ✓ Verificada            │  │  Check #7BAA9E
+│  │       3 cartas asignadas      │  │  Nunito 14px #9A9A9A
+│  │                            >  │  │  Border: 1px #E5E5E5
+│  └───────────────────────────────┘  │  Hover: border #5BA4A4
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  (○)  Carlos Rodríguez        │  │
+│  │       Hijo                    │  │
+│  │       ○ Pendiente             │  │  Pendiente: #C4A484
+│  │       1 carta asignada        │  │
+│  │                            >  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  (○)  Ana García              │  │
+│  │       Amiga                   │  │
+│  │       ✓ Verificada            │  │
+│  │       0 cartas asignadas      │  │
+│  │                            >  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+├─────────────────────────────────────┤
+│  🏠      📚      👥      👤        │  Tab Bar
+│ Inicio  Legado  Guard.  Perfil     │  Active: #5BA4A4
+└─────────────────────────────────────┘
 ```
 
 ### Estados
 
 | Estado | UI |
 |--------|-----|
-| `loading` | Skeleton cards |
-| `empty` | EmptyState con CTA |
-| `error` | Error banner |
+| `loading` | 💓 pulse centrado |
+| `empty` | Empty state con emoji |
+| `error` | Toast ⚠️ |
 | `success` | Lista de guardianes |
 
 ### Empty State
 
 ```
-┌─────────────────────────────────┐
-│                                 │
-│         [Ilustración]           │
-│                                 │
-│   ¿Quién recibirá tu legado?    │
-│                                 │
-│   Agrega personas de confianza  │
-│   que recibirán tus cartas.     │
-│                                 │
-│    [ Agregar guardián ]         │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│                                     │
+│              👥                     │  Emoji 4rem
+│                                     │
+│    ¿Quién recibirá tu legado?       │  Cormorant 24px #3D3D3D
+│                                     │
+│    Agrega personas de confianza     │  Nunito 16px #6A6A6A
+│    que recibirán tus cartas.        │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │      Agregar guardián         │  │  Primary button outline
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Acciones
 - **Tap guardián:** Navega a `guardianes/[id]`
-- **+ (Header):** Modal para agregar guardián
+- **➕ (Header):** Modal para agregar guardián
 - **Swipe left:** Revelar opción eliminar
 
 ---
@@ -106,70 +111,79 @@ Información completa del guardián con las cartas que tiene asignadas.
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  ←  María López          ✏️ ⋮  │
-├─────────────────────────────────┤
-│                                 │
-│         ┌───────┐               │
-│         │  👩   │               │
-│         │       │               │
-│         └───────┘               │
-│                                 │
-│      María López                │
-│      maria@email.com            │
-│      +52 55 1234 5678           │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Relación                       │
-│  💍 Esposa                      │
-│                                 │
-│  Estado                         │
-│  ✓ Verificada                   │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Cartas asignadas (3)           │
-│                                 │
-│  ┌─────────────────────────┐    │
-│  │ 📝 Para mi amor         │    │
-│  └─────────────────────────┘    │
-│  ┌─────────────────────────┐    │
-│  │ 🎬 Nuestro aniversario  │    │
-│  └─────────────────────────┘    │
-│  ┌─────────────────────────┐    │
-│  │ 📝 Carta de despedida   │    │
-│  └─────────────────────────┘    │
-│                                 │
-│  [ + Asignar carta ]            │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    María López            ⚙️    │  Header Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │  BG: #FAFBF9
+│            (○)                      │  Avatar circle 80px
+│                                     │  Border: 1px #E5E5E5
+│                                     │
+│         María López                 │  Cormorant 24px #3D3D3D
+│      maria@email.com                │  Nunito 14px #6A6A6A
+│      +52 55 1234 5678               │
+│                                     │
+│  ─────────────────────────────────  │  Separator 1px #E5E5E5
+│                                     │
+│  Relación                           │  Label Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │  💍  Esposa                   │  │  Card border 1px #E5E5E5
+│  └───────────────────────────────┘  │
+│                                     │
+│  Estado                             │
+│  ┌───────────────────────────────┐  │
+│  │  ✓  Verificada                │  │  Check: #7BAA9E
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  📚 Cartas asignadas (3)            │  Nunito 16px #3D3D3D
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  📝  Para mi amor             │  │  Card list
+│  └───────────────────────────────┘  │  Border: 1px #E5E5E5
+│  ┌───────────────────────────────┐  │
+│  │  🎬  Nuestro aniversario      │  │
+│  └───────────────────────────────┘  │
+│  ┌───────────────────────────────┐  │
+│  │  📝  Carta de despedida       │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  ➕  Asignar carta            │  │  Ghost button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Acciones
 - **← (Back):** Volver a lista
-- **✏️ (Edit):** Editar datos del guardián
-- **⋮ (Menu):** Eliminar, Reenviar invitación
+- **⚙️ (Menu):** Editar, Reenviar invitación, Eliminar
 - **Tap carta:** Navega a detalle de carta
-- **"+ Asignar carta":** Modal selector de cartas
+- **"➕ Asignar carta":** Modal selector de cartas
 
 ### Modal Asignar Carta
 
 ```
-┌─────────────────────────────────┐
-│  Asignar carta a María      ✕  │
-├─────────────────────────────────┤
-│                                 │
-│  Selecciona las cartas:         │
-│                                 │
-│  ☑ Para mi amor                 │
-│  ☑ Nuestro aniversario          │
-│  ☐ Video para los niños         │
-│  ☐ Instrucciones bancarias      │
-│                                 │
-│         [ Guardar ]             │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  Asignar carta a María          ✕  │  Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │
+│  Selecciona las cartas:             │  Nunito 14px #6A6A6A
+│                                     │
+│  ┌─┐  Para mi amor                  │  Checkbox square
+│  └─┘                                │  Selected: fill #5BA4A4
+│  ┌─┐  Nuestro aniversario           │
+│  └─┘                                │
+│  ┌ ┐  Video para los niños          │  Unselected: border #E5E5E5
+│  └ ┘                                │
+│  ┌ ┐  Instrucciones bancarias       │
+│  └ ┘                                │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │          Guardar              │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -179,37 +193,43 @@ Información completa del guardián con las cartas que tiene asignadas.
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Agregar Guardián           ✕  │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 👤 Nombre completo        │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 📧 Email                  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 📱 Teléfono (opcional)    │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  Relación                       │
-│  ┌─────────────────────────┐    │
-│  │ Seleccionar...       ▼  │    │
-│  └─────────────────────────┘    │
-│                                 │
-│  • Esposo/a                     │
-│  • Hijo/a                       │
-│  • Padre/Madre                  │
-│  • Hermano/a                    │
-│  • Amigo/a                      │
-│  • Otro                         │
-│                                 │
-│      [ Enviar invitación ]      │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  Agregar Guardián               ✕  │  Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │  BG: #FFFFFF
+│  Nombre completo                    │  Label Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Input 44px
+│  └───────────────────────────────┘  │  Border: 1px #E5E5E5
+│                                     │
+│  Email                              │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  Teléfono (opcional)                │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  Relación                           │
+│  ┌───────────────────────────────┐  │
+│  │  Seleccionar...            ▼  │  │  Dropdown
+│  └───────────────────────────────┘  │
+│                                     │
+│  Opciones:                          │
+│  • 💍 Esposo/a                      │
+│  • 👶 Hijo/a                        │
+│  • 👨‍👩‍👧 Padre/Madre                   │
+│  • 👫 Hermano/a                     │
+│  • 🤝 Amigo/a                       │
+│  • 👤 Otro                          │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │      Enviar invitación        │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Campos
@@ -238,7 +258,7 @@ Información completa del guardián con las cartas que tiene asignadas.
 ```typescript
 interface Guardian {
   id: string;
-  userId: string;            // Dueño del legado
+  userId: string;
   nombre: string;
   email: string;
   telefono?: string;
@@ -262,7 +282,6 @@ type GuardianRelacion =
   | 'amiga'
   | 'otro';
 
-// Guardian con cartas asignadas
 interface GuardianWithCartas extends Guardian {
   cartas: Carta[];
   cartasCount: number;
@@ -271,11 +290,24 @@ interface GuardianWithCartas extends Guardian {
 
 ### Estados de Verificación
 
-| Estado | Descripción | Badge |
-|--------|-------------|-------|
-| `pendiente` | Invitación enviada, esperando confirmación | Amarillo |
-| `verificado` | Guardián confirmó su identidad | Verde |
-| `rechazado` | Guardián rechazó la invitación | Rojo |
+| Estado | Emoji | Color |
+|--------|-------|-------|
+| `pendiente` | ○ | #C4A484 |
+| `verificado` | ✓ | #7BAA9E |
+| `rechazado` | ✕ | #C47070 |
+
+---
+
+## Emojis de Relación
+
+| Relación | Emoji |
+|----------|-------|
+| esposo/esposa | 💍 |
+| hijo/hija | 👶 |
+| padre/madre | 👨‍👩‍👧 |
+| hermano/hermana | 👫 |
+| amigo/amiga | 🤝 |
+| otro | 👤 |
 
 ---
 
@@ -284,7 +316,6 @@ interface GuardianWithCartas extends Guardian {
 ### firestore.ts - Guardianes
 
 ```typescript
-// Obtener guardianes del usuario
 export const getGuardianes = async (userId: string): Promise<Guardian[]> => {
   const q = query(
     collection(db, 'guardianes'),
@@ -295,7 +326,6 @@ export const getGuardianes = async (userId: string): Promise<Guardian[]> => {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// Obtener guardián con sus cartas
 export const getGuardianWithCartas = async (guardianId: string): Promise<GuardianWithCartas | null> => {
   const guardian = await getGuardian(guardianId);
   if (!guardian) return null;
@@ -314,7 +344,6 @@ export const getGuardianWithCartas = async (guardianId: string): Promise<Guardia
   };
 };
 
-// Crear guardián
 export const createGuardian = async (guardian: Omit<Guardian, 'id' | 'createdAt' | 'updatedAt' | 'verificado'>): Promise<string> => {
   const docRef = await addDoc(collection(db, 'guardianes'), {
     ...guardian,
@@ -325,7 +354,6 @@ export const createGuardian = async (guardian: Omit<Guardian, 'id' | 'createdAt'
   return docRef.id;
 };
 
-// Asignar carta a guardián
 export const assignCartaToGuardian = async (cartaId: string, guardianId: string): Promise<void> => {
   await updateDoc(doc(db, 'cartas', cartaId), {
     guardianId,
@@ -333,9 +361,7 @@ export const assignCartaToGuardian = async (cartaId: string, guardianId: string)
   });
 };
 
-// Eliminar guardián
 export const deleteGuardian = async (guardianId: string): Promise<void> => {
-  // Primero quitar guardianId de las cartas asignadas
   const cartasQuery = query(
     collection(db, 'cartas'),
     where('guardianId', '==', guardianId)
@@ -354,67 +380,31 @@ export const deleteGuardian = async (guardianId: string): Promise<void> => {
 
 ---
 
-## Componentes
+## Componentes UI (Paradise Garden v3.0)
 
 ### GuardianCard
 
-```typescript
-interface GuardianCardProps {
-  guardian: GuardianWithCartas;
-  onPress: () => void;
-}
-```
-
-**Visualización:**
-- Avatar con inicial o foto
-- Nombre y relación
-- Badge de verificación
-- Contador de cartas asignadas
-- Chevron derecho
-
----
-
-## Iconos de Relación
-
-| Relación | Icono |
-|----------|-------|
-| esposo/esposa | 💍 |
-| hijo/hija | 👶 |
-| padre/madre | 👨‍👩‍👧 |
-| hermano/hermana | 👫 |
-| amigo/amiga | 🤝 |
-| otro | 👤 |
-
----
-
-## Firestore Rules
-
-```javascript
-match /guardianes/{guardianId} {
-  // Solo el dueño puede leer/escribir
-  allow read, write: if request.auth != null
-    && request.auth.uid == resource.data.userId;
-
-  allow create: if request.auth != null
-    && request.auth.uid == request.resource.data.userId;
-}
-```
+- Border: 1px #E5E5E5
+- Hover: border #5BA4A4
+- Radius: 0px
+- Avatar: circle 44px, única excepción radius
+- Check/Pendiente con emoji
 
 ---
 
 ## Testing Checklist
 
 - [ ] Cargar lista de guardianes
-- [ ] Mostrar empty state sin guardianes
+- [ ] Mostrar empty state con emoji 👥
 - [ ] Agregar nuevo guardián
 - [ ] Validación de campos requeridos
 - [ ] Ver detalle de guardián
 - [ ] Ver cartas asignadas a guardián
-- [ ] Asignar nueva carta a guardián
+- [ ] Asignar nueva carta con checkbox
 - [ ] Quitar carta de guardián
 - [ ] Eliminar guardián (y desasignar cartas)
-- [ ] Mostrar badge de verificación correcto
+- [ ] Mostrar estado verificación con emoji
 
 ---
 
-*Guardianes Module Spec v1.0 - MiLegado*
+*Guardianes Module Spec v3.0 - MiLegado Paradise Garden*

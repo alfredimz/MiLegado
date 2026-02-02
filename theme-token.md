@@ -1,10 +1,12 @@
+# Theme Tokens — MiLegado v3.0
+
+## Paradise Garden — React Native
+
+```typescript
 /**
- * 🎨 Design Tokens — App de Legado Digital
+ * 🎨 Theme Tokens — MiLegado
+ * Paradise Garden v3.0
  * 
- * Sistema de diseño completo para React Native
- * Generado para proyecto UNIR 2025
- * 
- * Uso:
  * import { colors, typography, spacing } from '@/constants/theme';
  */
 
@@ -13,170 +15,139 @@
 // =============================================================================
 
 export const colors = {
-  // Primary — Cempasúchil (Naranja)
+  // Primary — Sage Green
   primary: {
-    50: '#FFF7ED',
-    100: '#FFEDD5',
-    200: '#FED7AA',
-    300: '#FDBA74',
-    400: '#FB923C',
-    500: '#F97316', // ← Principal
-    600: '#EA580C',
-    700: '#C2410C',
-    800: '#9A3412',
-    900: '#7C2D12',
+    50: '#E8F2F0',
+    100: '#D1E5E3',
+    200: '#A3CBC9',
+    300: '#7BBDBD',
+    400: '#5BA4A4',  // ← DEFAULT
+    500: '#5BA4A4',
+    600: '#4A8F8F',
+    700: '#3A7A7A',
+    800: '#2A6565',
+    900: '#1A5050',
   },
 
-  // Secondary — Oro/Ámbar
+  // Secondary — Golden Warm
   secondary: {
-    50: '#FFFBEB',
-    100: '#FEF3C7',
-    200: '#FDE68A',
-    300: '#FCD34D',
-    400: '#FBBF24',
-    500: '#F59E0B', // ← Principal
-    600: '#D97706',
-    700: '#B45309',
-    800: '#92400E',
-    900: '#78350F',
+    50: '#F5F2EB',
+    100: '#EBE5D7',
+    200: '#D7CBAF',
+    300: '#D4B494',
+    400: '#C4A484',  // ← DEFAULT
+    500: '#C4A484',
+    600: '#A68B6A',
+    700: '#887250',
+    800: '#6A5936',
+    900: '#4C401C',
+  },
+
+  // Blush — Rosa Cálido
+  blush: {
+    50: '#FDF5F6',
+    100: '#FAEBEC',
+    200: '#F2D0D3',
+    300: '#E8B4B8',  // ← DEFAULT
+    400: '#E8B4B8',
+    500: '#D49EA2',
+    600: '#C0888C',
+    700: '#AC7276',
+    800: '#985C60',
+    900: '#84464A',
   },
 
   // Neutrales
   neutral: {
     0: '#FFFFFF',
-    50: '#FAFAFA',
-    100: '#F4F4F5',
-    200: '#E4E4E7',
-    300: '#D4D4D8',
-    400: '#A1A1AA',
-    500: '#71717A',
-    600: '#52525B',
-    700: '#3F3F46',
-    800: '#27272A',
-    900: '#18181B',
-    950: '#09090B',
+    50: '#FAFBF9',   // Background
+    100: '#F5F6F4',  // Surface Alt
+    200: '#F0F0F0',  // Border Light
+    300: '#E5E5E5',  // Border
+    400: '#BEBEBE',  // Text Disabled
+    500: '#9A9A9A',  // Text Muted
+    600: '#6A6A6A',  // Text Secondary
+    700: '#3D3D3D',  // Text Primary
+    800: '#2D2D2D',
+    900: '#1D1D1D',
   },
 
   // Semánticos
   success: {
-    50: '#F0FDF4',
-    100: '#DCFCE7',
-    500: '#22C55E',
-    600: '#16A34A',
-    700: '#15803D',
+    50: '#E8F2F0',
+    500: '#7BAA9E',
   },
 
   warning: {
-    50: '#FFFBEB',
-    100: '#FEF3C7',
-    500: '#F59E0B',
-    600: '#D97706',
-    700: '#B45309',
+    50: '#F5F2EB',
+    500: '#D4C4A5',
   },
 
   error: {
-    50: '#FEF2F2',
-    100: '#FEE2E2',
-    500: '#EF4444',
-    600: '#DC2626',
-    700: '#B91C1C',
+    50: '#F5EBEB',
+    500: '#C47070',
   },
 
-  info: {
-    50: '#EFF6FF',
-    100: '#DBEAFE',
-    500: '#3B82F6',
-    600: '#2563EB',
-    700: '#1D4ED8',
-  },
-
-  // Especiales — Legado
-  legado: {
-    purple: '#8B5CF6',  // Guardianes
-    pink: '#EC4899',    // Emocional
-    teal: '#14B8A6',    // Latido/Vida
-  },
-
-  // Transparentes
-  transparent: {
-    black10: 'rgba(0, 0, 0, 0.1)',
-    black20: 'rgba(0, 0, 0, 0.2)',
-    black50: 'rgba(0, 0, 0, 0.5)',
-    white10: 'rgba(255, 255, 255, 0.1)',
-    white20: 'rgba(255, 255, 255, 0.2)',
-    white50: 'rgba(255, 255, 255, 0.5)',
-    primary20: 'rgba(249, 115, 22, 0.2)',
-    primary40: 'rgba(249, 115, 22, 0.4)',
-  },
-};
+  // Utilidades
+  transparent: 'transparent',
+  white: '#FFFFFF',
+  black: '#000000',
+} as const;
 
 // =============================================================================
-// 🌓 TEMAS
+// 🌞 TEMA
 // =============================================================================
 
-export const themes = {
-  dark: {
-    background: colors.neutral[950],
-    backgroundSecondary: colors.neutral[900],
-    backgroundTertiary: colors.neutral[800],
-    
-    surface: colors.neutral[900],
-    surfaceHover: colors.neutral[800],
-    surfaceActive: colors.neutral[700],
-    
-    border: colors.neutral[800],
-    borderHover: colors.neutral[700],
-    borderFocus: colors.primary[500],
-    
-    text: colors.neutral[0],
-    textSecondary: colors.neutral[300],
-    textMuted: colors.neutral[500],
-    textDisabled: colors.neutral[600],
-    
-    primary: colors.primary[500],
-    primaryHover: colors.primary[400],
-    primaryActive: colors.primary[600],
-  },
+export const theme = {
+  // Backgrounds
+  background: colors.neutral[50],
+  backgroundSurface: colors.neutral[0],
+  backgroundAlt: colors.neutral[100],
 
-  light: {
-    background: colors.neutral[50],
-    backgroundSecondary: colors.neutral[0],
-    backgroundTertiary: colors.neutral[100],
-    
-    surface: colors.neutral[0],
-    surfaceHover: colors.neutral[50],
-    surfaceActive: colors.neutral[100],
-    
-    border: colors.neutral[200],
-    borderHover: colors.neutral[300],
-    borderFocus: colors.primary[500],
-    
-    text: colors.neutral[900],
-    textSecondary: colors.neutral[700],
-    textMuted: colors.neutral[500],
-    textDisabled: colors.neutral[400],
-    
-    primary: colors.primary[500],
-    primaryHover: colors.primary[600],
-    primaryActive: colors.primary[700],
-  },
-};
+  // Borders
+  border: colors.neutral[300],
+  borderLight: colors.neutral[200],
+  borderFocus: colors.primary[400],
+  borderError: colors.error[500],
+  borderSuccess: colors.success[500],
+
+  // Text
+  text: colors.neutral[700],
+  textSecondary: colors.neutral[600],
+  textMuted: colors.neutral[500],
+  textDisabled: colors.neutral[400],
+  textInverse: colors.neutral[0],
+
+  // Interactive
+  primary: colors.primary[400],
+  primaryHover: colors.primary[300],
+  primaryActive: colors.primary[600],
+
+  secondary: colors.secondary[400],
+  blush: colors.blush[300],
+
+  // Status
+  success: colors.success[500],
+  successLight: colors.success[50],
+  error: colors.error[500],
+  errorLight: colors.error[50],
+  warning: colors.warning[500],
+  warningLight: colors.warning[50],
+} as const;
 
 // =============================================================================
 // 📝 TIPOGRAFÍA
 // =============================================================================
 
 export const typography = {
-  // Font Family
   fontFamily: {
-    regular: 'Inter_400Regular',
-    medium: 'Inter_500Medium',
-    semibold: 'Inter_600SemiBold',
-    bold: 'Inter_700Bold',
-    extrabold: 'Inter_800ExtraBold',
+    display: 'CormorantGaramond_300Light',
+    displayRegular: 'CormorantGaramond_400Regular',
+    script: 'DancingScript_400Regular',
+    body: 'Nunito_300Light',
+    bodyRegular: 'Nunito_400Regular',
   },
 
-  // Font Sizes
   fontSize: {
     xs: 12,
     sm: 14,
@@ -186,12 +157,14 @@ export const typography = {
     '2xl': 24,
     '3xl': 32,
     '4xl': 40,
-    '5xl': 48,
   },
 
-  // Line Heights
+  fontWeight: {
+    light: '300',
+    regular: '400',
+  },
+
   lineHeight: {
-    none: 1,
     tight: 1.1,
     snug: 1.2,
     normal: 1.4,
@@ -199,60 +172,54 @@ export const typography = {
     loose: 1.6,
   },
 
-  // Estilos predefinidos
   styles: {
     display: {
-      fontSize: 48,
-      fontFamily: 'Inter_800ExtraBold',
+      fontSize: 40,
+      fontFamily: 'CormorantGaramond_300Light',
       lineHeight: 1.1,
     },
     h1: {
       fontSize: 32,
-      fontFamily: 'Inter_700Bold',
+      fontFamily: 'CormorantGaramond_300Light',
       lineHeight: 1.2,
     },
     h2: {
       fontSize: 24,
-      fontFamily: 'Inter_600SemiBold',
+      fontFamily: 'CormorantGaramond_400Regular',
       lineHeight: 1.3,
     },
-    h3: {
+    script: {
       fontSize: 20,
-      fontFamily: 'Inter_600SemiBold',
+      fontFamily: 'DancingScript_400Regular',
       lineHeight: 1.4,
     },
     bodyLarge: {
       fontSize: 18,
-      fontFamily: 'Inter_400Regular',
+      fontFamily: 'Nunito_300Light',
       lineHeight: 1.6,
     },
     body: {
       fontSize: 16,
-      fontFamily: 'Inter_400Regular',
+      fontFamily: 'Nunito_300Light',
       lineHeight: 1.6,
     },
     bodySmall: {
       fontSize: 14,
-      fontFamily: 'Inter_400Regular',
+      fontFamily: 'Nunito_300Light',
       lineHeight: 1.5,
     },
     caption: {
       fontSize: 12,
-      fontFamily: 'Inter_500Medium',
+      fontFamily: 'Nunito_400Regular',
       lineHeight: 1.4,
     },
     button: {
       fontSize: 16,
-      fontFamily: 'Inter_600SemiBold',
-      lineHeight: 1,
-    },
-    buttonSmall: {
-      fontSize: 14,
-      fontFamily: 'Inter_600SemiBold',
+      fontFamily: 'Nunito_400Regular',
       lineHeight: 1,
     },
   },
-};
+} as const;
 
 // =============================================================================
 // 📏 ESPACIADO
@@ -271,65 +238,30 @@ export const spacing = {
   12: 48,
   16: 64,
   20: 80,
-  24: 96,
-};
+} as const;
 
 // =============================================================================
-// 🔲 BORDER RADIUS
+// 📐 BORDER RADIUS
 // =============================================================================
 
 export const borderRadius = {
   none: 0,
-  sm: 4,
-  md: 8,
-  lg: 12,
-  xl: 16,
-  '2xl': 24,
-  '3xl': 32,
   full: 9999,
-};
+} as const;
 
 // =============================================================================
-// 🌫️ SOMBRAS
+// 🚫 SOMBRAS
 // =============================================================================
 
 export const shadows = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+  none: {
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
   },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  lg: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 15,
-    elevation: 5,
-  },
-  xl: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.1,
-    shadowRadius: 25,
-    elevation: 8,
-  },
-  glow: {
-    shadowColor: colors.primary[500],
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-};
+} as const;
 
 // =============================================================================
 // ⏱️ ANIMACIONES
@@ -340,131 +272,99 @@ export const animations = {
     fast: 150,
     normal: 200,
     slow: 300,
-    slower: 500,
   },
-  easing: {
-    linear: [0, 0, 1, 1],
-    easeIn: [0.4, 0, 1, 1],
-    easeOut: [0, 0, 0.2, 1],
-    easeInOut: [0.4, 0, 0.2, 1],
-  },
-};
+} as const;
 
 // =============================================================================
 // 📐 LAYOUT
 // =============================================================================
 
 export const layout = {
-  // Screen padding
-  screenPadding: spacing[4], // 16px
-  screenPaddingLarge: spacing[6], // 24px
-
-  // Content max width
+  screenPadding: spacing[4],
+  headerHeight: 56,
+  tabBarHeight: 64,
+  tabBarPaddingBottom: 24,
   maxWidth: 480,
 
-  // Bottom tab bar
-  tabBarHeight: 80,
-  tabBarPaddingBottom: 24,
-
-  // Header
-  headerHeight: 56,
-
-  // Card
-  cardPadding: spacing[4],
-  cardBorderRadius: borderRadius.xl,
-
-  // Button
   buttonHeight: {
     sm: 36,
-    md: 48,
-    lg: 56,
+    md: 44,
+    lg: 52,
   },
 
-  // Input
-  inputHeight: 52,
-  inputPadding: spacing[4],
+  inputHeight: 44,
+  cardPadding: 20,
 
-  // Avatar
   avatarSize: {
     sm: 32,
-    md: 48,
+    md: 44,
     lg: 64,
-    xl: 96,
+    xl: 80,
   },
 
-  // Icon
   iconSize: {
     sm: 16,
     md: 20,
     lg: 24,
     xl: 32,
   },
-
-  // FAB
-  fabSize: 56,
-};
+} as const;
 
 // =============================================================================
-// 🎯 COMPONENTES - ESTILOS BASE
+// 🧩 COMPONENTES
 // =============================================================================
 
 export const componentStyles = {
-  // Botón Primario
   buttonPrimary: {
-    backgroundColor: colors.primary[500],
-    borderRadius: borderRadius.lg,
-    height: layout.buttonHeight.md,
-    paddingHorizontal: spacing[6],
-    ...shadows.glow,
-  },
-
-  // Botón Secundario
-  buttonSecondary: {
-    backgroundColor: colors.neutral[800],
-    borderRadius: borderRadius.lg,
+    backgroundColor: 'transparent',
+    borderColor: colors.primary[400],
+    borderRadius: borderRadius.none,
     height: layout.buttonHeight.md,
     paddingHorizontal: spacing[6],
     borderWidth: 1,
-    borderColor: colors.neutral[700],
   },
 
-  // Input
+  buttonSecondary: {
+    backgroundColor: 'transparent',
+    borderColor: colors.secondary[400],
+    borderRadius: borderRadius.none,
+    height: layout.buttonHeight.md,
+    paddingHorizontal: spacing[6],
+    borderWidth: 1,
+  },
+
   input: {
-    backgroundColor: colors.neutral[800],
-    borderRadius: borderRadius.lg,
+    backgroundColor: colors.neutral[0],
+    borderColor: colors.neutral[300],
+    borderRadius: borderRadius.none,
     height: layout.inputHeight,
     paddingHorizontal: spacing[4],
     borderWidth: 1,
-    borderColor: colors.neutral[700],
-    ...typography.styles.body,
-    color: colors.neutral[100],
   },
 
-  // Card
   card: {
-    backgroundColor: colors.neutral[800],
-    borderRadius: layout.cardBorderRadius,
+    backgroundColor: colors.neutral[0],
+    borderColor: colors.neutral[300],
+    borderRadius: borderRadius.none,
     padding: layout.cardPadding,
     borderWidth: 1,
-    borderColor: colors.neutral[700],
   },
 
-  // Badge
   badge: {
     paddingVertical: spacing[1],
     paddingHorizontal: spacing[3],
-    borderRadius: borderRadius.full,
-    ...typography.styles.caption,
+    borderRadius: borderRadius.none,
+    borderWidth: 1,
   },
-};
+} as const;
 
 // =============================================================================
-// 📱 EXPORT DEFAULT - TEMA COMPLETO
+// 📦 EXPORT
 // =============================================================================
 
-const theme = {
+const themeTokens = {
   colors,
-  themes,
+  theme,
   typography,
   spacing,
   borderRadius,
@@ -474,54 +374,35 @@ const theme = {
   componentStyles,
 };
 
-export default theme;
+export default themeTokens;
 
 // =============================================================================
-// 📋 REFERENCIA RÁPIDA PARA FIGMA
+// 📋 QUICK REFERENCE
 // =============================================================================
 
 /*
-COLORES PRINCIPALES (Hex):
-- Primary 500: #F97316 (Naranja Cempasúchil)
-- Secondary 500: #F59E0B (Oro/Ámbar)
-- Success: #22C55E
-- Error: #EF4444
-- Warning: #F59E0B
-
-FONDOS DARK MODE:
-- Background: #09090B
-- Surface: #18181B
-- Card: #27272A
-- Border: #3F3F46
+COLORES:
+- Background: #FAFBF9
+- Primary: #5BA4A4
+- Secondary: #C4A484
+- Blush: #E8B4B8
+- Text: #3D3D3D
+- Border: #E5E5E5
 
 TIPOGRAFÍA:
-- Font: Inter
-- Display: 48px / 800
-- H1: 32px / 700
-- H2: 24px / 600
-- Body: 16px / 400 (default)
-- Body Large: 18px / 400 (seniors)
-- Caption: 12px / 500
+- Display: Cormorant Garamond 300
+- Script: Dancing Script 400
+- Body: Nunito 300
 
-ESPACIADO (Base 4px):
-- xs: 4px
-- sm: 8px
-- md: 16px
-- lg: 24px
-- xl: 32px
-
-BORDER RADIUS:
-- sm: 4px
-- md: 8px
-- lg: 12px
-- xl: 16px
-- 2xl: 24px
-- full: 9999px
-
-COMPONENTES:
-- Button height: 48px
-- Input height: 52px
-- Card padding: 16px
-- Screen padding: 16px
-- Tab bar height: 80px
+REGLAS:
+- Border Radius: 0px (avatares: full)
+- Shadows: none
+- Max Weight: 400
+- Buttons: outline
 */
+```
+
+---
+
+*MiLegado Theme Tokens v3.0*
+*UNIR 2025*

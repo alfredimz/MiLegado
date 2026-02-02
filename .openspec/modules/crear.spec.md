@@ -33,7 +33,7 @@ app/crear/
 ## Flujo General
 
 ```
-[FAB + en cualquier pantalla]
+[FAB ➕ en cualquier pantalla]
          │
          ▼
 [Selector de Tipo]
@@ -66,45 +66,49 @@ Primera pantalla del flujo. El usuario elige qué tipo de carta quiere crear.
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  ✕  Nueva Carta                 │
-├─────────────────────────────────┤
-│                                 │
-│   ¿Qué quieres compartir?       │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │  📝                       │  │
-│  │  Texto                    │  │
-│  │  Escribe una carta o      │  │
-│  │  mensaje                  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │  🎬                       │  │
-│  │  Video                    │  │
-│  │  Graba un video mensaje   │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │  🎤                       │  │
-│  │  Audio                    │  │
-│  │  Graba un mensaje de voz  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │  📷                       │  │
-│  │  Foto                     │  │
-│  │  Comparte una imagen      │  │
-│  │  especial                 │  │
-│  └───────────────────────────┘  │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ✕      Nueva Carta                 │  Header 56px
+├─────────────────────────────────────┤  Cormorant 20px #3D3D3D
+│                                     │  BG: #FAFBF9
+│     ¿Qué quieres compartir?         │  Cormorant 24px #3D3D3D
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  📝                           │  │  Card 1px #E5E5E5
+│  │                               │  │  Hover: border #5BA4A4
+│  │  Texto                        │  │  Emoji 2rem
+│  │  Escribe una carta o          │  │  Title: Nunito 18px #3D3D3D
+│  │  mensaje                      │  │  Desc: Nunito 14px #6A6A6A
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  🎬                           │  │
+│  │                               │  │
+│  │  Video                        │  │
+│  │  Graba un video mensaje       │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  🎤                           │  │
+│  │                               │  │
+│  │  Audio                        │  │
+│  │  Graba un mensaje de voz      │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  📷                           │  │
+│  │                               │  │
+│  │  Foto                         │  │
+│  │  Comparte una imagen          │  │
+│  │  especial                     │  │
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Opciones
 
-| Tipo | Icono | Descripción | Siguiente Pantalla |
-|------|-------|-------------|-------------------|
+| Tipo | Emoji | Descripción | Siguiente |
+|------|-------|-------------|-----------|
 | Texto | 📝 | Carta escrita | `crear/texto` |
 | Video | 🎬 | Grabar video | `crear/media?tipo=video` |
 | Audio | 🎤 | Grabar audio | `crear/media?tipo=audio` |
@@ -119,42 +123,43 @@ Primera pantalla del flujo. El usuario elige qué tipo de carta quiere crear.
 ## Pantalla: Editor de Texto
 
 ### Descripción
-Editor de texto enriquecido para escribir el contenido de la carta.
+Editor de texto para escribir el contenido de la carta.
 
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  ←  Escribe tu carta    Vista   │
-├─────────────────────────────────┤
-│                                 │
-│  Título                         │
-│  ┌───────────────────────────┐  │
-│  │ Para mi hijo              │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  Tu mensaje                     │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │ Querido hijo,             │  │
-│  │                           │  │
-│  │ Escribo estas palabras    │  │
-│  │ para que sepas cuánto     │  │
-│  │ te amo...                 │  │
-│  │                           │  │
-│  │                           │  │
-│  │                           │  │
-│  │                           │  │
-│  │                           │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  📎 Agregar foto (opcional)     │
-│                                 │
-├─────────────────────────────────┤
-│                                 │
-│         [ Continuar ]           │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Escribe tu carta        Vista │  Header
+├─────────────────────────────────────┤
+│                                     │  BG: #FAFBF9
+│  Título                             │  Label Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │  Para mi hijo                 │  │  Input 44px
+│  └───────────────────────────────┘  │  Border: 1px #E5E5E5
+│                                     │
+│  Tu mensaje                         │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Textarea
+│  │  Querido hijo,                │  │  Border: 1px #E5E5E5
+│  │                               │  │  Min-height: 200px
+│  │  Escribo estas palabras       │  │  Nunito 16px #3D3D3D
+│  │  para que sepas cuánto        │  │
+│  │  te amo...                    │  │
+│  │                               │  │
+│  │                               │  │
+│  │                               │  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  📷 Agregar foto (opcional)   │  │  Ghost button
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │          Continuar            │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Campos
@@ -181,106 +186,106 @@ Pantalla para capturar video/audio o seleccionar foto de la galería.
 ### UI - Modo Video
 
 ```
-┌─────────────────────────────────┐
-│  ←  Graba tu mensaje        🔄 │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │                           │  │
-│  │     [Camera Preview]      │  │
-│  │                           │  │
-│  │                           │  │
-│  │                           │  │
-│  │                           │  │
-│  │                           │  │
-│  └───────────────────────────┘  │
-│                                 │
-│           00:00                 │
-│                                 │
-│  ┌─────────────────────────┐    │
-│  │         ⏺️              │    │  ← Tap para grabar
-│  │                         │    │
-│  └─────────────────────────┘    │
-│                                 │
-│   📁 Elegir de galería          │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Graba tu mensaje          🔄 │  Header
+├─────────────────────────────────────┤
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Camera preview
+│  │                               │  │  Border: 1px #E5E5E5
+│  │                               │  │
+│  │                               │  │
+│  │                               │  │
+│  │                               │  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│            00:00                    │  Timer: Cormorant 24px #3D3D3D
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │            ⏺️                 │  │  Record button
+│  └───────────────────────────────┘  │  Border: 1px #E8B4B8
+│                                     │  44px height
+│  ┌───────────────────────────────┐  │
+│  │   📁 Elegir de galería        │  │  Text link #5BA4A4
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### UI - Grabando
 
 ```
-┌─────────────────────────────────┐
-│  ←  Grabando...             🔄 │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │     [Camera Preview]      │  │
-│  │                           │  │
-│  │         🔴 REC            │  │
-│  │                           │  │
-│  └───────────────────────────┘  │
-│                                 │
-│          ● 00:45                │
-│                                 │
-│  ┌─────────────────────────┐    │
-│  │         ⏹️              │    │  ← Tap para detener
-│  └─────────────────────────┘    │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Grabando...               🔄 │
+├─────────────────────────────────────┤
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │
+│  │                               │  │
+│  │         ● REC                 │  │  Recording indicator
+│  │                               │  │  Dot: #C47070 pulse
+│  │                               │  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│          ● 00:45                    │  Dot pulse, timer
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │            ⏹️                 │  │  Stop button
+│  └───────────────────────────────┘  │  Border: 1px #C47070
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### UI - Modo Audio
 
 ```
-┌─────────────────────────────────┐
-│  ←  Graba tu mensaje            │
-├─────────────────────────────────┤
-│                                 │
-│                                 │
-│                                 │
-│         🎤                      │
-│                                 │
-│    ════════════════════         │
-│    [Waveform visualization]     │
-│    ════════════════════         │
-│                                 │
-│           00:00                 │
-│                                 │
-│  ┌─────────────────────────┐    │
-│  │         ⏺️              │    │
-│  └─────────────────────────┘    │
-│                                 │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Graba tu mensaje              │
+├─────────────────────────────────────┤
+│                                     │
+│                                     │
+│              🎤                     │  Emoji 4rem
+│                                     │
+│    ▁▂▃▄▅▆▇█▇▆▅▄▃▂▁                 │  Waveform visualization
+│                                     │  Bars: 3px width, #5BA4A4
+│            00:00                    │  Timer: Cormorant 24px
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │            ⏺️                 │  │  Record button
+│  └───────────────────────────────┘  │  Border: 1px #E8B4B8
+│                                     │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### UI - Modo Foto
 
 ```
-┌─────────────────────────────────┐
-│  ←  Elige una foto          📷 │
-├─────────────────────────────────┤
-│                                 │
-│  Recientes                      │
-│                                 │
-│  ┌─────┐ ┌─────┐ ┌─────┐       │
-│  │     │ │     │ │     │       │
-│  │ 📷  │ │ 📷  │ │ 📷  │       │
-│  └─────┘ └─────┘ └─────┘       │
-│                                 │
-│  ┌─────┐ ┌─────┐ ┌─────┐       │
-│  │     │ │     │ │     │       │
-│  │ 📷  │ │ 📷  │ │ 📷  │       │
-│  └─────┘ └─────┘ └─────┘       │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  📷 Tomar foto                  │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Elige una foto            📷 │
+├─────────────────────────────────────┤
+│                                     │
+│  Recientes                          │  Label Nunito 14px #6A6A6A
+│                                     │
+│  ┌─────┐ ┌─────┐ ┌─────┐          │  Grid 3 columns
+│  │     │ │     │ │     │          │  Gap: 2px
+│  │     │ │     │ │     │          │  Selection: border 3px #5BA4A4
+│  └─────┘ └─────┘ └─────┘          │
+│                                     │
+│  ┌─────┐ ┌─────┐ ┌─────┐          │
+│  │     │ │     │ │     │          │
+│  │     │ │     │ │     │          │
+│  └─────┘ └─────┘ └─────┘          │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │   📷 Tomar foto               │  │  Ghost button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Permisos Requeridos
@@ -291,47 +296,29 @@ Pantalla para capturar video/audio o seleccionar foto de la galería.
 | Audio | Micrófono |
 | Foto | Galería (+ Cámara opcional) |
 
-### Hooks Utilizados
-
-```typescript
-// Para video/foto
-const { permission, requestPermission, type, toggleCameraType } = useCamera();
-
-// Para audio
-const { startRecording, stopRecording, recording, duration } = useAudio();
-
-// Para galería
-const { pickImage, takePhoto } = useImagePicker();
-```
-
-### Acciones
-- **← (Back):** Cancelar, volver a selector
-- **🔄 (Flip):** Cambiar cámara frontal/trasera
-- **⏺️:** Iniciar grabación
-- **⏹️:** Detener grabación
-- **📁:** Seleccionar de galería
-- **📷:** Tomar foto (en modo foto)
-
 ### Post-Captura
 
 ```
-┌─────────────────────────────────┐
-│  ←  Preview                     │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │    [Media Preview]        │  │
-│  │                           │  │
-│  │         ▶️                │  │
-│  │                           │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  [ Volver a grabar ]            │
-│                                 │
-│        [ Usar este ]            │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Preview                       │
+├─────────────────────────────────────┤
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Media preview
+│  │                               │  │  Border: 1px #E5E5E5
+│  │           ▶️                  │  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │      Volver a grabar          │  │  Ghost button
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │        Usar este              │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -339,185 +326,79 @@ const { pickImage, takePhoto } = useImagePicker();
 ## Pantalla: Preview
 
 ### Descripción
-Vista previa de la carta antes de guardar. Permite agregar título, texto adicional y asignar guardián.
+Vista previa de la carta antes de guardar.
 
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  ←  Vista previa                │
-├─────────────────────────────────┤
-│                                 │
-│  Título                         │
-│  ┌───────────────────────────┐  │
-│  │ Video para mi hijo        │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │    [Media Preview]        │  │
-│  │                           │  │
-│  │         ▶️                │  │
-│  │         02:35             │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  Mensaje (opcional)             │
-│  ┌───────────────────────────┐  │
-│  │ Este video es para tu     │  │
-│  │ graduación...             │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Guardián                       │
-│  ┌───────────────────────────┐  │
-│  │ 👤 Sin asignar        >   │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  [ Guardar borrador ]           │
-│                                 │
-│       [ Activar carta ]         │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Vista previa                  │
+├─────────────────────────────────────┤
+│                                     │  BG: #FAFBF9
+│  Título                             │  Label Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │  Video para mi hijo           │  │  Input 44px
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Media preview
+│  │           ▶️                  │  │  Border: 1px #E5E5E5
+│  │          02:35                │  │  Duration: Nunito 12px
+│  └───────────────────────────────┘  │
+│                                     │
+│  Mensaje (opcional)                 │
+│  ┌───────────────────────────────┐  │
+│  │  Este video es para tu        │  │  Textarea
+│  │  graduación...                │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  👥 Guardián                        │
+│  ┌───────────────────────────────┐  │
+│  │  Sin asignar               >  │  │  Card touchable
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │      Guardar borrador         │  │  Ghost button
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │       Activar carta           │  │  Blush button
+│  └───────────────────────────────┘  │  Border: 1px #E8B4B8
+│                                     │
+└─────────────────────────────────────┘
 ```
 
-### Campos
-
-| Campo | Tipo | Validación |
-|-------|------|------------|
-| Título | `text` | Required, max 100 chars |
-| Mensaje | `textarea` | Optional |
-| Guardián | `select` | Optional |
-
-### Selector de Guardián
+### Selector de Guardián (Bottom Sheet)
 
 ```
-┌─────────────────────────────────┐
-│  Asignar Guardián           ✕  │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ ○ Sin asignar             │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ ● María López (Esposa)    │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ ○ Carlos (Hijo)           │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  + Agregar nuevo guardián       │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  Asignar Guardián               ✕  │
+├─────────────────────────────────────┤
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  ○  Sin asignar               │  │  Radio circle
+│  ├───────────────────────────────┤  │  Border: 1px #E5E5E5
+│  │  ●  María López (Esposa)      │  │  Selected: fill #5BA4A4
+│  ├───────────────────────────────┤  │
+│  │  ○  Carlos (Hijo)             │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  ➕ Agregar nuevo guardián    │  │  Text link #5BA4A4
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Acciones
-- **← (Back):** Volver a pantalla anterior
 - **"Guardar borrador":** Guarda con estado `borrador`
 - **"Activar carta":** Guarda con estado `activa`
-
----
-
-## Flujo de Guardado
-
-```typescript
-const saveCarta = async (data: CartaDraft, estado: 'borrador' | 'activa') => {
-  // 1. Si hay media, subir a Firebase Storage
-  let mediaUrl: string | undefined;
-  if (data.mediaUri) {
-    mediaUrl = await uploadMedia(data.mediaUri, data.mediaType);
-  }
-
-  // 2. Crear documento en Firestore
-  const cartaId = await createCarta({
-    userId: user.uid,
-    titulo: data.titulo,
-    tipo: data.tipo,
-    contenido: {
-      texto: data.texto,
-      mediaUrl,
-      mediaType: data.mediaType,
-    },
-    guardianId: data.guardianId,
-    estado,
-  });
-
-  // 3. Navegar a detalle o lista
-  router.replace(`/(tabs)/cartas/${cartaId}`);
-};
-```
-
----
-
-## Servicios
-
-### storage.ts
-
-```typescript
-// Subir media a Firebase Storage
-export const uploadMedia = async (
-  uri: string,
-  type: 'image' | 'video' | 'audio',
-  userId: string
-): Promise<string> => {
-  const filename = `${userId}/${Date.now()}.${getExtension(type)}`;
-  const ref = storageRef(storage, `cartas/${filename}`);
-
-  const response = await fetch(uri);
-  const blob = await response.blob();
-
-  await uploadBytes(ref, blob);
-  return getDownloadURL(ref);
-};
-
-// Generar thumbnail para video
-export const generateThumbnail = async (videoUri: string): Promise<string> => {
-  // Usar expo-video-thumbnails
-  const { uri } = await VideoThumbnails.getThumbnailAsync(videoUri, {
-    time: 1000,
-  });
-  return uri;
-};
-```
-
----
-
-## Componentes
-
-### CameraView
-
-```typescript
-interface CameraViewProps {
-  mode: 'video' | 'photo';
-  onCapture: (asset: MediaAsset) => void;
-  onCancel: () => void;
-}
-```
-
-### AudioRecorder
-
-```typescript
-interface AudioRecorderProps {
-  onRecordingComplete: (recording: AudioRecording) => void;
-  maxDuration?: number; // segundos
-}
-```
-
-### VideoPlayer
-
-```typescript
-interface VideoPlayerProps {
-  uri: string;
-  autoPlay?: boolean;
-  showControls?: boolean;
-}
-```
 
 ---
 
@@ -544,7 +425,7 @@ interface MediaAsset {
   type: 'image' | 'video';
   width?: number;
   height?: number;
-  duration?: number; // para video, en ms
+  duration?: number;
 }
 ```
 
@@ -553,33 +434,8 @@ interface MediaAsset {
 ```typescript
 interface AudioRecording {
   uri: string;
-  duration: number; // en ms
+  duration: number;
 }
-```
-
----
-
-## Navegación
-
-### Parámetros
-
-```typescript
-// De selector a media
-router.push({
-  pathname: '/crear/media',
-  params: { tipo: 'video' }
-});
-
-// De media a preview
-router.push({
-  pathname: '/crear/preview',
-  params: {
-    titulo: '',
-    tipo: 'video',
-    mediaUri: asset.uri,
-    mediaType: 'video',
-  }
-});
 ```
 
 ---
@@ -589,13 +445,13 @@ router.push({
 | Estado | Pantalla | UI |
 |--------|----------|-----|
 | `idle` | Media | Listo para grabar |
-| `recording` | Media | Grabando, mostrar timer |
-| `processing` | Media | Procesando video |
-| `preview` | Media | Mostrando preview |
-| `uploading` | Preview | Subiendo media, progress bar |
-| `saving` | Preview | Guardando en Firestore |
-| `success` | - | Redirect a detalle |
-| `error` | Cualquiera | Toast con mensaje |
+| `recording` | Media | ● pulse + timer |
+| `processing` | Media | 💓 pulse |
+| `preview` | Media | Play button |
+| `uploading` | Preview | Progress bar 2px |
+| `saving` | Preview | 💓 pulse |
+| `success` | - | Redirect + toast ✓ |
+| `error` | Any | Toast ⚠️ |
 
 ---
 
@@ -612,21 +468,21 @@ router.push({
 
 ## Testing Checklist
 
-- [ ] Seleccionar cada tipo de carta
+- [ ] Seleccionar cada tipo de carta con emoji
 - [ ] Escribir carta de texto
-- [ ] Grabar video (cámara frontal y trasera)
-- [ ] Grabar audio
-- [ ] Seleccionar foto de galería
+- [ ] Grabar video con ● REC indicator
+- [ ] Grabar audio con waveform
+- [ ] Seleccionar foto de galería (grid 3 cols)
 - [ ] Tomar foto con cámara
 - [ ] Preview de cada tipo de media
 - [ ] Volver a grabar
 - [ ] Agregar título y mensaje
-- [ ] Asignar guardián
+- [ ] Asignar guardián con radio buttons
 - [ ] Guardar como borrador
-- [ ] Activar carta
-- [ ] Manejo de permisos denegados
-- [ ] Límites de duración/tamaño
+- [ ] Activar carta con button blush
+- [ ] Loading state con 💓 pulse
+- [ ] Toast de éxito con ✓
 
 ---
 
-*Crear Module Spec v1.0 - MiLegado*
+*Crear Module Spec v3.0 - MiLegado Paradise Garden*

@@ -36,34 +36,43 @@ app/(auth)/
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│                                 │
-│         [Ilustración]           │
-│                                 │
-│   Tu voz. Tus historias.        │
-│       Para siempre.             │
-│                                 │
-│   Crea cartas, videos y         │
-│   mensajes que llegarán...      │
-│                                 │
-│         ● ○ ○                   │
-│                                 │
-│      [ Crear mi legado ]        │
-│         Tengo cuenta            │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│                                     │  BG: #FAFBF9
+│                                     │
+│              🌿                     │  Emoji grande
+│                                     │
+│     Tu voz. Tus historias.          │  Cormorant 32px #3D3D3D
+│         Para siempre.               │
+│                                     │
+│     Crea cartas, videos y           │  Nunito 16px #6A6A6A
+│     mensajes que llegarán           │
+│     a tus seres queridos...         │
+│                                     │
+│          ━━━  ━━  ━━                │  Steps: #5BA4A4 / #E5E5E5
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │       Crear mi legado         │  │  Primary outline button
+│  └───────────────────────────────┘  │  Border: 1px #5BA4A4
+│                                     │
+│         Tengo cuenta                │  Text link #5BA4A4
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Slides Content
 
 **Slide 1:**
+- Emoji: 🌿
 - Título: "Tu voz. Tus historias. Para siempre."
 - Subtítulo: "Crea cartas, videos y mensajes que llegarán a tus seres queridos en el momento perfecto."
 
 **Slide 2:**
+- Emoji: 🔒
 - Título: "Seguro. Privado. Tuyo."
 - Subtítulo: "Todo lo que guardes está protegido. Solo tú decides quién lo recibe y cuándo."
 
 **Slide 3:**
+- Emoji: 💓
 - Título: "Empieza con un recuerdo"
 - Subtítulo: "No necesitas hacer todo hoy. Una foto, una carta, a tu ritmo."
 
@@ -86,29 +95,35 @@ Formulario de inicio de sesión con email y contraseña.
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  ←                              │
-│                                 │
-│         [Logo App]              │
-│                                 │
-│    Bienvenido de vuelta         │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 📧 Email                  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 🔒 Contraseña         👁  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│        ¿Olvidaste tu            │
-│         contraseña?             │
-│                                 │
-│      [ Entrar ]                 │
-│                                 │
-│    ¿No tienes cuenta?           │
-│       Crear cuenta              │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←                                  │  Header 56px, border-bottom 1px #E5E5E5
+├─────────────────────────────────────┤
+│                                     │  BG: #FAFBF9
+│              🌿                     │
+│           MiLegado                  │  Cormorant 32px #3D3D3D
+│                                     │
+│     Bienvenido de vuelta            │  Nunito 18px #6A6A6A
+│                                     │
+│  Email                              │  Label: Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │ tu@email.com                  │  │  Input 44px, border 1px #E5E5E5
+│  └───────────────────────────────┘  │  radius: 0px
+│                                     │
+│  Contraseña                         │
+│  ┌───────────────────────────────┐  │
+│  │ ••••••••                   👁  │  │  Focus border: #5BA4A4
+│  └───────────────────────────────┘  │
+│                                     │
+│      ¿Olvidaste tu contraseña?      │  Text link #5BA4A4
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │           Entrar              │  │  Primary button outline
+│  └───────────────────────────────┘  │  Border: 1px #5BA4A4
+│                                     │
+│       ¿No tienes cuenta?            │  Nunito 14px #6A6A6A
+│         Crear cuenta                │  Text link #5BA4A4
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Campos
@@ -123,8 +138,8 @@ Formulario de inicio de sesión con email y contraseña.
 | Estado | UI |
 |--------|-----|
 | `idle` | Formulario vacío |
-| `loading` | Botón deshabilitado, spinner |
-| `error` | Toast/Banner con mensaje de error |
+| `loading` | Botón con 💓 pulse |
+| `error` | Toast top con ⚠️ |
 | `success` | Redirect a (tabs) |
 
 ### Errores Comunes
@@ -151,35 +166,41 @@ Formulario de registro de nueva cuenta.
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  ←                              │
-│                                 │
-│      Crea tu cuenta             │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 👤 Nombre                 │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 📧 Email                  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 🔒 Contraseña         👁  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 🔒 Confirmar          👁  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ☑ Acepto términos y            │
-│    condiciones                  │
-│                                 │
-│      [ Crear mi legado ]        │
-│                                 │
-│    ¿Ya tienes cuenta?           │
-│        Iniciar sesión           │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←      Crear cuenta                │  Header centrado, Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │  BG: #FAFBF9
+│  Nombre                             │
+│  ┌───────────────────────────────┐  │
+│  │ Tu nombre                     │  │  Input 44px
+│  └───────────────────────────────┘  │  Border: 1px #E5E5E5
+│                                     │
+│  Email                              │
+│  ┌───────────────────────────────┐  │
+│  │ tu@email.com                  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  Contraseña                         │
+│  ┌───────────────────────────────┐  │
+│  │ ••••••••                   👁  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  Confirmar contraseña               │
+│  ┌───────────────────────────────┐  │
+│  │ ••••••••                   👁  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌─┐ Acepto términos y              │  Checkbox square
+│  └─┘ condiciones                    │  Border: 1px #5BA4A4
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │       Crear mi legado         │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+│        ¿Ya tienes cuenta?           │
+│          Iniciar sesión             │  Link #5BA4A4
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Campos
@@ -228,9 +249,8 @@ const registerSchema = z.object({
   photoURL: null,
   createdAt: serverTimestamp(),
   lastLatido: serverTimestamp(),
-  latidoInterval: 30, // días
+  latidoInterval: 30,
   settings: {
-    theme: 'dark',
     notifications: true,
     language: 'es',
   }
@@ -244,12 +264,10 @@ const registerSchema = z.object({
 ### auth.ts
 
 ```typescript
-// Login
 export const login = async (email: string, password: string) => {
   return signInWithEmailAndPassword(auth, email, password);
 };
 
-// Register
 export const register = async (email: string, password: string, nombre: string) => {
   const userCredential = await createUserWithEmailAndPassword(auth, email, password);
   await updateProfile(userCredential.user, { displayName: nombre });
@@ -257,12 +275,10 @@ export const register = async (email: string, password: string, nombre: string) 
   return userCredential;
 };
 
-// Logout
 export const logout = async () => {
   return signOut(auth);
 };
 
-// Password Reset
 export const resetPassword = async (email: string) => {
   return sendPasswordResetEmail(auth, email);
 };
@@ -283,21 +299,16 @@ interface AuthContextType {
 }
 ```
 
-### Uso
-
-```typescript
-const { user, isAuthenticated, login } = useAuth();
-```
-
 ---
 
-## Componentes Utilizados
+## Componentes UI (Paradise Garden v3.0)
 
-| Componente | Ubicación | Uso |
-|------------|-----------|-----|
-| `Input` | `components/ui` | Campos de formulario |
-| `Button` | `components/ui` | Botones de acción |
-| `Card` | `components/ui` | Contenedor de slides |
+| Componente | Especificación |
+|------------|----------------|
+| `Input` | Height 44px, border 1px #E5E5E5, radius 0 |
+| `Button` | Outline, border 1px #5BA4A4, radius 0 |
+| `Checkbox` | Square, border 1px #5BA4A4 |
+| `Toast` | Top position, border 1px, emoji + mensaje |
 
 ---
 
@@ -335,7 +346,9 @@ const { user, isAuthenticated, login } = useAuth();
 - [ ] Validación de contraseñas que no coinciden
 - [ ] Onboarding se muestra solo la primera vez
 - [ ] Navegación entre pantallas
+- [ ] Toast de error con emoji ⚠️
+- [ ] Loading state con 💓 pulse
 
 ---
 
-*Auth Module Spec v1.0 - MiLegado*
+*Auth Module Spec v3.0 - MiLegado Paradise Garden*

@@ -32,73 +32,83 @@ Vista unificada con información del usuario, estadísticas del legado, configur
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Perfil                      ⚙️ │
-├─────────────────────────────────┤
-│                                 │
-│         ┌───────┐               │
-│         │  👤   │  ← Tap para   │
-│         │ foto  │    cambiar    │
-│         └───────┘               │
-│      Juan Pérez                 │
-│      juan@email.com             │
-│      [ Editar perfil ]          │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  📊 Mi Legado en Números        │
-│  ┌─────────┬─────────┬───────┐  │
-│  │    5    │    3    │   2   │  │
-│  │ Cartas  │Guardians│ Videos│  │
-│  └─────────┴─────────┴───────┘  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  💓 El Latido                   │
-│  ┌───────────────────────────┐  │
-│  │ Próximo check: 28 días    │  │
-│  │ Intervalo: cada 30 días   │  │
-│  │                    ⚙️     │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  ⚙️ Configuración               │
-│                                 │
-│  🔔 Notificaciones          >   │
-│  🌙 Tema                    >   │
-│  🔒 Seguridad               >   │
-│  ❓ Ayuda                   >   │
-│  📄 Términos y privacidad   >   │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  [ Cerrar sesión ]              │
-│                                 │
-│  v1.0.0                         │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  👤  Perfil                      ⚙️ │  Header 56px
+├─────────────────────────────────────┤  Cormorant 20px #3D3D3D
+│                                     │  BG: #FAFBF9
+│            (○)                      │  Avatar circle 80px
+│                                     │  Border: 1px #E5E5E5
+│         Juan Pérez                  │  Cormorant 24px #3D3D3D
+│       juan@email.com                │  Nunito 14px #6A6A6A
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │        Editar perfil          │  │  Ghost button
+│  └───────────────────────────────┘  │  Border: 1px #E5E5E5
+│                                     │
+│  ─────────────────────────────────  │  Separator 1px #E5E5E5
+│                                     │
+│  📊 Mi Legado en Números            │  Nunito 16px #3D3D3D
+│  ┌─────────┬─────────┬─────────┐   │
+│  │    5    │    3    │    2    │   │  Stats card
+│  │ Cartas  │ Guard.  │ Videos  │   │  Border: 1px #E5E5E5
+│  └─────────┴─────────┴─────────┘   │  Numbers: Cormorant 32px
+│                                     │  Labels: Nunito 12px #9A9A9A
+│  ─────────────────────────────────  │
+│                                     │
+│  💓 El Latido                       │  Nunito 16px #3D3D3D
+│  ┌───────────────────────────────┐  │
+│  │  Próximo check: 28 días       │  │  Card border 1px #E5E5E5
+│  │  Intervalo: cada 30 días      │  │  Days: Cormorant 24px #5BA4A4
+│  │                            ⚙️ │  │  Config icon
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  ⚙️ Configuración                   │  Section title
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  🔔  Notificaciones        >  │  │  List items
+│  ├───────────────────────────────┤  │  Border: 1px #E5E5E5
+│  │  🔒  Seguridad             >  │  │  Nunito 16px #3D3D3D
+│  ├───────────────────────────────┤  │
+│  │  ❓  Ayuda                 >  │  │
+│  ├───────────────────────────────┤  │
+│  │  📄  Términos              >  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │        Cerrar sesión          │  │  Danger outline button
+│  └───────────────────────────────┘  │  Border: 1px #C47070
+│                                     │
+│  v1.0.0                             │  Nunito 12px #9A9A9A center
+│                                     │
+├─────────────────────────────────────┤
+│  🏠      📚      👥      👤        │  Tab Bar
+└─────────────────────────────────────┘
 ```
 
 ### Secciones
 
 #### 1. Header de Usuario
-- Foto de perfil (tap para cambiar)
-- Nombre y email
-- Botón "Editar perfil"
+- Avatar circle 80px (única excepción border-radius)
+- Nombre en Cormorant 24px
+- Email en Nunito 14px
+- Botón "Editar perfil" ghost
 
 #### 2. Estadísticas
-- Total de cartas creadas
-- Total de guardianes
-- Total de videos/audios
+- Card con 3 columnas
+- Números grandes en Cormorant
+- Labels en Nunito caption
 
 #### 3. El Latido
-- Estado actual del latido
-- Días hasta próximo check
-- Configuración de intervalo
+- Card con días restantes
+- Config button ⚙️
 
 #### 4. Configuración
-- Lista de opciones con navegación
+- Lista de opciones con emojis
+- Chevron > para navegación
 
 ---
 
@@ -107,34 +117,33 @@ Vista unificada con información del usuario, estadísticas del legado, configur
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Editar Perfil              ✕  │
-├─────────────────────────────────┤
-│                                 │
-│         ┌───────┐               │
-│         │  👤   │               │
-│         │ foto  │               │
-│         └───────┘               │
-│      [ Cambiar foto ]           │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 👤 Nombre                 │  │
-│  │    Juan Pérez             │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 📧 Email                  │  │
-│  │    juan@email.com     🔒  │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │ 📱 Teléfono               │  │
-│  │    +52 55 1234 5678       │  │
-│  └───────────────────────────┘  │
-│                                 │
-│         [ Guardar ]             │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  Editar Perfil                  ✕  │  Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │
+│            (○)                      │  Avatar 80px
+│      [ Cambiar foto ]               │  Text link #5BA4A4
+│                                     │
+│  Nombre                             │  Label Nunito 14px
+│  ┌───────────────────────────────┐  │
+│  │  Juan Pérez                   │  │  Input 44px
+│  └───────────────────────────────┘  │  Border: 1px #E5E5E5
+│                                     │
+│  Email                              │
+│  ┌───────────────────────────────┐  │
+│  │  juan@email.com           🔒  │  │  Disabled, icon lock
+│  └───────────────────────────────┘  │  BG: #F5F6F4
+│                                     │
+│  Teléfono                           │
+│  ┌───────────────────────────────┐  │
+│  │  +52 55 1234 5678             │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │          Guardar              │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -144,36 +153,42 @@ Vista unificada con información del usuario, estadísticas del legado, configur
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Tu Señal de Vida           ✕  │
-├─────────────────────────────────┤
-│                                 │
-│  💓                             │
-│                                 │
-│  Cada cierto tiempo te          │
-│  enviaremos un saludo para      │
-│  confirmar que sigues aquí.     │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Frecuencia del latido          │
-│                                 │
-│  ○ Cada 15 días                 │
-│  ● Cada 30 días (recomendado)   │
-│  ○ Cada 60 días                 │
-│  ○ Cada 90 días                 │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Periodo de gracia: 7 días      │
-│                                 │
-│  Si no respondes en este        │
-│  tiempo, enviaremos             │
-│  recordatorios adicionales.     │
-│                                 │
-│         [ Guardar ]             │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  💓 Tu Señal de Vida            ✕  │  Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │
+│              💓                     │  Emoji 3rem
+│                                     │
+│     Cada cierto tiempo te           │  Nunito 16px #6A6A6A
+│     enviaremos un saludo para       │  center
+│     confirmar que sigues aquí.      │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Frecuencia del latido              │  Nunito 14px #6A6A6A
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  ○  Cada 15 días              │  │  Radio: circle
+│  ├───────────────────────────────┤  │  Border: 1px #E5E5E5
+│  │  ●  Cada 30 días (recomendado)│  │  Selected: fill #5BA4A4
+│  ├───────────────────────────────┤  │
+│  │  ○  Cada 60 días              │  │
+│  ├───────────────────────────────┤  │
+│  │  ○  Cada 90 días              │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Periodo de gracia: 7 días          │  Nunito 14px #3D3D3D
+│                                     │
+│  Si no respondes en este tiempo,    │  Nunito 14px #6A6A6A
+│  enviaremos recordatorios.          │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │          Guardar              │  │  Primary button
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Opciones de Intervalo
@@ -192,53 +207,36 @@ Vista unificada con información del usuario, estadísticas del legado, configur
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Notificaciones             ✕  │
-├─────────────────────────────────┤
-│                                 │
-│  El Latido                      │
-│  Recibir recordatorios    [ON]  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Actividad                      │
-│  Nuevos guardianes        [ON]  │
-│  Cartas entregadas        [ON]  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  Marketing                      │
-│  Tips y novedades        [OFF]  │
-│                                 │
-│         [ Guardar ]             │
-│                                 │
-└─────────────────────────────────┘
-```
-
----
-
-## Modal: Tema
-
-### UI
-
-```
-┌─────────────────────────────────┐
-│  Tema                       ✕  │
-├─────────────────────────────────┤
-│                                 │
-│  ┌─────────┐  ┌─────────┐      │
-│  │ ■■■■■■■ │  │ □□□□□□□ │      │
-│  │ ■■■■■■■ │  │ □□□□□□□ │      │
-│  │ ■■■■■■■ │  │ □□□□□□□ │      │
-│  └─────────┘  └─────────┘      │
-│    Oscuro       Claro          │
-│      ●            ○            │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  ○ Seguir sistema               │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  🔔 Notificaciones              ✕  │
+├─────────────────────────────────────┤
+│                                     │
+│  El Latido                          │  Section Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │  Recordatorios          [━●] │  │  Toggle: track 48×28px
+│  └───────────────────────────────┘  │  Active: #5BA4A4
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Actividad                          │
+│  ┌───────────────────────────────┐  │
+│  │  Nuevos guardianes      [━●] │  │
+│  ├───────────────────────────────┤  │
+│  │  Cartas entregadas      [━●] │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Marketing                          │
+│  ┌───────────────────────────────┐  │
+│  │  Tips y novedades       [●━] │  │  Inactive: #E5E5E5
+│  └───────────────────────────────┘  │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │          Guardar              │  │
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -249,11 +247,10 @@ Vista unificada con información del usuario, estadísticas del legado, configur
 
 ```typescript
 interface UserSettings {
-  theme: 'dark' | 'light' | 'system';
   language: 'es' | 'en';
   notifications: NotificationSettings;
-  latidoInterval: 15 | 30 | 60 | 90; // días
-  latidoGracePeriod: number;         // días (default 7)
+  latidoInterval: 15 | 30 | 60 | 90;
+  latidoGracePeriod: number;
 }
 
 interface NotificationSettings {
@@ -272,7 +269,7 @@ interface UserStats {
   totalGuardianes: number;
   totalVideos: number;
   totalAudios: number;
-  storageUsed: number; // bytes
+  storageUsed: number;
 }
 ```
 
@@ -293,12 +290,12 @@ interface LatidoStatus {
 
 ### Estados
 
-| Estado | Condición | Color | Acción |
-|--------|-----------|-------|--------|
-| `activo` | Confirmado recientemente | Verde | Ninguna |
-| `pendiente` | Dentro del periodo normal | Amarillo | Mostrar recordatorio |
-| `alerta` | En periodo de gracia | Naranja | Push + email |
-| `inactivo` | Gracia expirada | Rojo | Iniciar protocolo |
+| Estado | Condición | Color | Emoji |
+|--------|-----------|-------|-------|
+| `activo` | Confirmado recientemente | #7BAA9E | 💓 |
+| `pendiente` | Dentro del periodo normal | #C4A484 | 💓 |
+| `alerta` | En periodo de gracia | #C47070 | ⚠️ |
+| `inactivo` | Gracia expirada | #C47070 | 🚨 |
 
 ### Cálculo
 
@@ -338,107 +335,49 @@ const confirmLatido = async (userId: string): Promise<void> => {
 
 ---
 
-## Servicios
+## Modal: Cerrar Sesión
 
-### firestore.ts - User
-
-```typescript
-// Obtener perfil de usuario
-export const getUserProfile = async (userId: string): Promise<User | null> => {
-  const docRef = doc(db, 'users', userId);
-  const docSnap = await getDoc(docRef);
-  return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
-};
-
-// Actualizar perfil
-export const updateUserProfile = async (userId: string, data: Partial<User>): Promise<void> => {
-  await updateDoc(doc(db, 'users', userId), {
-    ...data,
-    updatedAt: serverTimestamp(),
-  });
-};
-
-// Actualizar settings
-export const updateUserSettings = async (userId: string, settings: Partial<UserSettings>): Promise<void> => {
-  await updateDoc(doc(db, 'users', userId), {
-    settings,
-    updatedAt: serverTimestamp(),
-  });
-};
-
-// Obtener estadísticas
-export const getUserStats = async (userId: string): Promise<UserStats> => {
-  const [cartasSnap, guardianesSnap] = await Promise.all([
-    getDocs(query(collection(db, 'cartas'), where('userId', '==', userId))),
-    getDocs(query(collection(db, 'guardianes'), where('userId', '==', userId))),
-  ]);
-
-  const cartas = cartasSnap.docs.map(d => d.data());
-  return {
-    totalCartas: cartas.length,
-    totalGuardianes: guardianesSnap.size,
-    totalVideos: cartas.filter(c => c.tipo === 'video').length,
-    totalAudios: cartas.filter(c => c.tipo === 'audio').length,
-    storageUsed: 0, // TODO: Calculate from storage
-  };
-};
 ```
-
----
-
-## Hooks
-
-### useBattery (existente)
-
-```typescript
-const { level, isCharging, percentage } = useBattery();
+┌─────────────────────────────────────┐
+│                                     │
+│              🚪                     │  Emoji 3rem
+│                                     │
+│        ¿Cerrar sesión?              │  Cormorant 24px #3D3D3D
+│                                     │
+│   Tu legado seguirá protegido.      │  Nunito 16px #6A6A6A
+│                                     │
+│  ┌─────────────┐ ┌─────────────┐   │
+│  │  Cancelar   │ │   Salir     │   │  Ghost / Danger
+│  └─────────────┘ └─────────────┘   │
+│                                     │
+└─────────────────────────────────────┘
 ```
-
-Mostrar indicador de batería en el header cuando está bajo (< 20%).
 
 ---
 
 ## Acciones de Configuración
 
-| Opción | Acción |
-|--------|--------|
-| Notificaciones | Modal de configuración |
-| Tema | Modal de selección |
-| Seguridad | Cambiar contraseña, biometría |
-| Ayuda | FAQ y contacto |
-| Términos | WebView con términos |
-| Cerrar sesión | Confirmar y logout |
-
----
-
-## Modal: Cerrar Sesión
-
-```
-┌─────────────────────────────────┐
-│                                 │
-│   ¿Cerrar sesión?               │
-│                                 │
-│   Tu legado seguirá protegido.  │
-│                                 │
-│  [ Cancelar ] [ Cerrar sesión ] │
-│                                 │
-└─────────────────────────────────┘
-```
+| Opción | Emoji | Acción |
+|--------|-------|--------|
+| Notificaciones | 🔔 | Modal configuración |
+| Seguridad | 🔒 | Cambiar contraseña |
+| Ayuda | ❓ | FAQ y contacto |
+| Términos | 📄 | WebView |
 
 ---
 
 ## Testing Checklist
 
 - [ ] Mostrar información del usuario
+- [ ] Avatar circular (única excepción radius)
 - [ ] Editar nombre y foto
-- [ ] Mostrar estadísticas correctas
-- [ ] Mostrar estado del latido
+- [ ] Mostrar estadísticas en card
+- [ ] Mostrar estado del latido con emoji
 - [ ] Configurar intervalo del latido
-- [ ] Confirmar latido manualmente
-- [ ] Cambiar tema (dark/light)
-- [ ] Configurar notificaciones
-- [ ] Cerrar sesión
+- [ ] Confirmar latido con 💓 pulse
+- [ ] Configurar notificaciones con toggles
+- [ ] Cerrar sesión con confirmación
 
 ---
 
-*Perfil Module Spec v1.0 - MiLegado*
+*Perfil Module Spec v3.0 - MiLegado Paradise Garden*

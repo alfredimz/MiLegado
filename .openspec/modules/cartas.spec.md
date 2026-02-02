@@ -29,63 +29,74 @@ app/(tabs)/cartas/
 ## Pantalla: Lista de Cartas
 
 ### Descripción
-Muestra todas las cartas del usuario en formato grid o lista, con opciones de filtrado y búsqueda.
+Muestra todas las cartas del usuario en formato grid, con opciones de filtrado.
 
 ### UI
 
 ```
-┌─────────────────────────────────┐
-│  Mi Legado              🔍 ⋮   │
-├─────────────────────────────────┤
-│                                 │
-│  [Todas] [Texto] [Video] [Audio]│
-│                                 │
-│  ┌─────────┐  ┌─────────┐      │
-│  │ 📝      │  │ 🎬      │      │
-│  │         │  │         │      │
-│  │ Para mi │  │ Video   │      │
-│  │ hijo    │  │ cumple  │      │
-│  │         │  │ 15 años │      │
-│  │ Activa  │  │ Borrador│      │
-│  └─────────┘  └─────────┘      │
-│                                 │
-│  ┌─────────┐  ┌─────────┐      │
-│  │ 🎤      │  │ 📝      │      │
-│  │         │  │         │      │
-│  │ Mensaje │  │ Carta   │      │
-│  │ de voz  │  │ mamá    │      │
-│  │         │  │         │      │
-│  │ Activa  │  │ Activa  │      │
-│  └─────────┘  └─────────┘      │
-│                                 │
-│                          [+]   │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  📚  Mi Legado                   ⚙️ │  Header 56px, border-bottom 1px #E5E5E5
+├─────────────────────────────────────┤  Título: Cormorant 20px #3D3D3D
+│                                     │  BG: #FAFBF9
+│  ━━━━━━━━  ━━━━━━  ━━━━━━  ━━━━━━  │  Tabs: border-bottom 2px
+│   Todas    Texto   Video   Audio   │  Activo: #5BA4A4
+│                                     │  Inactivo: #9A9A9A
+│  ┌───────────────┐ ┌───────────────┐│
+│  │ 📝            │ │ 🎬            ││  Cards: border 1px #E5E5E5
+│  │               │ │               ││  Hover: border #5BA4A4
+│  │ Para mi hijo  │ │ Video         ││  Padding: 16px
+│  │               │ │ cumple 15     ││  Radius: 0px
+│  │ ┌───────────┐ │ │               ││
+│  │ │ ✨ Activa │ │ │ ┌───────────┐││  Badge: border 1px
+│  │ └───────────┘ │ │ │  Borrador │││  Activa: #5BA4A4
+│  └───────────────┘ └─└───────────┘┘│  Borrador: #9A9A9A
+│                                     │
+│  ┌───────────────┐ ┌───────────────┐│
+│  │ 🎤            │ │ 📝            ││
+│  │               │ │               ││
+│  │ Mensaje       │ │ Carta para    ││
+│  │ de voz        │ │ mamá          ││
+│  │               │ │               ││
+│  │ ┌───────────┐ │ │ ┌───────────┐││
+│  │ │ ✨ Activa │ │ │ │ ✨ Activa │││
+│  │ └───────────┘ │ │ └───────────┘││
+│  └───────────────┘ └───────────────┘│
+│                                     │
+│                              ┌────┐ │
+│                              │ ➕ │ │  FAB: border 1px #5BA4A4
+│                              └────┘ │  44×44px
+├─────────────────────────────────────┤
+│  🏠      📚      👥      👤        │  Tab Bar 64px + safe
+│ Inicio  Legado  Guard.  Perfil     │  Active: #5BA4A4
+└─────────────────────────────────────┘
 ```
 
 ### Estados
 
 | Estado | UI |
 |--------|-----|
-| `loading` | Skeleton cards |
-| `empty` | EmptyState con CTA "Crear primera carta" |
-| `error` | Error banner con retry |
+| `loading` | 💓 pulse centrado |
+| `empty` | Empty state con emoji |
+| `error` | Toast ⚠️ con retry |
 | `success` | Grid de cartas |
 
 ### Empty State
 
 ```
-┌─────────────────────────────────┐
-│                                 │
-│         [Ilustración]           │
-│                                 │
-│    Aquí vivirán tus recuerdos   │
-│                                 │
-│   Empieza con una foto, una     │
-│      carta, o un video.         │
-│                                 │
-│    [ Crear mi primera carta ]   │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│                                     │
+│              📚                     │  Emoji 4rem
+│                                     │
+│     Aquí vivirán tus recuerdos      │  Cormorant 24px #3D3D3D
+│                                     │
+│     Empieza con una foto, una       │  Nunito 16px #6A6A6A
+│     carta, o un video.              │
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │   Crear mi primera carta      │  │  Primary button outline
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Filtros
@@ -99,9 +110,8 @@ Muestra todas las cartas del usuario en formato grid o lista, con opciones de fi
 
 ### Acciones
 - **Tap carta:** Navega a `cartas/[id]`
-- **FAB (+):** Navega a `crear/`
-- **Búsqueda:** Filtra por título
-- **Menú (⋮):** Opciones de ordenamiento
+- **FAB (➕):** Navega a `crear/`
+- **Tab activo:** Filtra por tipo
 
 ---
 
@@ -113,92 +123,112 @@ Vista completa de una carta con su contenido, guardián asignado y opciones de e
 ### UI - Carta de Texto
 
 ```
-┌─────────────────────────────────┐
-│  ←  Para mi hijo        ✏️ ⋮   │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │   Querido hijo,           │  │
-│  │                           │  │
-│  │   Escribo estas palabras  │  │
-│  │   para que sepas cuánto   │  │
-│  │   te amo y lo orgulloso   │  │
-│  │   que estoy de ti...      │  │
-│  │                           │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  👤 Guardián: María López       │
-│     (Esposa)                    │
-│                                 │
-│  📅 Creada: 15 ene 2025         │
-│  🔄 Modificada: 20 ene 2025     │
-│                                 │
-│  Estado: ● Activa               │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Para mi hijo           ⚙️    │  Header, Cormorant 20px
+├─────────────────────────────────────┤
+│                                     │  BG: #FAFBF9
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Card: border 1px #E5E5E5
+│  │   Querido hijo,               │  │  Padding: 20px
+│  │                               │  │  Nunito 16px #3D3D3D
+│  │   Escribo estas palabras      │  │
+│  │   para que sepas cuánto       │  │
+│  │   te amo y lo orgulloso       │  │
+│  │   que estoy de ti...          │  │
+│  │                               │  │
+│  └───────────────────────────────┘  │
+│                                     │
+│  ─────────────────────────────────  │  Separator 1px #E5E5E5
+│                                     │
+│  👥 Guardián                        │  Section title Nunito 14px #6A6A6A
+│  ┌───────────────────────────────┐  │
+│  │  (○)  María López             │  │  Avatar circle, Nunito 16px
+│  │       Esposa                  │  │  Nunito 14px #6A6A6A
+│  └───────────────────────────────┘  │
+│                                     │
+│  📅 Creada: 15 ene 2025             │  Nunito 14px #9A9A9A
+│  🔄 Modificada: 20 ene 2025         │
+│                                     │
+│  ┌───────────┐                      │
+│  │ ✨ Activa │                      │  Badge: border 1px #5BA4A4
+│  └───────────┘                      │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### UI - Carta de Video
 
 ```
-┌─────────────────────────────────┐
-│  ←  Video cumple 15      ✏️ ⋮  │
-├─────────────────────────────────┤
-│                                 │
-│  ┌───────────────────────────┐  │
-│  │                           │  │
-│  │       [Video Player]      │  │
-│  │                           │  │
-│  │          ▶️               │  │
-│  │                           │  │
-│  │     advancement bar        │  │
-│  │    00:00 / 02:35          │  │
-│  └───────────────────────────┘  │
-│                                 │
-│  Mensaje adicional (opcional):  │
-│  "Este video es para tu         │
-│   quinceañera..."               │
-│                                 │
-│  ─────────────────────────────  │
-│                                 │
-│  👤 Guardián: Sin asignar       │
-│     [ Asignar guardián ]        │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│  ←    Video cumple 15        ⚙️    │
+├─────────────────────────────────────┤
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │                               │  │  Video container
+│  │                               │  │  Border: 1px #E5E5E5
+│  │           ▶️                  │  │  Play button centered
+│  │                               │  │
+│  │   ━━━━━━━━━━━━━━━━━━━━━━━━   │  │  Progress: 2px #5BA4A4
+│  │   00:00 / 02:35               │  │  Nunito 12px #9A9A9A
+│  └───────────────────────────────┘  │
+│                                     │
+│  Mensaje:                           │  Label Nunito 14px #6A6A6A
+│  "Este video es para tu             │  Nunito 16px #3D3D3D
+│   quinceañera..."                   │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  👥 Guardián                        │
+│  ┌───────────────────────────────┐  │
+│  │  Sin asignar                  │  │
+│  │  ┌─────────────────────────┐  │  │
+│  │  │    Asignar guardián     │  │  │  Ghost button
+│  │  └─────────────────────────┘  │  │
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ### Acciones
 - **← (Back):** Volver a lista
-- **✏️ (Edit):** Navega a modo edición
-- **⋮ (Menu):** Eliminar, Compartir, Duplicar
+- **⚙️ (Menu):** Editar, Duplicar, Eliminar
 - **Tap Guardián:** Navega a detalle guardián
 
-### Menú de Opciones
+### Menú de Opciones (Bottom Sheet)
 
-| Opción | Acción |
-|--------|--------|
-| Editar | Navega a edición |
-| Duplicar | Crea copia como borrador |
-| Eliminar | Modal de confirmación |
+```
+┌─────────────────────────────────────┐
+│                                     │
+│  ┌───────────────────────────────┐  │
+│  │  ✏️  Editar                   │  │  Nunito 16px #3D3D3D
+│  └───────────────────────────────┘  │  Border-bottom: 1px #E5E5E5
+│  ┌───────────────────────────────┐  │
+│  │  📋  Duplicar                 │  │
+│  └───────────────────────────────┘  │
+│  ┌───────────────────────────────┐  │
+│  │  🗑️  Eliminar                 │  │  Color: #C47070
+│  └───────────────────────────────┘  │
+│                                     │
+└─────────────────────────────────────┘
+```
 
 ### Modal Eliminar
 
 ```
-┌─────────────────────────────────┐
-│                                 │
-│         ⚠️                      │
-│                                 │
-│   ¿Eliminar esta carta?         │
-│                                 │
-│   Esta acción no se puede       │
-│   deshacer.                     │
-│                                 │
-│   [ Cancelar ] [ Eliminar ]     │
-│                                 │
-└─────────────────────────────────┘
+┌─────────────────────────────────────┐
+│                                     │
+│              ⚠️                     │  Emoji 3rem
+│                                     │
+│      ¿Eliminar esta carta?          │  Cormorant 24px #3D3D3D
+│                                     │
+│      Esta acción no se puede        │  Nunito 16px #6A6A6A
+│      deshacer.                      │
+│                                     │
+│  ┌─────────────┐ ┌─────────────┐   │
+│  │  Cancelar   │ │  Eliminar   │   │  Ghost / Danger buttons
+│  └─────────────┘ └─────────────┘   │  Danger: border #C47070
+│                                     │
+└─────────────────────────────────────┘
 ```
 
 ---
@@ -227,17 +257,17 @@ interface CartaContenido {
   mediaUrl?: string;
   mediaType?: 'image' | 'video' | 'audio';
   thumbnailUrl?: string;
-  duracion?: number; // segundos para audio/video
+  duracion?: number;
 }
 ```
 
 ### Estados de Carta
 
-| Estado | Descripción | Badge Color |
-|--------|-------------|-------------|
-| `borrador` | No publicada, editable | `neutral.500` |
-| `activa` | Lista para entrega | `success.500` |
-| `entregada` | Ya fue entregada al guardián | `primary.500` |
+| Estado | Descripción | Badge |
+|--------|-------------|-------|
+| `borrador` | No publicada | Border #9A9A9A |
+| `activa` | Lista para entrega | Border #5BA4A4, emoji ✨ |
+| `entregada` | Ya fue entregada | Border #7BAA9E |
 
 ---
 
@@ -246,7 +276,6 @@ interface CartaContenido {
 ### firestore.ts - Cartas
 
 ```typescript
-// Obtener cartas del usuario
 export const getCartas = async (userId: string): Promise<Carta[]> => {
   const q = query(
     collection(db, 'cartas'),
@@ -257,14 +286,12 @@ export const getCartas = async (userId: string): Promise<Carta[]> => {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// Obtener carta por ID
 export const getCarta = async (cartaId: string): Promise<Carta | null> => {
   const docRef = doc(db, 'cartas', cartaId);
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
 };
 
-// Crear carta
 export const createCarta = async (carta: Omit<Carta, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> => {
   const docRef = await addDoc(collection(db, 'cartas'), {
     ...carta,
@@ -274,7 +301,6 @@ export const createCarta = async (carta: Omit<Carta, 'id' | 'createdAt' | 'updat
   return docRef.id;
 };
 
-// Actualizar carta
 export const updateCarta = async (cartaId: string, data: Partial<Carta>): Promise<void> => {
   const docRef = doc(db, 'cartas', cartaId);
   await updateDoc(docRef, {
@@ -283,7 +309,6 @@ export const updateCarta = async (cartaId: string, data: Partial<Carta>): Promis
   });
 };
 
-// Eliminar carta
 export const deleteCarta = async (cartaId: string): Promise<void> => {
   await deleteDoc(doc(db, 'cartas', cartaId));
 };
@@ -291,7 +316,7 @@ export const deleteCarta = async (cartaId: string): Promise<void> => {
 
 ---
 
-## Componentes
+## Componentes UI (Paradise Garden v3.0)
 
 ### CartaCard
 
@@ -303,10 +328,10 @@ interface CartaCardProps {
 ```
 
 **Visualización:**
-- Thumbnail o icono según tipo
-- Título truncado (max 2 líneas)
-- Badge de estado
-- Indicador de guardián asignado
+- Border: 1px #E5E5E5, hover #5BA4A4
+- Radius: 0px
+- Emoji según tipo (📝, 🎬, 🎤)
+- Badge de estado con border 1px
 
 ### VideoPlayer
 
@@ -314,61 +339,28 @@ interface CartaCardProps {
 interface VideoPlayerProps {
   uri: string;
   poster?: string;
-  autoPlay?: boolean;
-  onEnd?: () => void;
 }
 ```
 
----
-
-## Flujo de Datos
-
-```
-[Lista Cartas]
-     │
-     │ useEffect(() => getCartas(userId))
-     ▼
-[Firestore Query]
-     │
-     │ snapshot.docs.map(...)
-     ▼
-[State: cartas[]]
-     │
-     │ cartas.map(carta => <CartaCard />)
-     ▼
-[Render Grid]
-```
-
----
-
-## Firestore Rules
-
-```javascript
-match /cartas/{cartaId} {
-  // Solo el dueño puede leer/escribir
-  allow read, write: if request.auth != null
-    && request.auth.uid == resource.data.userId;
-
-  // Crear solo si el userId coincide
-  allow create: if request.auth != null
-    && request.auth.uid == request.resource.data.userId;
-}
-```
+**Controles:**
+- Play/Pause: ▶️ / ⏸️
+- Progress bar: 2px height, #5BA4A4
+- Timestamp: Nunito 12px #9A9A9A
 
 ---
 
 ## Testing Checklist
 
 - [ ] Cargar lista de cartas
-- [ ] Mostrar empty state cuando no hay cartas
+- [ ] Mostrar empty state con emoji 📚
 - [ ] Filtrar por tipo
 - [ ] Navegar a detalle de carta
-- [ ] Reproducir video en detalle
-- [ ] Reproducir audio en detalle
-- [ ] Eliminar carta con confirmación
+- [ ] Reproducir video con controles emoji
+- [ ] Reproducir audio con waveform
+- [ ] Eliminar carta con modal de confirmación
 - [ ] Mostrar badge de estado correcto
 - [ ] Mostrar guardián asignado
 
 ---
 
-*Cartas Module Spec v1.0 - MiLegado*
+*Cartas Module Spec v3.0 - MiLegado Paradise Garden*

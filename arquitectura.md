@@ -1,14 +1,15 @@
 # 🗺️ Arquitectura de Navegación — Especificación Técnica
 
-## Proyecto: App de Legado Digital
+## Proyecto: MiLegado — App de Legado Digital
 ## Stack: React Native + Expo Router + React Navigation
+## Design System: Paradise Garden v3.0
 
 ---
 
 ## 📐 Sitemap Jerárquico
 
 ```
-App Legado Digital
+MiLegado — App de Legado Digital
 │
 ├── 🔐 AUTH STACK (No autenticado)
 │   ├── Splash Screen
@@ -19,35 +20,35 @@ App Legado Digital
 │
 ├── 🏠 MAIN TABS (Autenticado)
 │   │
-│   ├── 📍 Tab 1: Home (Dashboard)
-│   │   ├── Estado del Latido
+│   ├── 📍 Tab 1: Home (Dashboard) — 🏠
+│   │   ├── Estado del Latido 💓
 │   │   ├── Indicador de Batería [API]
 │   │   ├── Resumen del Legado
 │   │   ├── CTA: Crear contenido
 │   │   └── [Modal] Confirmar Latido
 │   │
-│   ├── 📍 Tab 2: Mi Legado (Cartas)
+│   ├── 📍 Tab 2: Mi Legado (Cartas) — 📚
 │   │   ├── Lista de Cartas
 │   │   ├── [Stack] Detalle Carta → {cartaId}
 │   │   ├── [Stack] Editar Carta → {cartaId}
 │   │   └── [Modal] Confirmar Eliminar
 │   │
-│   ├── 📍 Tab 3: Guardianes
+│   ├── 📍 Tab 3: Guardianes — 👥
 │   │   ├── Lista de Guardianes
 │   │   ├── [Stack] Agregar Guardián
 │   │   ├── [Stack] Detalle Guardián → {guardianId}
 │   │   └── [Stack] Preguntas de Seguridad
 │   │
-│   └── 📍 Tab 4: Perfil
+│   └── 📍 Tab 4: Perfil — 👤
 │       ├── Info del Usuario
 │       ├── [Stack] Editar Perfil
-│       ├── [Stack] Seguridad
-│       ├── [Stack] Configurar Latido
+│       ├── [Stack] Seguridad 🔒
+│       ├── [Stack] Configurar Latido 💓
 │       ├── [Stack] Mi Plan / Upgrade
 │       └── [Stack] Ayuda / FAQ
 │
 ├── ✨ CREAR CARTA STACK (Modal Stack)
-│   ├── Seleccionar Tipo
+│   ├── Seleccionar Tipo (📝 🎬 🎤 📷)
 │   ├── Captura de Media
 │   │   ├── [API] Cámara (foto)
 │   │   ├── [API] Galería (imagen)
@@ -60,9 +61,9 @@ App Legado Digital
 │
 └── 👤 GUARDIAN FLOW (Flujo separado)
     ├── Verificación de Identidad
-    ├── Preguntas de Seguridad
+    ├── Preguntas de Seguridad 🔒
     ├── Subir Acta de Defunción [API Cámara]
-    ├── Mensaje de Empatía
+    ├── Mensaje de Empatía 🕊️
     ├── Reproducción de Despedida
     └── Acceso a Bóveda
 ```
@@ -169,17 +170,50 @@ export default function RootLayout() {
 
 ```typescript
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { Text, View, StyleSheet } from 'react-native';
+
+// Paradise Garden v3.0 Colors
+const colors = {
+  primary: '#5BA4A4',
+  textMuted: '#9A9A9A',
+  surface: '#FFFFFF',
+  border: '#E5E5E5',
+};
+
+// Emoji Icons Component
+const TabIcon = ({ emoji, focused }: { emoji: string; focused: boolean }) => (
+  <Text style={{ fontSize: 24, opacity: focused ? 1 : 0.6 }}>
+    {emoji}
+  </Text>
+);
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#F97316',
-        tabBarInactiveTintColor: '#71717A',
+        tabBarActiveTintColor: colors.primary,      // #5BA4A4
+        tabBarInactiveTintColor: colors.textMuted,  // #9A9A9A
         tabBarStyle: {
-          backgroundColor: '#0F0F0F',
-          borderTopColor: '#2A2A2A',
+          backgroundColor: colors.surface,          // #FFFFFF
+          borderTopColor: colors.border,            // #E5E5E5
+          borderTopWidth: 1,
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'Nunito_400Regular',
+          fontSize: 11,
+        },
+        headerStyle: {
+          backgroundColor: colors.surface,
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
+        },
+        headerTitleStyle: {
+          fontFamily: 'CormorantGaramond_400Regular',
+          fontSize: 20,
+          color: '#3D3D3D',
         },
       }}
     >
@@ -187,8 +221,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Inicio',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="🏠" focused={focused} />
           ),
         }}
       />
@@ -196,8 +230,8 @@ export default function TabLayout() {
         name="cartas"
         options={{
           title: 'Mi Legado',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="document-text" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="📚" focused={focused} />
           ),
         }}
       />
@@ -205,8 +239,8 @@ export default function TabLayout() {
         name="guardianes"
         options={{
           title: 'Guardianes',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="👥" focused={focused} />
           ),
         }}
       />
@@ -214,8 +248,8 @@ export default function TabLayout() {
         name="perfil"
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon emoji="👤" focused={focused} />
           ),
         }}
       />
@@ -332,16 +366,16 @@ router.replace('/(tabs)');
 ```
 [Splash] 
     ↓ 2s auto
-[Onboarding Slide 1] → "Tu legado, tu voz"
+[Onboarding Slide 1] → "Tu voz. Tus historias. Para siempre." 🌿
     ↓ swipe/tap
-[Onboarding Slide 2] → "Seguro y privado"
+[Onboarding Slide 2] → "Seguro. Privado. Tuyo." 🔒
     ↓ swipe/tap
-[Onboarding Slide 3] → "Empieza hoy" + CTA
-    ↓ tap "Crear cuenta"
+[Onboarding Slide 3] → "Empieza con un recuerdo" 💓 + CTA
+    ↓ tap "Crear mi legado"
 [Registro]
     ↓ submit (email + password)
 [Dashboard] 
-    ↓ tap "+" o CTA "Sube tu primer recuerdo"
+    ↓ tap "➕" o CTA "Sube tu primer recuerdo"
 [Crear - Seleccionar Tipo]
     ↓ tap "📷 Foto"
 [Crear - Media] {tipo: 'foto'}
@@ -354,7 +388,7 @@ router.replace('/(tabs)');
     ↓ tap "Continuar"
 [Crear - Asignar Guardián]
     ↓ agregar guardián o skip
-[Modal - Confirmación] → "🎉 Tu legado ha comenzado"
+[Modal - Confirmación] → "✨ Tu legado ha comenzado"
     ↓ tap "Ir a Mi Legado"
 [Mi Legado - Lista]
 ```
@@ -363,24 +397,24 @@ router.replace('/(tabs)');
 
 ```
 [Dashboard]
-    ↓ tap FAB "+"
+    ↓ tap FAB "➕"
 [Bottom Sheet - Tipo Contenido]
     ↓ tap "🎬 Video"
 [Sistema - Permisos] → Cámara + Micrófono
     ↓ allow
 [Crear - Media] {tipo: 'video'}
     ↓ API expo-camera (modo video)
-    ↓ tap record → grabando...
-    ↓ tap stop
-[Crear - Preview] → reproducir video
-    ↓ tap "Usar este video" o "Regrabar"
+    ↓ tap ⏺️ record → grabando... (● REC)
+    ↓ tap ⏹️ stop
+[Crear - Preview] → reproducir video ▶️
+    ↓ tap "Usar este video" o "Volver a grabar"
 [Crear - Texto] → agregar título/mensaje
     ↓ tap "Continuar"
 [Crear - Asignar]
     ↓ seleccionar guardián
-[Subiendo...] → Firebase Storage
+[Subiendo...] → Firebase Storage (progress 2px #5BA4A4)
     ↓ progress bar
-[Modal - Éxito]
+[Modal - Éxito] ✓
     ↓ dismiss
 [Mi Legado]
 ```
@@ -388,14 +422,14 @@ router.replace('/(tabs)');
 ### Flow 3: Prueba de Vida (El Latido)
 
 ```
-[Push Notification] → "¿Todo bien? Confirma que sigues aquí"
+[Push Notification] → "💓 ¿Todo bien? Confirma que sigues aquí"
     ↓ tap notification
 [Dashboard] → Deep link con action: 'latido'
     ↓ mostrar banner prominente
 [Bottom Sheet - Confirmar Latido]
-    ↓ tap "Sigo aquí ❤️"
+    ↓ tap "Sigo aquí 💓"
 [API Call] → updateLastActive()
-[Toast] → "Latido confirmado. Nos vemos en 30 días"
+[Toast] → "✓ Latido confirmado. Nos vemos en 30 días"
 [Dashboard] → badge removido
 ```
 
@@ -408,19 +442,19 @@ router.replace('/(tabs)');
     ↓ app installed? → open app : → app store
 [Guardian - Verificar]
     ↓ validar token
-[Guardian - Preguntas] → responder preguntas de seguridad
+[Guardian - Preguntas] → responder preguntas de seguridad 🔒
     ↓ 2 de 3 correctas
 [Guardian - Acta]
     ↓ tap "Subir acta de defunción"
 [Sistema - Cámara] → API expo-camera
     ↓ capturar foto del documento
-[Procesando...] → verificación (manual o auto)
+[Procesando...] → verificación (💓 pulse)
     ↓ aprobado
-[Guardian - Mensaje] → pantalla de empatía
+[Guardian - Mensaje] → pantalla de empatía 🕊️
     ↓ tap "Ver legado"
-[Guardian - Video Despedida] → reproducción automática
+[Guardian - Video Despedida] → reproducción automática ▶️
     ↓ video termina
-[Guardian - Bóveda] → acceso completo al contenido
+[Guardian - Bóveda] → acceso completo al contenido 🌿
 ```
 
 ---
@@ -530,6 +564,73 @@ export function useImagePicker() {
 
 ---
 
+## 🎨 Design System Integration
+
+### Paradise Garden v3.0 - Quick Reference
+
+```typescript
+// constants/theme.ts
+
+export const colors = {
+  // Backgrounds
+  background: '#FAFBF9',
+  surface: '#FFFFFF',
+  surfaceAlt: '#F5F6F4',
+
+  // Primary
+  primary: '#5BA4A4',
+  primaryLight: '#7BBDBD',
+  primaryDark: '#4A8F8F',
+
+  // Secondary
+  secondary: '#C4A484',
+  blush: '#E8B4B8',
+
+  // Text
+  text: '#3D3D3D',
+  textSecondary: '#6A6A6A',
+  textMuted: '#9A9A9A',
+
+  // Borders
+  border: '#E5E5E5',
+  borderLight: '#F0F0F0',
+
+  // Semantic
+  success: '#7BAA9E',
+  error: '#C47070',
+  warning: '#D4C4A5',
+};
+
+export const emojis = {
+  home: '🏠',
+  legacy: '📚',
+  guardians: '👥',
+  profile: '👤',
+  text: '📝',
+  video: '🎬',
+  audio: '🎤',
+  photo: '📷',
+  heartbeat: '💓',
+  active: '✨',
+  check: '✓',
+  settings: '⚙️',
+  security: '🔒',
+  add: '➕',
+  back: '←',
+  warning: '⚠️',
+};
+
+export const layout = {
+  headerHeight: 56,
+  tabBarHeight: 64,
+  screenPadding: 16,
+  borderRadius: 0,  // No rounded corners (except avatars)
+  borderWidth: 1,
+};
+```
+
+---
+
 ## ✅ Checklist de Cumplimiento de Rúbrica
 
 ### Navegación (2 puntos - Nivel 4 Destacado)
@@ -569,13 +670,14 @@ export function useImagePicker() {
 
 ## 🎯 Próximos Pasos
 
-1. **Sistema de Diseño:** Definir colores, tipografía, componentes
-2. **OpenSpec:** Crear proposals para cada módulo
+1. ✅ **Sistema de Diseño:** Paradise Garden v3.0 definido
+2. ✅ **OpenSpec:** Proposals para cada módulo creados
 3. **Configurar Expo:** Inicializar proyecto con estructura
 4. **Firebase:** Crear proyecto y configurar servicios
 5. **Desarrollo:** Implementar pantalla por pantalla
 
 ---
 
-*Documento técnico generado para proyecto UNIR — Enero 2025*
+*Documento técnico — MiLegado UNIR 2025*
+*Design System: Paradise Garden v3.0*
 *Compatible con OpenSpec y Claude Code*
