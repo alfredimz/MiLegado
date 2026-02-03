@@ -49,31 +49,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Escuchar cambios de autenticación
   useEffect(() => {
+    let isSubscribed = true;
+
+    // Timeout de seguridad - si Firebase no responde en 5 segundos, continuar sin usuario
+    const timeoutId = setTimeout(() => {
+      if (isSubscribed && isLoading) {
+        console.warn('[AuthContext] Firebase Auth timeout - continuando sin autenticación');
+        setIsLoading(false);
+      }
+    }, 5000);
+
     const unsubscribe = subscribeToAuthChanges(async (fbUser) => {
+      if (!isSubscribed) return;
+
+      clearTimeout(timeoutId);
       setFirebaseUser(fbUser);
 
       if (fbUser) {
         try {
           // Obtener datos del usuario de Firestore
           const userData = await getUserDocument(fbUser.uid);
-          setUser(userData);
+          if (isSubscribed) {
+            setUser(userData);
 
-          // Actualizar última actividad
-          if (userData) {
-            await updateUserDocument(fbUser.uid, {});
+            // Actualizar última actividad
+            if (userData) {
+              await updateUserDocument(fbUser.uid, {});
+            }
           }
         } catch (error) {
           console.error('Error fetching user data:', error);
-          setUser(null);
+          if (isSubscribed) setUser(null);
         }
       } else {
-        setUser(null);
+        if (isSubscribed) setUser(null);
       }
 
-      setIsLoading(false);
+      if (isSubscribed) setIsLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      isSubscribed = false;
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
   }, []);
 
   const signUp = useCallback(

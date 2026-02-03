@@ -8,6 +8,7 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  Modal,
 } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -24,12 +25,15 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{
     displayName?: string;
     email?: string;
     password?: string;
     confirmPassword?: string;
+    terms?: string;
   }>({});
 
   const validate = (): boolean => {
@@ -57,6 +61,10 @@ export default function RegisterScreen() {
       newErrors.confirmPassword = 'Confirma tu contraseña';
     } else if (password !== confirmPassword) {
       newErrors.confirmPassword = 'Las contraseñas no coinciden';
+    }
+
+    if (!acceptedTerms) {
+      newErrors.terms = 'Debes aceptar los términos y condiciones';
     }
 
     setErrors(newErrors);
@@ -154,21 +162,41 @@ export default function RegisterScreen() {
             leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
           />
 
+          {/* Checkbox de terminos */}
+          <TouchableOpacity
+            style={styles.termsCheckbox}
+            onPress={() => setAcceptedTerms(!acceptedTerms)}
+            activeOpacity={0.7}
+          >
+            <View style={[
+              styles.checkbox,
+              acceptedTerms && styles.checkboxChecked,
+            ]}>
+              {acceptedTerms && <Text style={styles.checkmark}>✓</Text>}
+            </View>
+            <Text style={styles.termsCheckboxText}>
+              Acepto los{' '}
+              <Text
+                style={styles.termsLink}
+                onPress={() => setShowTermsModal(true)}
+              >
+                Términos y Condiciones
+              </Text>
+            </Text>
+          </TouchableOpacity>
+          {errors.terms && (
+            <Text style={styles.termsError}>{errors.terms}</Text>
+          )}
+
           <Button
             title="Crear cuenta"
             onPress={handleRegister}
             loading={isLoading}
             fullWidth
             style={styles.registerButton}
+            disabled={!acceptedTerms}
           />
         </View>
-
-        {/* Términos */}
-        <Text style={styles.terms}>
-          Al registrarte, aceptas nuestros{' '}
-          <Text style={styles.termsLink}>Términos de servicio</Text> y{' '}
-          <Text style={styles.termsLink}>Política de privacidad</Text>
-        </Text>
 
         {/* Login link */}
         <View style={styles.footer}>
@@ -180,6 +208,65 @@ export default function RegisterScreen() {
           </Link>
         </View>
       </ScrollView>
+
+      {/* Modal de términos */}
+      <Modal
+        visible={showTermsModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowTermsModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Términos y Condiciones</Text>
+
+            <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
+              <Text style={styles.modalSectionTitle}>1. Aceptación de los términos</Text>
+              <Text style={styles.modalText}>
+                Al utilizar la aplicación MiLegado, usted acepta estos términos y condiciones en su totalidad.
+              </Text>
+
+              <Text style={styles.modalSectionTitle}>2. Descripción del servicio</Text>
+              <Text style={styles.modalText}>
+                MiLegado es una plataforma de legado digital que permite crear mensajes para ser entregados a guardianes designados.
+              </Text>
+
+              <Text style={styles.modalSectionTitle}>3. Privacidad</Text>
+              <Text style={styles.modalText}>
+                Sus datos personales serán tratados conforme a nuestra Política de Privacidad. Nos comprometemos a proteger su información.
+              </Text>
+
+              <Text style={styles.modalSectionTitle}>4. El Latido</Text>
+              <Text style={styles.modalText}>
+                La función "El Latido" requiere confirmación periódica. Si no confirma su estado, el sistema notificará a sus guardianes.
+              </Text>
+
+              <Text style={styles.modalSectionTitle}>5. Proyecto académico</Text>
+              <Text style={styles.modalText}>
+                Esta aplicación ha sido desarrollada como proyecto académico para UNIR. Es un prototipo con fines educativos.
+              </Text>
+            </ScrollView>
+
+            <View style={styles.modalButtons}>
+              <Button
+                title="Aceptar"
+                onPress={() => {
+                  setAcceptedTerms(true);
+                  setShowTermsModal(false);
+                }}
+                variant="primary"
+                fullWidth
+              />
+              <Button
+                title="Cerrar"
+                onPress={() => setShowTermsModal(false)}
+                variant="ghost"
+                fullWidth
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -234,15 +321,46 @@ const styles = StyleSheet.create({
   registerButton: {
     marginTop: spacing.md,
   },
-  terms: {
+  termsCheckbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderColor: Colors.border,
+    borderRadius: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: spacing.sm,
+  },
+  checkboxChecked: {
+    borderColor: Colors.primary,
+    backgroundColor: Colors.primary,
+  },
+  checkmark: {
+    color: Colors.textInverse,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  termsCheckboxText: {
+    flex: 1,
     fontSize: 14,
     fontFamily: 'Nunito_300Light',
-    color: Colors.textMuted,
-    textAlign: 'center',
-    marginBottom: spacing.xl,
+    color: Colors.textSecondary,
   },
   termsLink: {
     color: Colors.primary,
+    fontFamily: 'Nunito_400Regular',
+  },
+  termsError: {
+    fontSize: 12,
+    fontFamily: 'Nunito_400Regular',
+    color: Colors.error,
+    marginBottom: spacing.sm,
   },
   footer: {
     flexDirection: 'row',
@@ -259,5 +377,49 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Nunito_400Regular',
     color: Colors.primary,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
+  },
+  modalContent: {
+    backgroundColor: Colors.background,
+    padding: spacing.lg,
+    width: '100%',
+    maxWidth: 400,
+    maxHeight: '80%',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_400Regular',
+    color: Colors.text,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+  },
+  modalScroll: {
+    maxHeight: 300,
+    marginBottom: spacing.md,
+  },
+  modalSectionTitle: {
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
+    color: Colors.text,
+    marginTop: spacing.md,
+    marginBottom: spacing.xs,
+  },
+  modalText: {
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
+    color: Colors.textSecondary,
+    lineHeight: 20,
+  },
+  modalButtons: {
+    gap: spacing.sm,
   },
 });

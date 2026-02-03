@@ -30,6 +30,7 @@ export const Colors = {
   background: '#FAFBF9',
   surface: '#FFFFFF',
   surfaceAlt: '#F5F6F4',
+  surfaceVariant: '#F0F1EF',
   surfaceElevated: '#FFFFFF',
 
   // Text

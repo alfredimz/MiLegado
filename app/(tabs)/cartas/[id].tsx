@@ -12,7 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, spacing } from '../../../constants';
 import { Button, Card, Badge, Avatar } from '../../../components/ui';
 import { Header } from '../../../components/layout';
-import { VideoPlayer } from '../../../components/media';
+import { VideoPlayer, AudioPlayer } from '../../../components/media';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getCarta, deleteCarta, getGuardian } from '../../../services/firestore';
 import type { Carta, Guardian, TipoCarta } from '../../../types';
@@ -176,13 +176,11 @@ export default function CartaDetailScreen() {
 
         {/* Audio */}
         {carta.contenido.audioUrl && (
-          <Card style={styles.contentCard}>
-            <View style={styles.audioContainer}>
-              <Text style={styles.audioEmoji}>🎤</Text>
-              <Text style={styles.audioText}>
-                Mensaje de audio adjunto
-              </Text>
-            </View>
+          <Card style={styles.contentCard} padding="none">
+            <AudioPlayer
+              uri={carta.contenido.audioUrl}
+              title="Mensaje de voz"
+            />
           </Card>
         )}
 
@@ -235,7 +233,7 @@ export default function CartaDetailScreen() {
         <View style={styles.actions}>
           <Button
             title="Editar carta"
-            onPress={() => {}}
+            onPress={() => router.push({ pathname: '/(tabs)/cartas/editar', params: { id } })}
             variant="primary"
             fullWidth
             icon={<Text style={styles.editIcon}>✏️</Text>}

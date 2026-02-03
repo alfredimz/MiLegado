@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, StyleSheet } from 'react-native';
@@ -21,7 +21,9 @@ import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { Colors } from '../constants';
 
 // Prevenir que el splash screen se oculte automáticamente
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync().catch(() => {
+  /* ignorar si ya fue llamado */
+});
 
 // Tema personalizado Paradise Garden para React Native Paper
 const customTheme = {
@@ -38,16 +40,19 @@ const customTheme = {
     outline: Colors.border,
     error: Colors.error,
   },
-  roundness: 0, // Sin border radius
+  roundness: 0,
 };
 
 function RootLayoutNav() {
-  const { isAuthenticated, isLoading, hasCompletedOnboarding } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  console.log('[RootLayoutNav] isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
 
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
         <Text style={styles.loadingEmoji}>💓</Text>
+        <Text style={styles.loadingText}>Cargando...</Text>
       </View>
     );
   }
@@ -56,27 +61,23 @@ function RootLayoutNav() {
     <>
       <StatusBar style="dark" backgroundColor={Colors.background} />
       <Stack screenOptions={{ headerShown: false }}>
-        {!isAuthenticated ? (
-          <Stack.Screen name="(auth)" />
-        ) : (
-          <>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen
-              name="crear"
-              options={{
-                presentation: 'modal',
-                animation: 'slide_from_bottom',
-              }}
-            />
-          </>
-        )}
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen
+          name="crear"
+          options={{
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
       </Stack>
     </>
   );
 }
 
 export default function RootLayout() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     CormorantGaramond_300Light,
     CormorantGaramond_400Regular,
     DancingScript_400Regular,
@@ -84,22 +85,31 @@ export default function RootLayout() {
     Nunito_400Regular,
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
+  // Ocultar splash cuando las fuentes estén listas
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      console.log('[RootLayout] Fonts loaded:', fontsLoaded, 'Font error:', fontError);
+      SplashScreen.hideAsync().catch(() => {
+        /* ignorar error */
+      });
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded) {
+  // Mostrar pantalla de carga mientras cargan las fuentes
+  if (!fontsLoaded && !fontError) {
+    console.log('[RootLayout] Esperando fuentes...');
     return (
       <View style={styles.loadingContainer}>
         <Text style={styles.loadingEmoji}>💓</Text>
+        <Text style={styles.loadingText}>Cargando fuentes...</Text>
       </View>
     );
   }
 
+  console.log('[RootLayout] Renderizando app principal');
+
   return (
-    <GestureHandlerRootView style={styles.container} onLayout={onLayoutRootView}>
+    <GestureHandlerRootView style={styles.container}>
       <PaperProvider theme={customTheme}>
         <AuthProvider>
           <RootLayoutNav />
@@ -122,5 +132,10 @@ const styles = StyleSheet.create({
   },
   loadingEmoji: {
     fontSize: 48,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: Colors.textSecondary,
+    fontSize: 16,
   },
 });

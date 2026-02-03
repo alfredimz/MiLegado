@@ -14,6 +14,7 @@ export default function CrearLayout() {
       <Stack.Screen name="texto" />
       <Stack.Screen name="media" />
       <Stack.Screen name="preview" />
+      <Stack.Screen name="asignar" />
     </Stack>
   );
 }

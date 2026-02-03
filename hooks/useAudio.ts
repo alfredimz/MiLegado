@@ -1,7 +1,14 @@
 // Hook para grabar y reproducir audio
-// Requisito de rúbrica: API de Audio (expo-av)
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { Audio, AVPlaybackStatus } from 'expo-av';
+// Migrado a expo-audio (expo-av deprecado en SDK 54)
+import { useState, useCallback, useEffect, useRef } from 'react';
+import {
+  useAudioRecorder,
+  useAudioRecorderState,
+  useAudioPlayer,
+  useAudioPlayerStatus,
+  RecordingPresets,
+  AudioModule,
+} from 'expo-audio';
 
 export interface AudioRecording {
   uri: string;
@@ -41,39 +48,25 @@ export interface UseAudioReturn {
 }
 
 export function useAudio(): UseAudioReturn {
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingDuration, setRecordingDuration] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [playbackPosition, setPlaybackPosition] = useState(0);
-  const [playbackDuration, setPlaybackDuration] = useState(0);
   const [hasPermission, setHasPermission] = useState(false);
-  const [canRecord, setCanRecord] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUri, setCurrentUri] = useState<string | null>(null);
+  const [recordedUri, setRecordedUri] = useState<string | null>(null);
+  const [recordedDuration, setRecordedDuration] = useState(0);
 
-  const recordingRef = useRef<Audio.Recording | null>(null);
-  const soundRef = useRef<Audio.Sound | null>(null);
-  const durationIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Recorder de expo-audio
+  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const recorderState = useAudioRecorderState(recorder, 500);
 
-  // Limpiar al desmontar
-  useEffect(() => {
-    return () => {
-      if (recordingRef.current) {
-        recordingRef.current.stopAndUnloadAsync();
-      }
-      if (soundRef.current) {
-        soundRef.current.unloadAsync();
-      }
-      if (durationIntervalRef.current) {
-        clearInterval(durationIntervalRef.current);
-      }
-    };
-  }, []);
+  // Player de expo-audio (null cuando no hay URI)
+  const player = useAudioPlayer(currentUri ? { uri: currentUri } : null);
+  const playerStatus = useAudioPlayerStatus(player);
 
   // Solicitar permisos de audio
   const requestPermission = useCallback(async (): Promise<boolean> => {
     try {
-      const { status } = await Audio.requestPermissionsAsync();
-      const granted = status === 'granted';
+      const status = await AudioModule.requestRecordingPermissionsAsync();
+      const granted = status.granted;
       setHasPermission(granted);
       return granted;
     } catch (err) {
@@ -82,19 +75,31 @@ export function useAudio(): UseAudioReturn {
     }
   }, []);
 
+  // Verificar permisos al montar
+  useEffect(() => {
+    const checkPermission = async () => {
+      try {
+        const status = await AudioModule.getRecordingPermissionsAsync();
+        setHasPermission(status.granted);
+      } catch (err) {
+        console.error('Error checking audio permission:', err);
+      }
+    };
+    checkPermission();
+  }, []);
+
   // Configurar modo de audio
-  const configureAudioMode = useCallback(async (forRecording: boolean) => {
-    try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: forRecording,
-        playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
-        shouldDuckAndroid: true,
-        playThroughEarpieceAndroid: false,
-      });
-    } catch (err) {
-      console.error('Error configuring audio mode:', err);
-    }
+  useEffect(() => {
+    const configureAudio = async () => {
+      try {
+        await AudioModule.setAudioModeAsync({
+          playsInSilentMode: true,
+        });
+      } catch (err) {
+        console.error('Error configuring audio mode:', err);
+      }
+    };
+    configureAudio();
   }, []);
 
   // Iniciar grabación
@@ -112,121 +117,62 @@ export function useAudio(): UseAudioReturn {
       }
 
       // Detener reproducción si existe
-      if (soundRef.current) {
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
+      if (player && playerStatus?.playing) {
+        player.pause();
       }
 
-      // Configurar modo de audio para grabación
-      await configureAudioMode(true);
-
-      // Crear y comenzar grabación
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
-
-      recordingRef.current = recording;
-      setIsRecording(true);
-      setRecordingDuration(0);
-
-      // Iniciar contador de duración
-      durationIntervalRef.current = setInterval(() => {
-        setRecordingDuration((prev) => prev + 1);
-      }, 1000);
+      // Preparar y comenzar grabación
+      await recorder.prepareToRecordAsync();
+      recorder.record();
+      setRecordedUri(null);
+      setRecordedDuration(0);
     } catch (err: any) {
       setError(err.message || 'Error al iniciar grabación');
-      setIsRecording(false);
     }
-  }, [hasPermission, requestPermission, configureAudioMode]);
+  }, [hasPermission, requestPermission, recorder, player, playerStatus]);
 
   // Detener grabación
   const stopRecording = useCallback(async (): Promise<AudioRecording | null> => {
-    if (!recordingRef.current) {
-      return null;
-    }
-
     try {
-      // Detener intervalo de duración
-      if (durationIntervalRef.current) {
-        clearInterval(durationIntervalRef.current);
-        durationIntervalRef.current = null;
-      }
-
-      // Detener grabación
-      await recordingRef.current.stopAndUnloadAsync();
-      const uri = recordingRef.current.getURI();
-      const status = await recordingRef.current.getStatusAsync();
-
-      recordingRef.current = null;
-      setIsRecording(false);
-
-      // Restaurar modo de audio
-      await configureAudioMode(false);
+      await recorder.stop();
+      const uri = recorder.uri;
+      const duration = recorderState.durationMillis || 0;
 
       if (!uri) {
         setError('No se pudo obtener el archivo de audio');
         return null;
       }
 
+      setRecordedUri(uri);
+      setRecordedDuration(duration);
+
       return {
         uri,
-        duration: status.durationMillis || recordingDuration * 1000,
+        duration,
       };
     } catch (err: any) {
       setError(err.message || 'Error al detener grabación');
-      setIsRecording(false);
       return null;
     }
-  }, [recordingDuration, configureAudioMode]);
+  }, [recorder, recorderState.durationMillis]);
 
   // Pausar grabación
   const pauseRecording = useCallback(async () => {
-    if (!recordingRef.current || !isRecording) return;
-
     try {
-      await recordingRef.current.pauseAsync();
-      if (durationIntervalRef.current) {
-        clearInterval(durationIntervalRef.current);
-        durationIntervalRef.current = null;
-      }
+      recorder.pause();
     } catch (err: any) {
       setError(err.message || 'Error al pausar grabación');
     }
-  }, [isRecording]);
+  }, [recorder]);
 
   // Reanudar grabación
   const resumeRecording = useCallback(async () => {
-    if (!recordingRef.current) return;
-
     try {
-      await recordingRef.current.startAsync();
-      durationIntervalRef.current = setInterval(() => {
-        setRecordingDuration((prev) => prev + 1);
-      }, 1000);
+      recorder.record();
     } catch (err: any) {
       setError(err.message || 'Error al reanudar grabación');
     }
-  }, []);
-
-  // Callback de estado de reproducción
-  const onPlaybackStatusUpdate = useCallback((status: AVPlaybackStatus) => {
-    if (!status.isLoaded) {
-      if (status.error) {
-        setError(`Error de reproducción: ${status.error}`);
-      }
-      return;
-    }
-
-    setIsPlaying(status.isPlaying);
-    setPlaybackPosition(status.positionMillis);
-    setPlaybackDuration(status.durationMillis || 0);
-
-    if (status.didJustFinish) {
-      setIsPlaying(false);
-      setPlaybackPosition(0);
-    }
-  }, []);
+  }, [recorder]);
 
   // Reproducir sonido
   const playSound = useCallback(
@@ -234,105 +180,95 @@ export function useAudio(): UseAudioReturn {
       setError(null);
 
       try {
-        // Detener grabación si existe
-        if (recordingRef.current) {
-          await stopRecording();
+        // Si el URI es diferente, actualizar
+        if (uri !== currentUri) {
+          setCurrentUri(uri);
+          // Esperar a que el player se actualice y luego reproducir
+          setTimeout(() => {
+            player?.play();
+          }, 100);
+        } else {
+          // Reiniciar desde el principio si es el mismo URI
+          player?.seekTo(0);
+          player?.play();
         }
-
-        // Descargar sonido previo si existe
-        if (soundRef.current) {
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-        }
-
-        // Configurar modo de audio para reproducción
-        await configureAudioMode(false);
-
-        // Cargar y reproducir sonido
-        const { sound } = await Audio.Sound.createAsync(
-          { uri },
-          { shouldPlay: true },
-          onPlaybackStatusUpdate
-        );
-
-        soundRef.current = sound;
-        setIsPlaying(true);
       } catch (err: any) {
         setError(err.message || 'Error al reproducir audio');
-        setIsPlaying(false);
       }
     },
-    [stopRecording, configureAudioMode, onPlaybackStatusUpdate]
+    [currentUri, player]
   );
 
   // Pausar sonido
   const pauseSound = useCallback(async () => {
-    if (!soundRef.current) return;
-
     try {
-      await soundRef.current.pauseAsync();
-      setIsPlaying(false);
+      player?.pause();
     } catch (err: any) {
       setError(err.message || 'Error al pausar audio');
     }
-  }, []);
+  }, [player]);
 
   // Reanudar sonido
   const resumeSound = useCallback(async () => {
-    if (!soundRef.current) return;
-
     try {
-      await soundRef.current.playAsync();
-      setIsPlaying(true);
+      player?.play();
     } catch (err: any) {
       setError(err.message || 'Error al reanudar audio');
     }
-  }, []);
+  }, [player]);
 
   // Detener sonido
   const stopSound = useCallback(async () => {
-    if (!soundRef.current) return;
-
     try {
-      await soundRef.current.stopAsync();
-      await soundRef.current.setPositionAsync(0);
-      setIsPlaying(false);
-      setPlaybackPosition(0);
+      player?.pause();
+      player?.seekTo(0);
     } catch (err: any) {
       setError(err.message || 'Error al detener audio');
     }
-  }, []);
+  }, [player]);
 
-  // Ir a posición específica
-  const seekTo = useCallback(async (position: number) => {
-    if (!soundRef.current) return;
-
-    try {
-      await soundRef.current.setPositionAsync(position);
-      setPlaybackPosition(position);
-    } catch (err: any) {
-      setError(err.message || 'Error al buscar posición');
-    }
-  }, []);
+  // Ir a posición específica (en milisegundos)
+  const seekTo = useCallback(
+    async (position: number) => {
+      try {
+        // expo-audio usa segundos, convertir de ms
+        player?.seekTo(position / 1000);
+      } catch (err: any) {
+        setError(err.message || 'Error al buscar posición');
+      }
+    },
+    [player]
+  );
 
   return {
-    isRecording,
-    recordingDuration,
-    canRecord,
-    isPlaying,
-    playbackPosition,
-    playbackDuration,
+    // Grabación
+    isRecording: recorderState.isRecording,
+    recordingDuration: Math.floor((recorderState.durationMillis || 0) / 1000),
+    canRecord: hasPermission,
+
+    // Reproducción
+    isPlaying: playerStatus?.playing || false,
+    playbackPosition: (playerStatus?.currentTime || 0) * 1000, // Convertir a ms
+    playbackDuration: (playerStatus?.duration || 0) * 1000, // Convertir a ms
+
+    // Acciones de grabación
     startRecording,
     stopRecording,
     pauseRecording,
     resumeRecording,
+
+    // Acciones de reproducción
     playSound,
     pauseSound,
     resumeSound,
     stopSound,
     seekTo,
+
+    // Permisos
     hasPermission,
     requestPermission,
+
+    // Errores
     error,
   };
 }

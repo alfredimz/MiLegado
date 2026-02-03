@@ -7,9 +7,13 @@ export default function PerfilLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: Colors.background },
+        animation: 'slide_from_right',
       }}
     >
       <Stack.Screen name="index" />
+      <Stack.Screen name="editar" />
+      <Stack.Screen name="caracteristicas" />
+      <Stack.Screen name="terminos" />
     </Stack>
   );
 }

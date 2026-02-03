@@ -1,8 +1,6 @@
 // Configuración de Firebase para MiLegado (Mobile Only)
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
-import { getAuth, Auth, initializeAuth } from 'firebase/auth';
-//@ts-expect-error - getReactNativePersistence exists in react-native bundle
-import { getReactNativePersistence } from '@firebase/auth/dist/rn/index.js';
+import { getAuth, Auth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import { getStorage, FirebaseStorage } from 'firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,19 +22,38 @@ let auth: Auth;
 let db: Firestore;
 let storage: FirebaseStorage;
 
-if (getApps().length === 0) {
-  app = initializeApp(firebaseConfig);
-  // Persistencia con AsyncStorage para React Native
-  auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  });
-} else {
-  app = getApp();
-  auth = getAuth(app);
-}
+console.log('[Firebase] Iniciando configuración...');
 
-db = getFirestore(app);
-storage = getStorage(app);
+try {
+  if (getApps().length === 0) {
+    console.log('[Firebase] Inicializando nueva app...');
+    app = initializeApp(firebaseConfig);
+    // Persistencia con AsyncStorage para React Native
+    auth = initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage),
+    });
+    console.log('[Firebase] Auth inicializado con persistencia');
+  } else {
+    console.log('[Firebase] Usando app existente...');
+    app = getApp();
+    auth = getAuth(app);
+  }
+
+  db = getFirestore(app);
+  storage = getStorage(app);
+  console.log('[Firebase] Configuración completada exitosamente');
+} catch (error) {
+  console.error('[Firebase] Error en inicialización:', error);
+  // Fallback sin persistencia
+  if (!app!) {
+    app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
+  }
+  if (!auth!) {
+    auth = getAuth(app);
+  }
+  db = getFirestore(app);
+  storage = getStorage(app);
+}
 
 // Colecciones de Firestore
 export const COLLECTIONS = {

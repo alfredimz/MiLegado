@@ -164,15 +164,17 @@ export default function GuardianDetailScreen() {
 
           {/* Información de contacto */}
           <View style={styles.contactSection}>
-            <Button
-              title={guardian.email}
-              onPress={handleEmail}
-              variant="outline"
-              size="sm"
-              icon={<Mail size={16} color={Colors.primary} />}
-              fullWidth
-              style={styles.contactButton}
-            />
+            {guardian.email && (
+              <Button
+                title={guardian.email}
+                onPress={handleEmail}
+                variant="outline"
+                size="sm"
+                icon={<Mail size={16} color={Colors.primary} />}
+                fullWidth
+                style={styles.contactButton}
+              />
+            )}
 
             {guardian.telefono && (
               <Button
@@ -235,7 +237,7 @@ export default function GuardianDetailScreen() {
         <View style={styles.actions}>
           <Button
             title="Editar guardián"
-            onPress={() => {}}
+            onPress={() => router.push({ pathname: '/(tabs)/guardianes/editar', params: { id } })}
             variant="primary"
             fullWidth
             icon={<Edit2 size={20} color={Colors.textInverse} />}

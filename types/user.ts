@@ -3,7 +3,7 @@
 export interface UserSettings {
   latidoInterval: 30 | 60 | 90; // días entre verificaciones de "latido"
   notificationsEnabled: boolean;
-  theme: 'dark' | 'light' | 'system';
+  theme: 'light'; // Solo light mode
   language: 'es-MX';
 }
 

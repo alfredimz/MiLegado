@@ -17,7 +17,7 @@ export interface Guardian {
   id: string;
   userId: string; // Dueño de este guardián
   nombre: string;
-  email: string;
+  email?: string;
   telefono?: string;
   relacion: RelacionGuardian;
   photoURL?: string;
@@ -32,7 +32,7 @@ export interface GuardianDocument {
   id: string;
   userId: string;
   nombre: string;
-  email: string;
+  email?: string;
   telefono?: string;
   relacion: RelacionGuardian;
   photoURL?: string;
@@ -45,7 +45,7 @@ export interface GuardianDocument {
 // Datos para crear guardián
 export interface CreateGuardianData {
   nombre: string;
-  email: string;
+  email?: string;
   telefono?: string;
   relacion: RelacionGuardian;
   photoURL?: string;

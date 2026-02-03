@@ -1,6 +1,7 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import { useEvent } from 'expo';
 import { Play, Pause, RotateCcw } from 'lucide-react-native';
 import { Colors, spacing, borderRadius, typography } from '../../constants';
 
@@ -10,7 +11,7 @@ export interface VideoPlayerProps {
   autoPlay?: boolean;
   showControls?: boolean;
   style?: any;
-  onPlaybackStatusUpdate?: (status: AVPlaybackStatus) => void;
+  onPlaybackStatusUpdate?: (status: { isPlaying: boolean; position: number; duration: number }) => void;
 }
 
 export function VideoPlayer({
@@ -21,12 +22,52 @@ export function VideoPlayer({
   style,
   onPlaybackStatusUpdate,
 }: VideoPlayerProps) {
-  const videoRef = useRef<Video>(null);
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const [isEnded, setIsEnded] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [position, setPosition] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  // Crear player con expo-video
+  const player = useVideoPlayer(uri, (player) => {
+    player.loop = false;
+    if (autoPlay) {
+      player.play();
+    }
+  });
+
+  // Escuchar cambios de estado
+  const { isPlaying } = useEvent(player, 'playingChange', {
+    isPlaying: player.playing,
+  });
+
+  // Estado de posición y duración
+  const [position, setPosition] = React.useState(0);
+  const [duration, setDuration] = React.useState(0);
+  const [isEnded, setIsEnded] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  // Monitorear el estado del player
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (player) {
+        const currentPos = player.currentTime * 1000; // Convertir a ms
+        const totalDuration = player.duration * 1000; // Convertir a ms
+
+        setPosition(currentPos);
+        setDuration(totalDuration);
+        setIsLoading(false);
+
+        // Detectar si terminó
+        if (totalDuration > 0 && currentPos >= totalDuration - 100) {
+          setIsEnded(true);
+        }
+
+        // Callback para el padre
+        onPlaybackStatusUpdate?.({
+          isPlaying: player.playing,
+          position: currentPos,
+          duration: totalDuration,
+        });
+      }
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, [player, onPlaybackStatusUpdate]);
 
   // Formatear tiempo
   const formatTime = (ms: number): string => {
@@ -36,62 +77,38 @@ export function VideoPlayer({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Manejar actualización de estado
-  const handlePlaybackStatusUpdate = useCallback(
-    (status: AVPlaybackStatus) => {
-      if (!status.isLoaded) {
-        setIsLoading(true);
-        return;
-      }
-
-      setIsLoading(false);
-      setIsPlaying(status.isPlaying);
-      setPosition(status.positionMillis);
-      setDuration(status.durationMillis || 0);
-
-      if (status.didJustFinish) {
-        setIsEnded(true);
-        setIsPlaying(false);
-      }
-
-      onPlaybackStatusUpdate?.(status);
-    },
-    [onPlaybackStatusUpdate]
-  );
-
   // Toggle play/pause
-  const handlePlayPause = async () => {
-    if (!videoRef.current) return;
+  const handlePlayPause = useCallback(() => {
+    if (!player) return;
 
     if (isEnded) {
-      await videoRef.current.replayAsync();
+      player.seekBy(-player.currentTime); // Reiniciar
+      player.play();
       setIsEnded(false);
     } else if (isPlaying) {
-      await videoRef.current.pauseAsync();
+      player.pause();
     } else {
-      await videoRef.current.playAsync();
+      player.play();
     }
-  };
+  }, [player, isPlaying, isEnded]);
 
   // Reiniciar video
-  const handleReplay = async () => {
-    if (!videoRef.current) return;
-    await videoRef.current.replayAsync();
+  const handleReplay = useCallback(() => {
+    if (!player) return;
+    player.seekBy(-player.currentTime);
+    player.play();
     setIsEnded(false);
-  };
+  }, [player]);
 
   return (
     <View style={[styles.container, style]}>
-      <Video
-        ref={videoRef}
-        source={{ uri }}
-        posterSource={poster ? { uri: poster } : undefined}
-        usePoster={!!poster}
-        resizeMode={ResizeMode.CONTAIN}
-        shouldPlay={autoPlay}
-        isLooping={false}
-        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+      <VideoView
+        player={player}
         style={styles.video}
+        contentFit="contain"
+        nativeControls={false}
+        allowsFullscreen={true}
+        allowsPictureInPicture={false}
       />
 
       {showControls && (
@@ -103,11 +120,11 @@ export function VideoPlayer({
             activeOpacity={0.7}
           >
             {isEnded ? (
-              <RotateCcw size={32} color={Colors.text} />
+              <RotateCcw size={32} color={Colors.textInverse} />
             ) : isPlaying ? (
-              <Pause size={32} color={Colors.text} />
+              <Pause size={32} color={Colors.textInverse} />
             ) : (
-              <Play size={32} color={Colors.text} />
+              <Play size={32} color={Colors.textInverse} />
             )}
           </TouchableOpacity>
 
@@ -188,7 +205,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     ...typography.caption,
-    color: Colors.text,
+    color: Colors.textInverse,
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -198,7 +215,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     ...typography.body,
-    color: Colors.text,
+    color: Colors.textInverse,
   },
 });
 

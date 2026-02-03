@@ -23,7 +23,6 @@ export function AudioRecorder({
     stopRecording,
     playSound,
     pauseSound,
-    resumeSound,
     stopSound,
     error,
   } = useAudio();
@@ -123,7 +122,7 @@ export function AudioRecorder({
             style={[
               styles.progressBar,
               {
-                width: `${(playbackPosition / recordedDuration) * 100}%`,
+                width: `${recordedDuration > 0 ? (playbackPosition / recordedDuration) * 100 : 0}%`,
               },
             ]}
           />
@@ -152,9 +151,9 @@ export function AudioRecorder({
             onPress={handleRecordToggle}
           >
             {isRecording ? (
-              <Square size={32} color={Colors.text} />
+              <Square size={32} color={Colors.textInverse} />
             ) : (
-              <Mic size={32} color={Colors.text} />
+              <Mic size={32} color={Colors.textInverse} />
             )}
           </TouchableOpacity>
         ) : (
@@ -163,9 +162,9 @@ export function AudioRecorder({
             onPress={handlePlayToggle}
           >
             {isPlaying ? (
-              <Pause size={32} color={Colors.text} />
+              <Pause size={32} color={Colors.textInverse} />
             ) : (
-              <Play size={32} color={Colors.text} />
+              <Play size={32} color={Colors.textInverse} />
             )}
           </TouchableOpacity>
         )}
@@ -263,7 +262,7 @@ const styles = StyleSheet.create({
   },
   confirmText: {
     ...typography.button,
-    color: Colors.text,
+    color: Colors.textInverse,
   },
   error: {
     ...typography.caption,

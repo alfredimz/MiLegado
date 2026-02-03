@@ -40,42 +40,40 @@ export default function EditarPerfilScreen() {
 
     // Seleccionar imagen
     const handleSelectImage = async () => {
-        const result = await takePhoto();
-        processImageResult(result);
-        // Alert.alert(
-        //     'Cambiar foto',
-        //     '¿De dónde quieres tomar la imagen?',
-        //     [
-        //         {
-        //             text: 'Cancelar',
-        //             style: 'cancel',
-        //         },
-        //         {
-        //             text: 'Cámara',
-        //             onPress: async () => {
-        //                 try {
-        //                     const result = await takePhoto();
-        //                     processImageResult(result);
-        //                 } catch (error) {
-        //                     console.error('Error cámara:', error);
-        //                     Alert.alert('Error', 'No se pudo abrir la cámara');
-        //                 }
-        //             },
-        //         },
-        //         {
-        //             text: 'Galería',
-        //             onPress: async () => {
-        //                 try {
-        //                     const result = await pickImage();
-        //                     processImageResult(result);
-        //                 } catch (error) {
-        //                     console.error('Error galería:', error);
-        //                     Alert.alert('Error', 'No se pudo abrir la galería');
-        //                 }
-        //             },
-        //         },
-        //     ]
-        // );
+        Alert.alert(
+            'Cambiar foto',
+            '¿De dónde quieres tomar la imagen?',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Cámara',
+                    onPress: async () => {
+                        try {
+                            const result = await takePhoto();
+                            processImageResult(result);
+                        } catch (error) {
+                            console.error('Error cámara:', error);
+                            Alert.alert('Error', 'No se pudo abrir la cámara');
+                        }
+                    },
+                },
+                {
+                    text: 'Galería',
+                    onPress: async () => {
+                        try {
+                            const result = await pickImage();
+                            processImageResult(result);
+                        } catch (error) {
+                            console.error('Error galería:', error);
+                            Alert.alert('Error', 'No se pudo abrir la galería');
+                        }
+                    },
+                },
+            ]
+        );
     };
 
     const handleSave = async () => {

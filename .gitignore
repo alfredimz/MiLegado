@@ -81,3 +81,10 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+
+# Windows special files
+nul
+.env
+
+# Local settings
+.claude/

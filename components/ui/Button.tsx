@@ -11,7 +11,7 @@ import { Colors, spacing } from '../../constants';
 export interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'blush' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'blush' | 'ghost' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   loading?: boolean;
@@ -105,6 +105,9 @@ const styles = StyleSheet.create({
   danger: {
     borderColor: Colors.error,
   },
+  outline: {
+    borderColor: Colors.primary,
+  },
 
   // Tamaños
   size_sm: {
@@ -147,6 +150,9 @@ const styles = StyleSheet.create({
   },
   text_danger: {
     color: Colors.error,
+  },
+  text_outline: {
+    color: Colors.primary,
   },
   textSize_sm: {
     fontSize: 14,

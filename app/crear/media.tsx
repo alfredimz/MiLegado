@@ -8,16 +8,14 @@ import {
   Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Camera, Image as ImageIcon, Mic, Video, Plus, X } from 'lucide-react-native';
+import { Camera, Image as ImageIcon, Mic, Video, X } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, spacing, typography, borderRadius } from '../../constants';
 import { Button, Input, Card } from '../../components/ui';
 import { Header } from '../../components/layout';
 import { AudioRecorder, VideoPlayer } from '../../components/media';
 import { useAuth } from '../../contexts/AuthContext';
-import { useCamera, useAudio, type MediaAsset } from '../../hooks';
-import { createCarta } from '../../services/firestore';
-import { uploadCartaMedia } from '../../services/storage';
+import { useCamera, type MediaAsset } from '../../hooks';
 
 type MediaTipo = 'foto' | 'video' | 'audio';
 
@@ -113,9 +111,6 @@ export default function CrearMediaScreen() {
     let itemsToSend: any[] = [];
 
     if (tipo === 'audio' && audioUri) {
-      // Para audio, el "item" es el audioUri
-      // En una implementación real más robusta, usaríamos una estructura unificada
-      // pero por ahora pasamos lo que espera preview
       itemsToSend = [{ uri: audioUri, type: 'audio' }];
     } else if (tipo === 'video' && mediaItems[0]) {
       itemsToSend = mediaItems;

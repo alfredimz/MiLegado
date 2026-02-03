@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,14 +7,27 @@ import {
   TouchableOpacity,
   Alert,
   Switch,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors, spacing } from '../../../constants';
-import { Card, Avatar, Badge } from '../../../components/ui';
+import { Card, Avatar, Badge, Button } from '../../../components/ui';
 import { Header } from '../../../components/layout';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useBattery } from '../../../hooks';
+
+const LATIDO_INTERVALS = [
+  { label: '7 días', value: 7 },
+  { label: '14 días', value: 14 },
+  { label: '30 días', value: 30 },
+  { label: '60 días', value: 60 },
+  { label: '90 días', value: 90 },
+];
+
+const LATIDO_KEY = '@milegado_latido_interval';
+const LATIDO_LAST_KEY = '@milegado_latido_last';
 
 interface SettingItemProps {
   icon: string;
@@ -53,6 +66,61 @@ export default function PerfilScreen() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(
     user?.settings.notificationsEnabled ?? true
   );
+  const [latidoInterval, setLatidoInterval] = useState(30);
+  const [lastLatido, setLastLatido] = useState<Date | null>(null);
+  const [showLatidoModal, setShowLatidoModal] = useState(false);
+
+  useEffect(() => {
+    loadLatidoSettings();
+  }, []);
+
+  const loadLatidoSettings = async () => {
+    try {
+      const interval = await AsyncStorage.getItem(LATIDO_KEY);
+      const last = await AsyncStorage.getItem(LATIDO_LAST_KEY);
+      if (interval) setLatidoInterval(parseInt(interval));
+      if (last) setLastLatido(new Date(last));
+    } catch (e) {
+      console.log('Error loading latido settings:', e);
+    }
+  };
+
+  const saveLatidoInterval = async (value: number) => {
+    try {
+      await AsyncStorage.setItem(LATIDO_KEY, value.toString());
+      setLatidoInterval(value);
+      setShowLatidoModal(false);
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo guardar la configuración');
+    }
+  };
+
+  const confirmLatido = async () => {
+    try {
+      const now = new Date();
+      await AsyncStorage.setItem(LATIDO_LAST_KEY, now.toISOString());
+      setLastLatido(now);
+      Alert.alert(
+        '💓 Latido confirmado',
+        'Tu pulso de vida ha sido registrado. Tus guardianes saben que estás bien.'
+      );
+    } catch (e) {
+      Alert.alert('Error', 'No se pudo registrar el latido');
+    }
+  };
+
+  const getLatidoStatus = () => {
+    if (!lastLatido) return { status: 'pending', text: 'Sin confirmar' };
+    const now = new Date();
+    const diff = Math.floor((now.getTime() - lastLatido.getTime()) / (1000 * 60 * 60 * 24));
+    const remaining = latidoInterval - diff;
+
+    if (remaining > 7) return { status: 'ok', text: `${remaining} días restantes` };
+    if (remaining > 0) return { status: 'warning', text: `${remaining} días restantes` };
+    return { status: 'danger', text: 'Vencido - Confirma tu latido' };
+  };
+
+  const latidoStatus = getLatidoStatus();
 
   const handleSignOut = () => {
     Alert.alert(
@@ -127,6 +195,34 @@ export default function PerfilScreen() {
           />
         </Card>
 
+        {/* El Latido */}
+        <Text style={styles.sectionTitle}>El Latido</Text>
+        <Card style={styles.latidoCard}>
+          <View style={styles.latidoHeader}>
+            <Text style={styles.latidoEmoji}>💓</Text>
+            <View style={styles.latidoInfo}>
+              <Text style={styles.latidoTitle}>Pulso de vida</Text>
+              <Text style={[
+                styles.latidoStatus,
+                latidoStatus.status === 'ok' && styles.latidoStatusOk,
+                latidoStatus.status === 'warning' && styles.latidoStatusWarning,
+                latidoStatus.status === 'danger' && styles.latidoStatusDanger,
+              ]}>
+                {latidoStatus.text}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.latidoDescription}>
+            El Latido es tu señal de vida. Confírmalo periódicamente para que tus guardianes sepan que estás bien.
+          </Text>
+          <Button
+            title="Confirmar mi latido"
+            onPress={confirmLatido}
+            variant="primary"
+            fullWidth
+          />
+        </Card>
+
         {/* Configuración de cuenta */}
         <Text style={styles.sectionTitle}>Cuenta</Text>
         <Card style={styles.settingsCard}>
@@ -134,13 +230,6 @@ export default function PerfilScreen() {
             icon="👤"
             title="Editar perfil"
             onPress={() => router.push('/perfil/editar')}
-          />
-          <View style={styles.divider} />
-          <SettingItem
-            icon="🔒"
-            title="Seguridad"
-            subtitle="Contraseña y autenticación"
-            onPress={() => { }}
           />
         </Card>
 
@@ -163,8 +252,8 @@ export default function PerfilScreen() {
           <SettingItem
             icon="⚙️"
             title="Intervalo de latido"
-            subtitle="Cada 30 días"
-            onPress={() => { }}
+            subtitle={`Cada ${latidoInterval} días`}
+            onPress={() => setShowLatidoModal(true)}
           />
         </Card>
 
@@ -172,9 +261,10 @@ export default function PerfilScreen() {
         <Text style={styles.sectionTitle}>Soporte</Text>
         <Card style={styles.settingsCard}>
           <SettingItem
-            icon="❓"
-            title="Centro de ayuda"
-            onPress={() => { }}
+            icon="📱"
+            title="Características del app"
+            subtitle="Funcionalidades implementadas"
+            onPress={() => router.push('/perfil/caracteristicas')}
           />
         </Card>
 
@@ -192,6 +282,51 @@ export default function PerfilScreen() {
           Proyecto académico UNIR 2025
         </Text>
       </ScrollView>
+
+      {/* Modal de configuración de latido */}
+      <Modal
+        visible={showLatidoModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLatidoModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Intervalo de latido</Text>
+            <Text style={styles.modalSubtitle}>
+              ¿Cada cuántos días quieres confirmar tu latido?
+            </Text>
+
+            {LATIDO_INTERVALS.map((item) => (
+              <TouchableOpacity
+                key={item.value}
+                style={[
+                  styles.intervalOption,
+                  latidoInterval === item.value && styles.intervalOptionSelected,
+                ]}
+                onPress={() => saveLatidoInterval(item.value)}
+              >
+                <Text style={[
+                  styles.intervalText,
+                  latidoInterval === item.value && styles.intervalTextSelected,
+                ]}>
+                  {item.label}
+                </Text>
+                {latidoInterval === item.value && (
+                  <Text style={styles.checkmark}>✓</Text>
+                )}
+              </TouchableOpacity>
+            ))}
+
+            <Button
+              title="Cancelar"
+              onPress={() => setShowLatidoModal(false)}
+              variant="ghost"
+              fullWidth
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -314,5 +449,103 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.xs,
+  },
+  // Latido styles
+  latidoCard: {
+    marginBottom: spacing.lg,
+    padding: spacing.lg,
+  },
+  latidoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+  latidoEmoji: {
+    fontSize: 40,
+  },
+  latidoInfo: {
+    marginLeft: spacing.md,
+  },
+  latidoTitle: {
+    fontSize: 20,
+    fontFamily: 'CormorantGaramond_400Regular',
+    color: Colors.text,
+  },
+  latidoStatus: {
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
+  },
+  latidoStatusOk: {
+    color: Colors.success,
+  },
+  latidoStatusWarning: {
+    color: Colors.warning,
+  },
+  latidoStatusDanger: {
+    color: Colors.error,
+  },
+  latidoDescription: {
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
+    color: Colors.textSecondary,
+    marginBottom: spacing.lg,
+    lineHeight: 20,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
+  },
+  modalContent: {
+    backgroundColor: Colors.background,
+    padding: spacing.lg,
+    width: '100%',
+    maxWidth: 400,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_400Regular',
+    color: Colors.text,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+  },
+  intervalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    marginBottom: spacing.sm,
+    backgroundColor: Colors.surface,
+  },
+  intervalOptionSelected: {
+    borderColor: Colors.primary,
+    backgroundColor: Colors.surfaceAlt,
+  },
+  intervalText: {
+    fontSize: 16,
+    fontFamily: 'Nunito_400Regular',
+    color: Colors.text,
+  },
+  intervalTextSelected: {
+    color: Colors.primary,
+  },
+  checkmark: {
+    fontSize: 18,
+    color: Colors.primary,
+    fontWeight: 'bold',
   },
 });

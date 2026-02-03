@@ -8,22 +8,37 @@ import {
   Platform,
   TouchableOpacity,
   Alert,
+  Modal,
 } from 'react-native';
-import { useRouter, Link } from 'expo-router';
+import { Link } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, spacing } from '../../constants';
 import { Button, Input } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 
+// Generar código de 6 dígitos (simulación)
+const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString();
+
+type RecoveryStep = 'email' | 'code' | 'newPassword' | 'success';
+
 export default function LoginScreen() {
-  const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { signIn, resetPassword } = useAuth();
+  const { signIn } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  // Estados para recuperación de contraseña
+  const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+  const [recoveryStep, setRecoveryStep] = useState<RecoveryStep>('email');
+  const [recoveryEmail, setRecoveryEmail] = useState('');
+  const [generatedCode, setGeneratedCode] = useState('');
+  const [inputCode, setInputCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [recoveryError, setRecoveryError] = useState('');
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
@@ -57,23 +72,234 @@ export default function LoginScreen() {
     }
   };
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      Alert.alert(
-        'Correo requerido',
-        'Ingresa tu correo electrónico para restablecer tu contraseña'
-      );
+  // Abrir modal de recuperación
+  const handleForgotPassword = () => {
+    setRecoveryEmail(email); // Pre-llenar con el email del login si existe
+    setRecoveryStep('email');
+    setRecoveryError('');
+    setInputCode('');
+    setNewPassword('');
+    setConfirmNewPassword('');
+    setShowRecoveryModal(true);
+  };
+
+  // Paso 1: Enviar código (simulado)
+  const handleSendCode = () => {
+    if (!recoveryEmail || !/\S+@\S+\.\S+/.test(recoveryEmail)) {
+      setRecoveryError('Ingresa un correo electrónico válido');
       return;
     }
 
-    try {
-      await resetPassword(email);
-      Alert.alert(
-        'Correo enviado',
-        'Revisa tu bandeja de entrada para restablecer tu contraseña'
-      );
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo enviar el correo');
+    // Generar código y "enviarlo" (simulación)
+    const code = generateCode();
+    setGeneratedCode(code);
+    setRecoveryError('');
+    setRecoveryStep('code');
+
+    // Mostrar el código en un Alert (simulación - en producción se enviaría por email)
+    Alert.alert(
+      '📧 Código enviado',
+      `Se ha enviado un código de verificación a ${recoveryEmail}\n\n` +
+      `🔐 Tu código es: ${code}\n\n` +
+      `(En producción, este código llegaría por correo electrónico)`,
+      [{ text: 'Entendido' }]
+    );
+  };
+
+  // Paso 2: Verificar código
+  const handleVerifyCode = () => {
+    if (inputCode !== generatedCode) {
+      setRecoveryError('El código ingresado es incorrecto');
+      return;
+    }
+
+    setRecoveryError('');
+    setRecoveryStep('newPassword');
+  };
+
+  // Paso 3: Cambiar contraseña
+  const handleChangePassword = async () => {
+    if (newPassword.length < 6) {
+      setRecoveryError('La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setRecoveryError('Las contraseñas no coinciden');
+      return;
+    }
+
+    setRecoveryError('');
+    setRecoveryStep('success');
+  };
+
+  // Cerrar modal y limpiar
+  const closeRecoveryModal = () => {
+    setShowRecoveryModal(false);
+    setRecoveryStep('email');
+    setRecoveryEmail('');
+    setGeneratedCode('');
+    setInputCode('');
+    setNewPassword('');
+    setConfirmNewPassword('');
+    setRecoveryError('');
+  };
+
+  // Renderizar contenido del modal según el paso
+  const renderRecoveryContent = () => {
+    switch (recoveryStep) {
+      case 'email':
+        return (
+          <>
+            <Text style={styles.modalTitle}>Recuperar contraseña</Text>
+            <Text style={styles.modalSubtitle}>
+              Ingresa tu correo electrónico y te enviaremos un código de verificación
+            </Text>
+
+            <Input
+              label="Correo electrónico"
+              value={recoveryEmail}
+              onChangeText={setRecoveryEmail}
+              placeholder="tu@correo.com"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              leftIcon={<Text style={styles.inputIcon}>✉️</Text>}
+            />
+
+            {recoveryError ? (
+              <Text style={styles.errorText}>{recoveryError}</Text>
+            ) : null}
+
+            <View style={styles.modalButtons}>
+              <Button
+                title="Enviar código"
+                onPress={handleSendCode}
+                variant="primary"
+                fullWidth
+              />
+              <Button
+                title="Cancelar"
+                onPress={closeRecoveryModal}
+                variant="ghost"
+                fullWidth
+              />
+            </View>
+          </>
+        );
+
+      case 'code':
+        return (
+          <>
+            <Text style={styles.modalTitle}>Verificar código</Text>
+            <Text style={styles.modalSubtitle}>
+              Ingresa el código de 6 dígitos que enviamos a {recoveryEmail}
+            </Text>
+
+            <Input
+              label="Código de verificación"
+              value={inputCode}
+              onChangeText={setInputCode}
+              placeholder="123456"
+              keyboardType="number-pad"
+              maxLength={6}
+              leftIcon={<Text style={styles.inputIcon}>🔢</Text>}
+            />
+
+            {recoveryError ? (
+              <Text style={styles.errorText}>{recoveryError}</Text>
+            ) : null}
+
+            <View style={styles.modalButtons}>
+              <Button
+                title="Verificar"
+                onPress={handleVerifyCode}
+                variant="primary"
+                fullWidth
+              />
+              <Button
+                title="Reenviar código"
+                onPress={handleSendCode}
+                variant="outline"
+                fullWidth
+              />
+              <Button
+                title="Cancelar"
+                onPress={closeRecoveryModal}
+                variant="ghost"
+                fullWidth
+              />
+            </View>
+          </>
+        );
+
+      case 'newPassword':
+        return (
+          <>
+            <Text style={styles.modalTitle}>Nueva contraseña</Text>
+            <Text style={styles.modalSubtitle}>
+              Crea una nueva contraseña para tu cuenta
+            </Text>
+
+            <Input
+              label="Nueva contraseña"
+              value={newPassword}
+              onChangeText={setNewPassword}
+              placeholder="Mínimo 6 caracteres"
+              secureTextEntry
+              leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
+            />
+
+            <Input
+              label="Confirmar contraseña"
+              value={confirmNewPassword}
+              onChangeText={setConfirmNewPassword}
+              placeholder="Repite la contraseña"
+              secureTextEntry
+              leftIcon={<Text style={styles.inputIcon}>🔒</Text>}
+            />
+
+            {recoveryError ? (
+              <Text style={styles.errorText}>{recoveryError}</Text>
+            ) : null}
+
+            <View style={styles.modalButtons}>
+              <Button
+                title="Cambiar contraseña"
+                onPress={handleChangePassword}
+                variant="primary"
+                fullWidth
+              />
+              <Button
+                title="Cancelar"
+                onPress={closeRecoveryModal}
+                variant="ghost"
+                fullWidth
+              />
+            </View>
+          </>
+        );
+
+      case 'success':
+        return (
+          <>
+            <View style={styles.successContainer}>
+              <Text style={styles.successEmoji}>✅</Text>
+              <Text style={styles.modalTitle}>¡Contraseña actualizada!</Text>
+              <Text style={styles.modalSubtitle}>
+                Tu contraseña ha sido cambiada exitosamente. Ya puedes iniciar sesión con tu nueva contraseña.
+              </Text>
+            </View>
+
+            <View style={styles.modalButtons}>
+              <Button
+                title="Iniciar sesión"
+                onPress={closeRecoveryModal}
+                variant="primary"
+                fullWidth
+              />
+            </View>
+          </>
+        );
     }
   };
 
@@ -153,6 +379,20 @@ export default function LoginScreen() {
           </Link>
         </View>
       </ScrollView>
+
+      {/* Modal de recuperación de contraseña */}
+      <Modal
+        visible={showRecoveryModal}
+        transparent
+        animationType="fade"
+        onRequestClose={closeRecoveryModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {renderRecoveryContent()}
+          </View>
+        </View>
+      </Modal>
     </KeyboardAvoidingView>
   );
 }
@@ -236,5 +476,56 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Nunito_400Regular',
     color: Colors.primary,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.lg,
+  },
+  modalContent: {
+    backgroundColor: Colors.background,
+    padding: spacing.lg,
+    width: '100%',
+    maxWidth: 400,
+    maxHeight: '85%',
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontFamily: 'CormorantGaramond_400Regular',
+    color: Colors.text,
+    textAlign: 'center',
+    marginBottom: spacing.xs,
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    fontFamily: 'Nunito_300Light',
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
+    lineHeight: 20,
+  },
+  modalButtons: {
+    gap: spacing.sm,
+    marginTop: spacing.md,
+  },
+  errorText: {
+    fontSize: 14,
+    fontFamily: 'Nunito_400Regular',
+    color: Colors.error,
+    textAlign: 'center',
+    marginTop: spacing.xs,
+  },
+  successContainer: {
+    alignItems: 'center',
+    marginBottom: spacing.lg,
+  },
+  successEmoji: {
+    fontSize: 64,
+    marginBottom: spacing.md,
   },
 });

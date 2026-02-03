@@ -13,16 +13,17 @@ import { Colors, spacing } from '../../constants';
 import { Button, Avatar } from '../../components/ui';
 import { Header } from '../../components/layout';
 import { useAuth } from '../../contexts/AuthContext';
-import { useStorage } from '../../hooks/useStorage';
+import { useStorage } from '../../hooks';
 import { createCarta, getUserGuardianes, updateCarta } from '../../services/firestore';
 import { uploadCartaMedia } from '../../services/storage';
 import type { Guardian, CartaDraft, TipoCarta } from '../../types';
+import { useFocusEffect } from 'expo-router';
 
 export default function AsignarGuardianScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const { user } = useAuth();
-    const { saveDraft } = useStorage();
+    const { saveDraft, deleteDraft } = useStorage();
 
     const params = useLocalSearchParams<{
         id?: string;
@@ -38,14 +39,12 @@ export default function AsignarGuardianScreen() {
     const [isSaving, setIsSaving] = useState(false);
     const [saveProgress, setSaveProgress] = useState(0);
 
-    useEffect(() => {
-        loadGuardianes();
-    }, [user]);
-
-    useEffect(() => {
-        if (params.id && !params.id.startsWith('draft_') && guardianes.length > 0) {
-        }
-    }, [guardianes, params.id]);
+    // Recargar guardianes al volver (por si se agregó uno nuevo)
+    useFocusEffect(
+        React.useCallback(() => {
+            loadGuardianes();
+        }, [user])
+    );
 
     const loadGuardianes = async () => {
         if (!user) return;
@@ -192,9 +191,14 @@ export default function AsignarGuardianScreen() {
                 });
             }
 
+            // Eliminar el borrador local si existía
             if (params.id && params.id.startsWith('draft_')) {
-                await import('../../hooks/useStorage').then(m => {
-                });
+                try {
+                    await deleteDraft(params.id);
+                    console.log('Borrador eliminado:', params.id);
+                } catch (e) {
+                    console.log('No se pudo eliminar el borrador:', e);
+                }
             }
 
             setSaveProgress(100);

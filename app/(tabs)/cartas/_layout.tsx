@@ -16,6 +16,12 @@ export default function CartasLayout() {
           animation: 'slide_from_right',
         }}
       />
+      <Stack.Screen
+        name="editar"
+        options={{
+          animation: 'slide_from_right',
+        }}
+      />
     </Stack>
   );
 }
