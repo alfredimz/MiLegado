@@ -16,7 +16,7 @@ import { Colors, spacing } from '../../constants';
 import { Button, Input } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 
-// Generar código de 6 dígitos (simulación)
+// Generar código de 6 dígitos para verificación dummy
 const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 type RecoveryStep = 'email' | 'code' | 'newPassword' | 'success';
@@ -30,7 +30,7 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
-  // Estados para recuperación de contraseña
+  // Estados para recuperación de contraseña (dummy)
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
   const [recoveryStep, setRecoveryStep] = useState<RecoveryStep>('email');
   const [recoveryEmail, setRecoveryEmail] = useState('');
@@ -39,6 +39,7 @@ export default function LoginScreen() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [recoveryError, setRecoveryError] = useState('');
+  const [tempPassword, setTempPassword] = useState('');
 
   const validate = (): boolean => {
     const newErrors: typeof errors = {};
@@ -65,7 +66,9 @@ export default function LoginScreen() {
     setIsLoading(true);
     try {
       await signIn(email, password);
+      // El login siempre funciona en modo demo
     } catch (error: any) {
+      // Este catch no debería ejecutarse en modo demo
       Alert.alert('Error', error.message || 'No se pudo iniciar sesión');
     } finally {
       setIsLoading(false);
@@ -83,25 +86,23 @@ export default function LoginScreen() {
     setShowRecoveryModal(true);
   };
 
-  // Paso 1: Enviar código (simulado)
+  // Paso 1: Enviar código (dummy - muestra el código directamente)
   const handleSendCode = () => {
     if (!recoveryEmail || !/\S+@\S+\.\S+/.test(recoveryEmail)) {
       setRecoveryError('Ingresa un correo electrónico válido');
       return;
     }
 
-    // Generar código y "enviarlo" (simulación)
+    // Generar código y mostrarlo (simulación para demo escolar)
     const code = generateCode();
     setGeneratedCode(code);
     setRecoveryError('');
     setRecoveryStep('code');
 
-    // Mostrar el código en un Alert (simulación - en producción se enviaría por email)
+    // Mostrar el código directamente (demo)
     Alert.alert(
-      '📧 Código enviado',
-      `Se ha enviado un código de verificación a ${recoveryEmail}\n\n` +
-      `🔐 Tu código es: ${code}\n\n` +
-      `(En producción, este código llegaría por correo electrónico)`,
+      '📧 Código de verificación',
+      `Tu código es: ${code}\n\n(Este es un flujo de demostración para proyecto escolar)`,
       [{ text: 'Entendido' }]
     );
   };
@@ -117,8 +118,8 @@ export default function LoginScreen() {
     setRecoveryStep('newPassword');
   };
 
-  // Paso 3: Cambiar contraseña
-  const handleChangePassword = async () => {
+  // Paso 3: Establecer nueva contraseña (dummy - guarda para auto-fill)
+  const handleChangePassword = () => {
     if (newPassword.length < 6) {
       setRecoveryError('La contraseña debe tener al menos 6 caracteres');
       return;
@@ -129,12 +130,18 @@ export default function LoginScreen() {
       return;
     }
 
+    // Guardar la nueva contraseña para auto-fill después
+    setTempPassword(newPassword);
     setRecoveryError('');
     setRecoveryStep('success');
   };
 
-  // Cerrar modal y limpiar
-  const closeRecoveryModal = () => {
+  // Cerrar modal y auto-llenar credenciales
+  const closeRecoveryModal = (autoFill: boolean = false) => {
+    if (autoFill && recoveryEmail && tempPassword) {
+      setEmail(recoveryEmail);
+      setPassword(tempPassword);
+    }
     setShowRecoveryModal(false);
     setRecoveryStep('email');
     setRecoveryEmail('');
@@ -153,7 +160,7 @@ export default function LoginScreen() {
           <>
             <Text style={styles.modalTitle}>Recuperar contraseña</Text>
             <Text style={styles.modalSubtitle}>
-              Ingresa tu correo electrónico y te enviaremos un código de verificación
+              Ingresa tu correo electrónico para recibir un código de verificación.
             </Text>
 
             <Input
@@ -179,7 +186,7 @@ export default function LoginScreen() {
               />
               <Button
                 title="Cancelar"
-                onPress={closeRecoveryModal}
+                onPress={() => closeRecoveryModal(false)}
                 variant="ghost"
                 fullWidth
               />
@@ -192,7 +199,7 @@ export default function LoginScreen() {
           <>
             <Text style={styles.modalTitle}>Verificar código</Text>
             <Text style={styles.modalSubtitle}>
-              Ingresa el código de 6 dígitos que enviamos a {recoveryEmail}
+              Ingresa el código de 6 dígitos que se mostró en la alerta.
             </Text>
 
             <Input
@@ -224,7 +231,7 @@ export default function LoginScreen() {
               />
               <Button
                 title="Cancelar"
-                onPress={closeRecoveryModal}
+                onPress={() => closeRecoveryModal(false)}
                 variant="ghost"
                 fullWidth
               />
@@ -237,7 +244,7 @@ export default function LoginScreen() {
           <>
             <Text style={styles.modalTitle}>Nueva contraseña</Text>
             <Text style={styles.modalSubtitle}>
-              Crea una nueva contraseña para tu cuenta
+              Crea una nueva contraseña para tu cuenta.
             </Text>
 
             <Input
@@ -271,7 +278,7 @@ export default function LoginScreen() {
               />
               <Button
                 title="Cancelar"
-                onPress={closeRecoveryModal}
+                onPress={() => closeRecoveryModal(false)}
                 variant="ghost"
                 fullWidth
               />
@@ -284,16 +291,17 @@ export default function LoginScreen() {
           <>
             <View style={styles.successContainer}>
               <Text style={styles.successEmoji}>✅</Text>
-              <Text style={styles.modalTitle}>¡Contraseña actualizada!</Text>
+              <Text style={styles.modalTitle}>¡Verificación completada!</Text>
               <Text style={styles.modalSubtitle}>
-                Tu contraseña ha sido cambiada exitosamente. Ya puedes iniciar sesión con tu nueva contraseña.
+                El proceso de verificación fue exitoso.{'\n\n'}
+                Tu correo y contraseña se autocompletarán para que puedas iniciar sesión.
               </Text>
             </View>
 
             <View style={styles.modalButtons}>
               <Button
                 title="Iniciar sesión"
-                onPress={closeRecoveryModal}
+                onPress={() => closeRecoveryModal(true)}
                 variant="primary"
                 fullWidth
               />

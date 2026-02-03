@@ -163,9 +163,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
       } else {
+        // Solo limpiar si no hay un usuario demo activo
         if (isSubscribed) {
-          setUser(null);
-          await clearLocalUser();
+          const localUser = await getLocalUser();
+          // Si hay un usuario demo (uid empieza con "demo_"), mantenerlo
+          if (localUser && localUser.uid.startsWith('demo_')) {
+            console.log('[AuthContext] Manteniendo usuario demo activo');
+            setUser(localUser);
+          } else {
+            setUser(null);
+            await clearLocalUser();
+          }
         }
       }
 
@@ -197,6 +205,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const loggedUser = await authSignIn(email, password);
       setUser(loggedUser);
+      // Guardar usuario localmente (importante para modo demo)
+      await saveLocalUser(loggedUser);
     } finally {
       setIsLoading(false);
     }
@@ -205,7 +215,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = useCallback(async () => {
     setIsLoading(true);
     try {
-      await authSignOut();
+      // Limpiar usuario demo local primero
+      await clearLocalUser();
+      // Intentar cerrar sesión en Firebase (puede fallar si es usuario demo)
+      try {
+        await authSignOut();
+      } catch (e) {
+        console.log('[AuthContext] No hay sesión de Firebase que cerrar');
+      }
       setUser(null);
     } finally {
       setIsLoading(false);
