@@ -14,9 +14,13 @@ import { Button, Avatar } from '../../components/ui';
 import { Header } from '../../components/layout';
 import { useAuth } from '../../contexts/AuthContext';
 import { useStorage } from '../../hooks';
-import { createCarta, getUserGuardianes, updateCarta } from '../../services/firestore';
 import { uploadCartaMedia } from '../../services/storage';
-import type { Guardian, CartaDraft, TipoCarta } from '../../types';
+import {
+    getLocalGuardianes,
+    saveLocalCarta,
+    generateLocalId,
+} from '../../services/localStore';
+import type { Guardian, CartaDraft, TipoCarta, Carta } from '../../types';
 import { useFocusEffect } from 'expo-router';
 
 export default function AsignarGuardianScreen() {
@@ -49,8 +53,9 @@ export default function AsignarGuardianScreen() {
     const loadGuardianes = async () => {
         if (!user) return;
         try {
-            const data = await getUserGuardianes(user.uid);
-            setGuardianes(data);
+            // Cargar solo desde almacenamiento local
+            const localGuardianes = await getLocalGuardianes(user.uid);
+            setGuardianes(localGuardianes);
         } catch (error) {
             console.error('Error cargando guardianes:', error);
             Alert.alert('Error', 'No se pudieron cargar tus guardianes');
@@ -70,15 +75,28 @@ export default function AsignarGuardianScreen() {
     const handleSaveDraft = async () => {
         try {
             const contenido = JSON.parse(params.contenido || '{}');
+            const mediaItems = params.mediaItems ? JSON.parse(params.mediaItems) : [];
 
             const draftId = params.id && params.id.startsWith('draft_') ? params.id : `draft_${Date.now()}`;
-            const mediaItems = params.mediaItems ? JSON.parse(params.mediaItems) : undefined;
-
-            const draftContenido = { ...contenido };
-            if (mediaItems && mediaItems.length > 0) {
-            }
-
             const draftTipo = params.tipo === 'foto' ? 'mixta' : params.tipo;
+
+            // Incluir las URIs de media en el contenido del borrador
+            const draftContenido = { ...contenido };
+            if (mediaItems.length > 0) {
+                const images = mediaItems.filter((item: any) => item.type === 'image' || params.tipo === 'foto');
+                const video = mediaItems.find((item: any) => item.type === 'video' || params.tipo === 'video');
+                const audio = mediaItems.find((item: any) => item.type === 'audio' || params.tipo === 'audio');
+
+                if (images.length > 0) {
+                    draftContenido.imageUrls = images.map((item: any) => item.uri);
+                }
+                if (video) {
+                    draftContenido.videoUrl = video.uri;
+                }
+                if (audio) {
+                    draftContenido.audioUrl = audio.uri;
+                }
+            }
 
             const draft: CartaDraft = {
                 id: draftId,
@@ -115,81 +133,69 @@ export default function AsignarGuardianScreen() {
             const mediaItems = params.mediaItems ? JSON.parse(params.mediaItems) : [];
             const cartaTipo = params.tipo === 'foto' ? 'mixta' : params.tipo;
 
+            // Generar ID para la carta (o usar el existente si es edición)
             let cartaId = params.id;
-            const isEditingActive = cartaId && !cartaId.startsWith('draft_');
-
-            if (isEditingActive && cartaId) {
-                await updateCarta(cartaId, {
-                    titulo: params.titulo,
-                    contenido: { ...contenido },
-                    guardianes: selectedGuardianes,
-                    estado: 'activa',
-                });
-                setSaveProgress(30);
-
-            } else {
-                const nuevaCarta = await createCarta(user.uid, {
-                    titulo: params.titulo,
-                    tipo: cartaTipo,
-                    contenido: {
-                        texto: contenido.texto,
-                    },
-                    guardianes: selectedGuardianes,
-                    estado: 'activa',
-                });
-                cartaId = nuevaCarta.id;
-                setSaveProgress(30);
+            if (!cartaId || cartaId.startsWith('draft_')) {
+                cartaId = generateLocalId();
             }
 
+            setSaveProgress(20);
+
+            // Procesar archivos multimedia - guardar en almacenamiento local
             const uploadedUrls: { type: 'image' | 'video' | 'audio', url: string }[] = [];
-            const itemsToUpload: any[] = [];
 
             if (mediaItems.length > 0) {
-                mediaItems.forEach((item: any) => {
-                    if (item.uri && (item.uri.startsWith('http') || item.uri.startsWith('https'))) {
-                        uploadedUrls.push({
-                            type: item.type || (params.tipo === 'audio' ? 'audio' : 'image'),
-                            url: item.uri
-                        });
-                    } else {
-                        itemsToUpload.push(item);
-                    }
-                });
-            }
-
-            const totalUploads = itemsToUpload.length;
-            if (totalUploads > 0) {
+                const totalUploads = mediaItems.length;
                 let itemsProcessed = 0;
-                for (const item of itemsToUpload) {
+
+                for (const item of mediaItems) {
+                    // Determinar tipo de media
                     let mediaType: 'image' | 'video' | 'audio' = 'image';
                     if (params.tipo === 'audio' || item.type === 'audio') mediaType = 'audio';
-                    else if (params.tipo === 'video') mediaType = 'video';
-                    else if (params.tipo === 'foto') mediaType = 'image';
+                    else if (params.tipo === 'video' || item.type === 'video') mediaType = 'video';
+                    else if (params.tipo === 'foto' || item.type === 'image') mediaType = 'image';
 
-                    const url = await uploadCartaMedia(user.uid, cartaId!, item.uri, mediaType);
-                    uploadedUrls.push({ type: mediaType, url });
+                    // Guardar archivo en almacenamiento local del dispositivo
+                    const localUrl = await uploadCartaMedia(user.uid, cartaId, item.uri, mediaType);
+                    uploadedUrls.push({ type: mediaType, url: localUrl });
 
                     itemsProcessed++;
-                    setSaveProgress(30 + Math.round((itemsProcessed / totalUploads) * 60));
+                    setSaveProgress(20 + Math.round((itemsProcessed / totalUploads) * 60));
                 }
             }
 
-            setSaveProgress(90);
+            setSaveProgress(85);
 
+            // Construir el contenido final con las URLs locales
+            const finalContenido = { ...contenido };
             if (uploadedUrls.length > 0) {
                 const audio = uploadedUrls.find(u => u.type === 'audio');
                 const video = uploadedUrls.find(u => u.type === 'video');
                 const images = uploadedUrls.filter(u => u.type === 'image').map(u => u.url);
 
-                const updatedContenido = { ...contenido };
-                if (audio) updatedContenido.audioUrl = audio.url;
-                if (video) updatedContenido.videoUrl = video.url;
-                if (images.length > 0) updatedContenido.imageUrls = images;
-
-                await updateCarta(cartaId!, {
-                    contenido: updatedContenido
-                });
+                if (audio) finalContenido.audioUrl = audio.url;
+                if (video) finalContenido.videoUrl = video.url;
+                if (images.length > 0) finalContenido.imageUrls = images;
             }
+
+            // Crear objeto de carta completo
+            const now = new Date();
+            const carta: Carta = {
+                id: cartaId,
+                userId: user.uid,
+                titulo: params.titulo || 'Sin título',
+                tipo: cartaTipo as TipoCarta,
+                contenido: finalContenido,
+                guardianes: selectedGuardianes,
+                estado: 'activa',
+                createdAt: now,
+                updatedAt: now,
+            };
+
+            // Guardar carta LOCALMENTE (evita límite de 1MB de Firestore)
+            await saveLocalCarta(user.uid, carta);
+
+            setSaveProgress(95);
 
             // Eliminar el borrador local si existía
             if (params.id && params.id.startsWith('draft_')) {
@@ -205,7 +211,7 @@ export default function AsignarGuardianScreen() {
 
             Alert.alert(
                 '¡Legado Guardado!',
-                'Tu carta ha sido actualizada exitosamente.',
+                'Tu carta ha sido guardada exitosamente.',
                 [
                     {
                         text: 'Ir a Mis Cartas',

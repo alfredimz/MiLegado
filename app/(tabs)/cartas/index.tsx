@@ -14,18 +14,18 @@ import { Colors, spacing } from '../../../constants';
 import { Header, EmptyState } from '../../../components/layout';
 import { CartaCard } from '../../../components/cards';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getUserCartas, deleteCarta } from '../../../services/firestore';
-import { getLocalCartas, setLocalCartas, deleteLocalCarta } from '../../../services/localStore';
+import { getLocalCartas, deleteLocalCarta } from '../../../services/localStore';
 import { useStorage } from '../../../hooks';
 import type { Carta, TipoCarta, EstadoCarta, CartaDraft } from '../../../types';
 
-type FilterType = 'todos' | TipoCarta | EstadoCarta;
+type FilterType = 'todos' | TipoCarta | EstadoCarta | 'mixta';
 
 const FILTERS: { key: FilterType; label: string; emoji: string }[] = [
   { key: 'todos', label: 'Todos', emoji: '📋' },
   { key: 'texto', label: 'Texto', emoji: '📝' },
   { key: 'audio', label: 'Audio', emoji: '🎤' },
   { key: 'video', label: 'Video', emoji: '🎬' },
+  { key: 'mixta', label: 'Mixta', emoji: '📷' },
   { key: 'activa', label: 'Activas', emoji: '✨' },
   { key: 'borrador', label: 'Borradores', emoji: '📄' },
 ];
@@ -43,26 +43,19 @@ export default function CartasScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterType>('todos');
 
-  // Cargar cartas
+  // Cargar cartas solo desde almacenamiento local
   const loadCartas = async (targetFilter?: FilterType) => {
     if (!user) return;
 
     try {
+      // Cargar borradores (solo AsyncStorage)
       const loadedDrafts = await loadDrafts();
 
-      // Intentar cargar desde Firebase
-      let remoteCartas: Carta[] = [];
-      try {
-        remoteCartas = await getUserCartas(user.uid);
-        // Actualizar cache local con datos de Firebase
-        await setLocalCartas(user.uid, remoteCartas);
-      } catch (firebaseError) {
-        console.warn('Firebase no disponible, usando datos locales:', firebaseError);
-        // Fallback: cargar desde almacenamiento local
-        remoteCartas = await getLocalCartas(user.uid);
-      }
+      // Cargar cartas desde almacenamiento local
+      const localCartas = await getLocalCartas(user.uid);
 
-      const localCartas: Carta[] = (loadedDrafts || []).map((draft: CartaDraft) => ({
+      // Convertir borradores a formato Carta
+      const draftCartas: Carta[] = (loadedDrafts || []).map((draft: CartaDraft) => ({
         id: draft.id,
         userId: user.uid,
         titulo: draft.titulo,
@@ -74,7 +67,11 @@ export default function CartasScreen() {
         updatedAt: new Date(draft.lastModified),
       }));
 
-      const allCartas = [...localCartas, ...remoteCartas].sort((a, b) =>
+      // Combinar borradores con cartas (evitar duplicados por ID)
+      const existingIds = new Set(localCartas.map(c => c.id));
+      const uniqueDrafts = draftCartas.filter(d => !existingIds.has(d.id));
+
+      const allCartas = [...uniqueDrafts, ...localCartas].sort((a, b) =>
         b.updatedAt.getTime() - a.updatedAt.getTime()
       );
 
@@ -133,21 +130,12 @@ export default function CartasScreen() {
           onPress: async () => {
             try {
               if (carta.id.startsWith('draft_')) {
+                // Borrador temporal - eliminar de AsyncStorage
                 await deleteDraft(carta.id);
-              } else if (carta.id.startsWith('local_')) {
+              } else {
                 // Carta guardada localmente
                 if (user) {
                   await deleteLocalCarta(user.uid, carta.id);
-                }
-              } else {
-                // Intentar eliminar en Firebase, si falla eliminar localmente
-                try {
-                  await deleteCarta(carta.id);
-                } catch (firebaseError) {
-                  console.warn('Firebase no disponible, eliminando localmente:', firebaseError);
-                  if (user) {
-                    await deleteLocalCarta(user.uid, carta.id);
-                  }
                 }
               }
               loadCartas();

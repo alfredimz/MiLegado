@@ -191,6 +191,7 @@ interface PendingAction {
   collection: 'guardianes' | 'cartas';
   data: any;
   timestamp: string;
+  localId?: string; // ID local para mapear al ID de Firebase después de sincronizar
 }
 
 export async function addPendingSync(action: Omit<PendingAction, 'id' | 'timestamp'>): Promise<void> {
@@ -234,6 +235,49 @@ export async function removePendingSync(actionId: string): Promise<void> {
   } catch (error) {
     console.error('Error removing pending sync:', error);
   }
+}
+
+// Mapa de IDs locales a IDs de Firebase (para actualizar referencias)
+const ID_MAP_KEY = '@milegado_id_map';
+
+export async function getIdMap(): Promise<Record<string, string>> {
+  try {
+    const data = await AsyncStorage.getItem(ID_MAP_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch (error) {
+    console.error('Error getting ID map:', error);
+    return {};
+  }
+}
+
+export async function saveIdMapping(localId: string, firebaseId: string): Promise<void> {
+  try {
+    const idMap = await getIdMap();
+    idMap[localId] = firebaseId;
+    await AsyncStorage.setItem(ID_MAP_KEY, JSON.stringify(idMap));
+  } catch (error) {
+    console.error('Error saving ID mapping:', error);
+  }
+}
+
+// Resolver ID: si es local y tiene mapeo a Firebase, retorna el Firebase ID
+export async function resolveId(id: string): Promise<string> {
+  if (!id.startsWith('local_')) {
+    return id;
+  }
+  const idMap = await getIdMap();
+  return idMap[id] || id;
+}
+
+// Resolver múltiples IDs
+export async function resolveIds(ids: string[]): Promise<string[]> {
+  const idMap = await getIdMap();
+  return ids.map(id => {
+    if (id.startsWith('local_')) {
+      return idMap[id] || id;
+    }
+    return id;
+  });
 }
 
 // ============ UTILITIES ============

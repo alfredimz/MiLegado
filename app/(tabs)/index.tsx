@@ -14,7 +14,7 @@ import { Button, Card, Avatar, Badge } from '../../components/ui';
 import { useAuth } from '../../contexts/AuthContext';
 import { useBattery } from '../../hooks';
 import { useStorage } from '../../hooks';
-import { getUserCartas, getUserGuardianes } from '../../services/firestore';
+import { getLocalCartas, getLocalGuardianes } from '../../services/localStore';
 import type { Carta, Guardian } from '../../types';
 
 export default function HomeScreen() {
@@ -30,19 +30,23 @@ export default function HomeScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Cargar datos
+  // Cargar datos solo desde almacenamiento local
   const loadData = async () => {
     if (!user) return;
 
     try {
-      const [cartasData, guardianesData, draftsData] = await Promise.all([
-        getUserCartas(user.uid),
-        getUserGuardianes(user.uid),
-        loadDrafts(),
-      ]);
-      setCartas(cartasData);
-      setGuardianes(guardianesData);
+      // Cargar borradores (solo locales)
+      const draftsData = await loadDrafts();
       setLocalDraftCount(draftsData ? draftsData.length : 0);
+
+      // Cargar cartas y guardianes desde almacenamiento local
+      const [localCartas, localGuardianes] = await Promise.all([
+        getLocalCartas(user.uid),
+        getLocalGuardianes(user.uid),
+      ]);
+
+      setCartas(localCartas);
+      setGuardianes(localGuardianes);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {

@@ -15,9 +15,8 @@ import { Colors, spacing } from '../../../constants';
 import { Button, Input, Avatar } from '../../../components/ui';
 import { Header } from '../../../components/layout';
 import { useAuth } from '../../../contexts/AuthContext';
-import { getGuardian, updateGuardian } from '../../../services/firestore';
-import { getLocalGuardianes, saveLocalGuardian, addPendingSync } from '../../../services/localStore';
-import type { Guardian, UpdateGuardianData, RelacionGuardian } from '../../../types';
+import { getLocalGuardianes, saveLocalGuardian } from '../../../services/localStore';
+import type { Guardian, RelacionGuardian } from '../../../types';
 import { RELACION_OPTIONS } from '../../../types/guardian';
 
 export default function EditarGuardianScreen() {
@@ -44,16 +43,9 @@ export default function EditarGuardianScreen() {
     if (!id || !user) return;
 
     try {
-      // Intentar cargar desde Firebase
-      let data: Guardian | null = null;
-      try {
-        data = await getGuardian(id);
-      } catch (firebaseError) {
-        console.warn('Firebase no disponible, buscando en datos locales:', firebaseError);
-        // Fallback: buscar en almacenamiento local
-        const localGuardianes = await getLocalGuardianes(user.uid);
-        data = localGuardianes.find(g => g.id === id) || null;
-      }
+      // Cargar solo desde almacenamiento local
+      const localGuardianes = await getLocalGuardianes(user.uid);
+      const data = localGuardianes.find(g => g.id === id) || null;
 
       if (data) {
         setGuardian(data);
@@ -94,40 +86,19 @@ export default function EditarGuardianScreen() {
 
     setIsSaving(true);
     try {
-      const data: UpdateGuardianData = {
+      // Preparar el guardián actualizado
+      const updatedGuardian: Guardian = {
+        ...guardian,
         nombre: nombre.trim(),
         email: email.trim().toLowerCase() || undefined,
         telefono: telefono.trim() || undefined,
         relacion,
         notas: notas.trim() || undefined,
+        updatedAt: new Date(),
       };
 
-      try {
-        // Intentar guardar en Firebase
-        await updateGuardian(id, data);
-      } catch (firebaseError) {
-        console.warn('Firebase no disponible, guardando localmente:', firebaseError);
-
-        // Fallback: actualizar localmente
-        const updatedGuardian: Guardian = {
-          ...guardian,
-          nombre: data.nombre,
-          email: data.email,
-          telefono: data.telefono,
-          relacion: data.relacion,
-          notas: data.notas,
-          updatedAt: new Date(),
-        };
-
-        await saveLocalGuardian(user.uid, updatedGuardian);
-
-        // Registrar para sincronizar despues
-        await addPendingSync({
-          type: 'update',
-          collection: 'guardianes',
-          data: { id, ...data },
-        });
-      }
+      // Guardar solo localmente
+      await saveLocalGuardian(user.uid, updatedGuardian);
 
       Alert.alert(
         'Guardián actualizado',
