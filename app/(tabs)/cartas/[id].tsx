@@ -15,6 +15,12 @@ import { Header } from '../../../components/layout';
 import { VideoPlayer, AudioPlayer } from '../../../components/media';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getCarta, deleteCarta, getGuardian } from '../../../services/firestore';
+import {
+  getLocalCartas,
+  getLocalGuardianes,
+  deleteLocalCarta,
+  addPendingSync,
+} from '../../../services/localStore';
 import type { Carta, Guardian, TipoCarta } from '../../../types';
 
 // Emojis para cada tipo
@@ -40,18 +46,36 @@ export default function CartaDetailScreen() {
   }, [id]);
 
   const loadCarta = async () => {
-    if (!id) return;
+    if (!id || !user) return;
 
     try {
-      const data = await getCarta(id);
-      setCarta(data);
+      let data: Carta | null = null;
+      let allGuardianes: Guardian[] = [];
 
-      if (data?.guardianes.length) {
-        const guardianesData = await Promise.all(
-          data.guardianes.map((gId) => getGuardian(gId))
-        );
-        setGuardianes(guardianesData.filter((g): g is Guardian => g !== null));
+      try {
+        // Intentar cargar desde Firebase
+        data = await getCarta(id);
+        if (data?.guardianes.length) {
+          const guardianesData = await Promise.all(
+            data.guardianes.map((gId) => getGuardian(gId))
+          );
+          allGuardianes = guardianesData.filter((g): g is Guardian => g !== null);
+        }
+      } catch (firebaseError) {
+        console.warn('Firebase no disponible, usando datos locales:', firebaseError);
+        // Fallback: cargar desde almacenamiento local
+        const [localCartas, localGuardianes] = await Promise.all([
+          getLocalCartas(user.uid),
+          getLocalGuardianes(user.uid),
+        ]);
+        data = localCartas.find(c => c.id === id) || null;
+        if (data?.guardianes.length) {
+          allGuardianes = localGuardianes.filter(g => data!.guardianes.includes(g.id));
+        }
       }
+
+      setCarta(data);
+      setGuardianes(allGuardianes);
     } catch (error) {
       console.error('Error loading carta:', error);
     } finally {
@@ -69,9 +93,26 @@ export default function CartaDetailScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            if (!id) return;
+            if (!id || !user) return;
             try {
-              await deleteCarta(id);
+              // Si es una carta local, eliminar solo localmente
+              if (id.startsWith('local_')) {
+                await deleteLocalCarta(user.uid, id);
+              } else {
+                // Intentar eliminar de Firebase
+                try {
+                  await deleteCarta(id);
+                } catch (firebaseError) {
+                  console.warn('Firebase no disponible, eliminando localmente:', firebaseError);
+                  await deleteLocalCarta(user.uid, id);
+                  // Registrar para sincronizar despues
+                  await addPendingSync({
+                    type: 'delete',
+                    collection: 'cartas',
+                    data: { id },
+                  });
+                }
+              }
               router.back();
             } catch (error) {
               Alert.alert('Error', 'No se pudo eliminar la carta');

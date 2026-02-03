@@ -15,6 +15,7 @@ import { Header, EmptyState } from '../../../components/layout';
 import { CartaCard } from '../../../components/cards';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getUserCartas, deleteCarta } from '../../../services/firestore';
+import { getLocalCartas, setLocalCartas, deleteLocalCarta } from '../../../services/localStore';
 import { useStorage } from '../../../hooks';
 import type { Carta, TipoCarta, EstadoCarta, CartaDraft } from '../../../types';
 
@@ -48,7 +49,18 @@ export default function CartasScreen() {
 
     try {
       const loadedDrafts = await loadDrafts();
-      const remoteCartas = await getUserCartas(user.uid);
+
+      // Intentar cargar desde Firebase
+      let remoteCartas: Carta[] = [];
+      try {
+        remoteCartas = await getUserCartas(user.uid);
+        // Actualizar cache local con datos de Firebase
+        await setLocalCartas(user.uid, remoteCartas);
+      } catch (firebaseError) {
+        console.warn('Firebase no disponible, usando datos locales:', firebaseError);
+        // Fallback: cargar desde almacenamiento local
+        remoteCartas = await getLocalCartas(user.uid);
+      }
 
       const localCartas: Carta[] = (loadedDrafts || []).map((draft: CartaDraft) => ({
         id: draft.id,
@@ -57,7 +69,7 @@ export default function CartasScreen() {
         tipo: draft.tipo,
         contenido: draft.contenido,
         guardianes: draft.guardianes,
-        estado: 'borrador',
+        estado: 'borrador' as const,
         createdAt: new Date(draft.lastModified),
         updatedAt: new Date(draft.lastModified),
       }));
@@ -122,8 +134,21 @@ export default function CartasScreen() {
             try {
               if (carta.id.startsWith('draft_')) {
                 await deleteDraft(carta.id);
+              } else if (carta.id.startsWith('local_')) {
+                // Carta guardada localmente
+                if (user) {
+                  await deleteLocalCarta(user.uid, carta.id);
+                }
               } else {
-                await deleteCarta(carta.id);
+                // Intentar eliminar en Firebase, si falla eliminar localmente
+                try {
+                  await deleteCarta(carta.id);
+                } catch (firebaseError) {
+                  console.warn('Firebase no disponible, eliminando localmente:', firebaseError);
+                  if (user) {
+                    await deleteLocalCarta(user.uid, carta.id);
+                  }
+                }
               }
               loadCartas();
             } catch (error) {

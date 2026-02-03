@@ -33,6 +33,18 @@ import type {
   CartaFilters,
 } from '../types';
 
+// ============ HELPER FUNCTIONS ============
+
+/**
+ * Remueve campos undefined de un objeto.
+ * Firestore no acepta valores undefined, solo null o valores definidos.
+ */
+function removeUndefined<T extends Record<string, any>>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => value !== undefined)
+  ) as Partial<T>;
+}
+
 // ============ USUARIOS ============
 
 // Crear documento de usuario
@@ -41,23 +53,29 @@ export async function createUserDocument(
   data: CreateUserData
 ): Promise<User> {
   const now = new Date().toISOString();
-  const userDoc: UserDocument = {
+
+  // Construir objeto base sin campos opcionales
+  const baseUserDoc = {
     uid,
     email: data.email,
     displayName: data.displayName || '',
-    photoURL: data.photoURL,
-    plan: 'free',
+    plan: 'free' as const,
     createdAt: now,
     lastActive: now,
     settings: {
       latidoInterval: 30,
       notificationsEnabled: true,
-      theme: 'light',
+      theme: 'light' as const,
       language: 'es-MX',
     },
   };
 
-  await setDoc(doc(db, COLLECTIONS.USERS, uid), userDoc);
+  // Agregar photoURL solo si existe
+  const userDoc: UserDocument = data.photoURL
+    ? { ...baseUserDoc, photoURL: data.photoURL }
+    : baseUserDoc as UserDocument;
+
+  await setDoc(doc(db, COLLECTIONS.USERS, uid), removeUndefined(userDoc));
 
   return documentToUser(userDoc);
 }
@@ -80,10 +98,11 @@ export async function updateUserDocument(
   data: UpdateUserData
 ): Promise<void> {
   const docRef = doc(db, COLLECTIONS.USERS, uid);
-  await updateDoc(docRef, {
+  const updateData = removeUndefined({
     ...data,
     lastActive: new Date().toISOString(),
   });
+  await updateDoc(docRef, updateData);
 }
 
 // Convertir documento a User
@@ -175,10 +194,11 @@ export async function updateCarta(
   data: UpdateCartaData
 ): Promise<void> {
   const docRef = doc(db, COLLECTIONS.CARTAS, cartaId);
-  await updateDoc(docRef, {
+  const updateData = removeUndefined({
     ...data,
     updatedAt: new Date().toISOString(),
   });
+  await updateDoc(docRef, updateData);
 }
 
 // Eliminar carta
@@ -206,18 +226,25 @@ export async function createGuardian(
   data: CreateGuardianData
 ): Promise<Guardian> {
   const now = new Date().toISOString();
-  const guardianDoc: Omit<GuardianDocument, 'id'> = {
+
+  // Construir objeto base con campos requeridos
+  const baseGuardianDoc = {
     userId,
     nombre: data.nombre,
-    email: data.email,
-    telefono: data.telefono,
     relacion: data.relacion,
-    photoURL: data.photoURL,
-    notas: data.notas,
     createdAt: now,
     updatedAt: now,
     isVerified: false,
   };
+
+  // Agregar campos opcionales solo si tienen valor
+  const optionalFields: Record<string, any> = {};
+  if (data.email) optionalFields.email = data.email;
+  if (data.telefono) optionalFields.telefono = data.telefono;
+  if (data.photoURL) optionalFields.photoURL = data.photoURL;
+  if (data.notas) optionalFields.notas = data.notas;
+
+  const guardianDoc = { ...baseGuardianDoc, ...optionalFields };
 
   const docRef = await addDoc(collection(db, COLLECTIONS.GUARDIANES), guardianDoc);
 
@@ -262,10 +289,11 @@ export async function updateGuardian(
   data: UpdateGuardianData
 ): Promise<void> {
   const docRef = doc(db, COLLECTIONS.GUARDIANES, guardianId);
-  await updateDoc(docRef, {
+  const updateData = removeUndefined({
     ...data,
     updatedAt: new Date().toISOString(),
   });
+  await updateDoc(docRef, updateData);
 }
 
 // Eliminar guardián

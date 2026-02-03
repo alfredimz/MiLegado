@@ -16,6 +16,15 @@ import { Header, EmptyState } from '../../../components/layout';
 import { GuardianCard } from '../../../components/cards';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getUserGuardianes, createGuardian, getUserCartas } from '../../../services/firestore';
+import {
+  getLocalGuardianes,
+  getLocalCartas,
+  saveLocalGuardian,
+  setLocalGuardianes,
+  setLocalCartas,
+  generateLocalId,
+  addPendingSync,
+} from '../../../services/localStore';
 import type { Guardian, CreateGuardianData, RelacionGuardian, Carta } from '../../../types';
 import { RELACION_OPTIONS } from '../../../types/guardian';
 
@@ -41,14 +50,31 @@ export default function GuardianesScreen() {
     if (!user) return;
 
     try {
+      // Intentar cargar desde Firebase
       const [guardianesData, cartasData] = await Promise.all([
         getUserGuardianes(user.uid),
         getUserCartas(user.uid),
       ]);
       setGuardianes(guardianesData);
       setCartas(cartasData);
+
+      // Actualizar cache local con datos de Firebase
+      await setLocalGuardianes(user.uid, guardianesData);
+      await setLocalCartas(user.uid, cartasData);
     } catch (error) {
-      console.error('Error loading guardianes:', error);
+      console.warn('Firebase no disponible, cargando datos locales:', error);
+
+      // Fallback: cargar desde almacenamiento local
+      try {
+        const [localGuardianes, localCartas] = await Promise.all([
+          getLocalGuardianes(user.uid),
+          getLocalCartas(user.uid),
+        ]);
+        setGuardianes(localGuardianes);
+        setCartas(localCartas);
+      } catch (localError) {
+        console.error('Error loading local data:', localError);
+      }
     } finally {
       setIsLoading(false);
       setRefreshing(false);
@@ -96,7 +122,35 @@ export default function GuardianesScreen() {
         relacion,
       };
 
-      await createGuardian(user.uid, data);
+      try {
+        // Intentar guardar en Firebase
+        await createGuardian(user.uid, data);
+      } catch (firebaseError) {
+        // Fallback: guardar localmente
+        console.warn('Firebase no disponible, guardando localmente:', firebaseError);
+
+        const now = new Date();
+        const localGuardian: Guardian = {
+          id: generateLocalId(),
+          userId: user.uid,
+          nombre: data.nombre,
+          email: data.email,
+          telefono: data.telefono,
+          relacion: data.relacion,
+          createdAt: now,
+          updatedAt: now,
+          isVerified: false,
+        };
+
+        await saveLocalGuardian(user.uid, localGuardian);
+
+        // Registrar para sincronizar despues
+        await addPendingSync({
+          type: 'create',
+          collection: 'guardianes',
+          data: { ...data, localId: localGuardian.id },
+        });
+      }
 
       setNombre('');
       setEmail('');

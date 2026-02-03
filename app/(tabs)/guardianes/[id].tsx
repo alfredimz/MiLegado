@@ -23,6 +23,12 @@ import { Header } from '../../../components/layout';
 import { CartaCard } from '../../../components/cards';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getGuardian, deleteGuardian, getUserCartas } from '../../../services/firestore';
+import {
+  getLocalGuardianes,
+  getLocalCartas,
+  deleteLocalGuardian,
+  addPendingSync,
+} from '../../../services/localStore';
 import type { Guardian, Carta } from '../../../types';
 
 export default function GuardianDetailScreen() {
@@ -43,17 +49,32 @@ export default function GuardianDetailScreen() {
     if (!id || !user) return;
 
     try {
-      const [guardianData, cartasData] = await Promise.all([
-        getGuardian(id),
-        getUserCartas(user.uid),
-      ]);
+      let guardianData: Guardian | null = null;
+      let cartasData: Carta[] = [];
+
+      try {
+        // Intentar cargar desde Firebase
+        [guardianData, cartasData] = await Promise.all([
+          getGuardian(id),
+          getUserCartas(user.uid),
+        ]);
+      } catch (firebaseError) {
+        console.warn('Firebase no disponible, usando datos locales:', firebaseError);
+        // Fallback: cargar desde almacenamiento local
+        const [localGuardianes, localCartas] = await Promise.all([
+          getLocalGuardianes(user.uid),
+          getLocalCartas(user.uid),
+        ]);
+        guardianData = localGuardianes.find(g => g.id === id) || null;
+        cartasData = localCartas;
+      }
 
       setGuardian(guardianData);
 
-      // Filtrar cartas asignadas a este guardián
+      // Filtrar cartas asignadas a este guardian
       if (guardianData) {
         const asignadas = cartasData.filter((c) =>
-          c.guardianes.includes(guardianData.id)
+          c.guardianes.includes(guardianData!.id)
         );
         setCartasAsignadas(asignadas);
       }
@@ -74,9 +95,26 @@ export default function GuardianDetailScreen() {
           text: 'Eliminar',
           style: 'destructive',
           onPress: async () => {
-            if (!id) return;
+            if (!id || !user) return;
             try {
-              await deleteGuardian(id);
+              // Si es un guardian local, eliminar solo localmente
+              if (id.startsWith('local_')) {
+                await deleteLocalGuardian(user.uid, id);
+              } else {
+                // Intentar eliminar de Firebase
+                try {
+                  await deleteGuardian(id);
+                } catch (firebaseError) {
+                  console.warn('Firebase no disponible, eliminando localmente:', firebaseError);
+                  await deleteLocalGuardian(user.uid, id);
+                  // Registrar para sincronizar despues
+                  await addPendingSync({
+                    type: 'delete',
+                    collection: 'guardianes',
+                    data: { id },
+                  });
+                }
+              }
               router.back();
             } catch (error) {
               Alert.alert('Error', 'No se pudo eliminar el guardián');

@@ -9,6 +9,7 @@ import {
   subscribeToAuthChanges,
 } from '../services/auth';
 import { getUserDocument, updateUserDocument } from '../services/firestore';
+import { getLocalUser, saveLocalUser, clearLocalUser } from '../services/localStore';
 import type { User } from '../types';
 import { STORAGE_KEYS } from '../types';
 
@@ -51,11 +52,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let isSubscribed = true;
 
-    // Timeout de seguridad - si Firebase no responde en 5 segundos, continuar sin usuario
-    const timeoutId = setTimeout(() => {
+    // Timeout de seguridad - si Firebase no responde en 5 segundos, intentar con datos locales
+    const timeoutId = setTimeout(async () => {
       if (isSubscribed && isLoading) {
-        console.warn('[AuthContext] Firebase Auth timeout - continuando sin autenticación');
-        setIsLoading(false);
+        console.warn('[AuthContext] Firebase Auth timeout - intentando datos locales');
+
+        // Intentar cargar usuario desde almacenamiento local
+        try {
+          const localUser = await getLocalUser();
+          if (localUser && isSubscribed) {
+            console.log('[AuthContext] Usuario cargado desde almacenamiento local');
+            setUser(localUser);
+          }
+        } catch (localError) {
+          console.error('[AuthContext] Error cargando usuario local:', localError);
+        }
+
+        if (isSubscribed) setIsLoading(false);
       }
     }, 5000);
 
@@ -72,17 +85,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (isSubscribed) {
             setUser(userData);
 
-            // Actualizar última actividad
+            // Guardar usuario localmente como cache
             if (userData) {
-              await updateUserDocument(fbUser.uid, {});
+              await saveLocalUser(userData);
+              // Actualizar ultima actividad (silenciosamente)
+              try {
+                await updateUserDocument(fbUser.uid, {});
+              } catch (updateError) {
+                console.warn('[AuthContext] No se pudo actualizar ultima actividad:', updateError);
+              }
             }
           }
         } catch (error) {
-          console.error('Error fetching user data:', error);
-          if (isSubscribed) setUser(null);
+          console.warn('[AuthContext] Error obteniendo datos de Firestore:', error);
+
+          // Fallback: intentar cargar desde almacenamiento local
+          try {
+            const localUser = await getLocalUser();
+            if (localUser && localUser.uid === fbUser.uid && isSubscribed) {
+              console.log('[AuthContext] Usando datos de usuario desde cache local');
+              setUser(localUser);
+            } else if (isSubscribed) {
+              // Crear usuario minimo con datos de Firebase Auth
+              const minimalUser: User = {
+                uid: fbUser.uid,
+                email: fbUser.email || '',
+                displayName: fbUser.displayName || '',
+                photoURL: fbUser.photoURL || undefined,
+                plan: 'free',
+                createdAt: new Date(),
+                lastActive: new Date(),
+                settings: {
+                  latidoInterval: 30,
+                  notificationsEnabled: true,
+                  theme: 'light',
+                  language: 'es-MX',
+                },
+              };
+              setUser(minimalUser);
+              await saveLocalUser(minimalUser);
+            }
+          } catch (localError) {
+            console.error('[AuthContext] Error cargando usuario local:', localError);
+            if (isSubscribed) setUser(null);
+          }
         }
       } else {
-        if (isSubscribed) setUser(null);
+        if (isSubscribed) {
+          setUser(null);
+          await clearLocalUser();
+        }
       }
 
       if (isSubscribed) setIsLoading(false);
@@ -145,8 +197,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (data: Partial<User>) => {
       if (!user) return;
       try {
-        await updateUserDocument(user.uid, data);
-        setUser({ ...user, ...data });
+        // Actualizar estado local inmediatamente
+        const updatedUser = { ...user, ...data };
+        setUser(updatedUser);
+
+        // Intentar guardar en Firebase
+        try {
+          await updateUserDocument(user.uid, data);
+        } catch (firebaseError) {
+          console.warn('[AuthContext] Firebase no disponible, guardando solo localmente:', firebaseError);
+        }
+
+        // Siempre guardar en cache local
+        await saveLocalUser(updatedUser);
       } catch (error) {
         console.error('Error updating user:', error);
         throw error;

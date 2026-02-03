@@ -16,6 +16,7 @@ import { Button, Input, Avatar } from '../../../components/ui';
 import { Header } from '../../../components/layout';
 import { useAuth } from '../../../contexts/AuthContext';
 import { getGuardian, updateGuardian } from '../../../services/firestore';
+import { getLocalGuardianes, saveLocalGuardian, addPendingSync } from '../../../services/localStore';
 import type { Guardian, UpdateGuardianData, RelacionGuardian } from '../../../types';
 import { RELACION_OPTIONS } from '../../../types/guardian';
 
@@ -40,10 +41,20 @@ export default function EditarGuardianScreen() {
   }, [id]);
 
   const loadGuardian = async () => {
-    if (!id) return;
+    if (!id || !user) return;
 
     try {
-      const data = await getGuardian(id);
+      // Intentar cargar desde Firebase
+      let data: Guardian | null = null;
+      try {
+        data = await getGuardian(id);
+      } catch (firebaseError) {
+        console.warn('Firebase no disponible, buscando en datos locales:', firebaseError);
+        // Fallback: buscar en almacenamiento local
+        const localGuardianes = await getLocalGuardianes(user.uid);
+        data = localGuardianes.find(g => g.id === id) || null;
+      }
+
       if (data) {
         setGuardian(data);
         setNombre(data.nombre);
@@ -79,7 +90,7 @@ export default function EditarGuardianScreen() {
 
   const handleSave = async () => {
     if (!validate()) return;
-    if (!id) return;
+    if (!id || !user || !guardian) return;
 
     setIsSaving(true);
     try {
@@ -91,7 +102,32 @@ export default function EditarGuardianScreen() {
         notas: notas.trim() || undefined,
       };
 
-      await updateGuardian(id, data);
+      try {
+        // Intentar guardar en Firebase
+        await updateGuardian(id, data);
+      } catch (firebaseError) {
+        console.warn('Firebase no disponible, guardando localmente:', firebaseError);
+
+        // Fallback: actualizar localmente
+        const updatedGuardian: Guardian = {
+          ...guardian,
+          nombre: data.nombre,
+          email: data.email,
+          telefono: data.telefono,
+          relacion: data.relacion,
+          notas: data.notas,
+          updatedAt: new Date(),
+        };
+
+        await saveLocalGuardian(user.uid, updatedGuardian);
+
+        // Registrar para sincronizar despues
+        await addPendingSync({
+          type: 'update',
+          collection: 'guardianes',
+          data: { id, ...data },
+        });
+      }
 
       Alert.alert(
         'Guardián actualizado',

@@ -16,7 +16,8 @@ import { Button, Input } from '../../../components/ui';
 import { Header } from '../../../components/layout';
 import { useAuth } from '../../../contexts/AuthContext';
 import { createGuardian } from '../../../services/firestore';
-import type { CreateGuardianData, RelacionGuardian } from '../../../types';
+import { saveLocalGuardian, generateLocalId, addPendingSync } from '../../../services/localStore';
+import type { CreateGuardianData, RelacionGuardian, Guardian } from '../../../types';
 import { RELACION_OPTIONS } from '../../../types/guardian';
 
 export default function NuevoGuardianScreen() {
@@ -63,7 +64,36 @@ export default function NuevoGuardianScreen() {
         notas: notas.trim() || undefined,
       };
 
-      await createGuardian(user.uid, data);
+      try {
+        // Intentar guardar en Firebase
+        await createGuardian(user.uid, data);
+      } catch (firebaseError) {
+        // Si Firebase falla, guardar localmente como fallback
+        console.warn('Firebase no disponible, guardando localmente:', firebaseError);
+
+        const now = new Date();
+        const localGuardian: Guardian = {
+          id: generateLocalId(),
+          userId: user.uid,
+          nombre: data.nombre,
+          email: data.email,
+          telefono: data.telefono,
+          relacion: data.relacion,
+          notas: data.notas,
+          createdAt: now,
+          updatedAt: now,
+          isVerified: false,
+        };
+
+        await saveLocalGuardian(user.uid, localGuardian);
+
+        // Registrar para sincronizar cuando Firebase esté disponible
+        await addPendingSync({
+          type: 'create',
+          collection: 'guardianes',
+          data: { ...data, localId: localGuardian.id },
+        });
+      }
 
       Alert.alert(
         'Guardián agregado',
